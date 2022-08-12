@@ -1,0 +1,1379 @@
+<html>
+
+<head>
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/monkeyBlack.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/monkeyWhite.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/elephantWhite.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/elephantBlack.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/kingBlack.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/kingWhite.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/queenBlack.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/queenWhite.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/rookWhite.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/rookBlack.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/fishBlack.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/fishWhite.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/blackFishQueen.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/whiteFishQueen.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/banana.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/board.png" as="image">
+
+    <style>
+        .piece {
+            height: 70%;
+            user-select: none;
+            cursor: pointer;
+            left: 50%;
+            top: 50%;
+            position: absolute;
+            transform: translate(-50%, -50%);
+        }
+
+        .banana {
+            height: 25%;
+            user-select: none;
+            cursor: pointer;
+            left: 50%;
+            top: 8px;
+            position: absolute;
+            transform: translateX(-50%);
+        }
+
+        .moveSelect {
+            height: calc(50% - 12px);
+            background-color: rgba(72, 71, 100, .4);
+            left: 50%;
+            top: calc(74px / 2);
+            position: relative;
+            transform: translate(-50%, -50%);
+            width: calc(50% - 12px);
+            border-radius: 100%;
+        }
+
+        .pieceSelect {
+            height: calc(100% - 12px);
+            background-color: rgba(0, 0, 0, 0);
+            left: 50%;
+            top: calc(74px / 2);
+            position: relative;
+            transform: translate(-50%, -50%);
+            width: calc(100% - 12px);
+            border-radius: 100%;
+            border-width: 4px;
+            border-color: rgba(72, 71, 100, .4);
+            border-style: solid;
+        }
+
+        .promptT {
+            font-family: system-ui;
+            text-align: center;
+            font-size: 90%;
+            color: rgb(180, 180, 180);
+            white-space: break-spaces;
+            padding: 10px;
+            transform: translateY(-14px);
+            overflow-wrap: break-word;
+        }
+
+        .promptBottom {
+            position: relative;
+            bottom: 0px;
+            width: 100%;
+            height: 60px;
+            background-color: rgb(30, 30, 30);
+            border-radius: 0 0 4px 4px;
+            border-top: 1px solid rgb(48 48 48);
+        }
+
+        .promptTitle {
+            font-family: system-ui;
+            text-align: center;
+            font-size: 130%;
+            color: rgb(255, 255, 255);
+        }
+
+        .promptButton {
+            background-color: rgb(35, 35, 35);
+            border-color: rgb(70, 70, 70);
+            border-radius: 6px;
+            height: 35px;
+            top: 50%;
+            transform: translateY(-50%);
+            position: absolute;
+            right: 10px;
+            width: 100px;
+            color: rgb(255, 255, 255);
+            font-family: system-ui;
+            font-size: 90%;
+            border-style: solid;
+            border-width: 1px;
+            transition: .2s cubic-bezier(.3, 0, .5, 1);
+            transition-property: color, background-color, border-color;
+        }
+
+        .promptButton:hover {
+            background-color: rgb(45, 45, 45);
+            border-color: rgb(100, 100, 100);
+        }
+
+        .promptButton:active {
+            background-color: rgb(35, 35, 35);
+            border-color: rgb(95, 95, 95);
+            transition: .05s cubic-bezier(.3, 0, .5, 1);
+        }
+
+        .bananaMonkey {
+            height: 20%;
+            user-select: none;
+            cursor: pointer;
+            left: 50%;
+            bottom: 28px;
+            position: absolute;
+            transform: translateX(-50%);
+        }
+
+        .promptBG {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            background-color: rgb(0, 0, 0, 0.5);
+            z-index: 4;
+            opacity: 0;
+            animation: fadeBG .300s forwards;
+        }
+
+        .promptDiv {
+            z-index: 5;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            background-color: rgb(40, 40, 40);
+            box-shadow: 0 0 16px 1px black;
+            border-radius: 4px;
+            min-height: 100px;
+            opacity: 0;
+            animation: fadeDiv .240s forwards;
+        }
+
+        @keyframes fadeBG {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOutBG {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+                filter: none;
+            }
+
+            to {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1.3);
+                box-shadow: 0 0 0 0;
+                filter: blur(1px);
+            }
+        }
+
+        @keyframes fadeDiv {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1.2);
+                filter: blur(4px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+                filter: none;
+            }
+        }
+    </style>
+</head>
+
+<body style="
+    background: rgb(40, 40, 40);
+">
+    <div style="
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 1100px;
+    height: 950px;
+    top: 50%;
+    background-color: rgb(30, 30, 30);
+">
+        <div style="
+    width: 800px;
+    height: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    position: absolute;
+">
+            <p id="enemy" style="
+    position: absolute;
+    margin-top: 30px;
+    color: rgb(255, 255, 255);
+    font-family: system-ui;
+    font-size: 140%;
+    left: -30px;
+    text-align: left;
+    width: 100%;
+    top: 4px;
+">(waiting for enemy)</p>
+            <p id="host" style="
+    position: absolute;
+    margin-top: 30px;
+    color: rgb(255, 255, 255);
+    font-family: system-ui;
+    font-size: 140%;
+    left: -30px;
+    text-align: left;
+    width: 100%;
+    bottom: 10px;
+">(waiting for connection) </p>
+            <div style="
+    width: 100%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    background-color: rgb(40 40 40);
+    padding: 30px;
+    box-shadow: 0 0 21px 1px black;
+    height: 700px;
+">
+                <div id="options" style="
+    height: calc(100% - 60px);
+    width: calc(100% - 60px);
+    left: 50%;
+    top: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+">
+                    <div id="gameIDC" style="
+    display: none;
+">
+                        <p id="gameID" style="
+    color: rgb(255, 255, 255);
+    font-size: 200%;
+    font-family: monospace;
+    left: 50%;
+    top: 40%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+">736f207472756521</p>
+                        <p style="
+    color: rgb(255, 255, 255);
+    font-size: 70%;
+    font-family: system-ui;
+    left: 50%;
+    top: 47%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+">Use this game ID to invite someone to the game!</p>
+                    </div><button id="cGame" style="
+    left: 50%;
+    top: 47%;
+    position: relative;
+    transform: translate(-50%, -50%);
+    height: 21px;
+">Create Game</button>
+                    <br><input maxlength="16" id="gameI" placeholder="Game ID" style="
+    left: calc(50% - 55px);
+    top: 53%;
+    transform: translate(-50%, -50%);
+    width: 112px;
+    position: relative;
+    font-family: monospace;
+    font-size: 90%;
+    height: 22px;
+"><button id="jGame" style="
+    left: calc(50% - 65px);
+    top: 53%;
+    position: relative;
+    transform: translate(-50%, -50%);
+    height: 21px;
+">Join Game</button>
+                </div>
+                <div id="boardC" style="
+    opacity: 0.3;
+"><img id="board" src="https://cdn.mau0.workers.dev/cdn/board.png"
+                        style="width: 100%;image-rendering: auto;height: 100%;user-select: none;" draggable="false">
+                    <div id="L:1"
+                        style="background-color: rgba(0, 0, 0, 0);height: 74px;position: absolute;width: 60px;left: 38px;top: 306px;">
+                        <div id="LPOS:1"></div>
+                    </div>
+                    <div id="L:2"
+                        style="background-color: rgba(0, 0, 0, 0);height: 74px;position: absolute;width: 60px;left: 37px;top: 379px;">
+                        <div id="LPOS:2"></div>
+                    </div>
+                    <div id="R:2"
+                        style="background-color: rgba(0, 0, 0, 0);height: 74px;position: absolute;width: 60px;right: 38px;top: 379px;">
+                        <div id="RPOS:2"></div>
+                    </div>
+                    <div id="R:1"
+                        style="background-color: rgba(0, 0, 0, 0);height: 74px;position: absolute;width: 60px;right: 38px;top: 305px;">
+                        <div id="RPOS:1"></div>
+                    </div>
+
+                    <div id="P:1:1"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 145px; top: 80px;">
+                        <div id="POS:1:1"></div>
+                    </div>
+                    <div id="P:1:2"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 145px; top: 155px;">
+                        <div id="POS:1:2"></div>
+                    </div>
+                    <div id="P:1:3"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 145px; top: 230px;">
+                        <div id="POS:1:3"></div>
+                    </div>
+                    <div id="P:1:4"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 145px; top: 305px;">
+                        <div id="POS:1:4"></div>
+                    </div>
+                    <div id="P:1:5"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 145px; top: 380px;">
+                        <div id="POS:1:5"></div>
+                    </div>
+                    <div id="P:1:6"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 145px; top: 455px;">
+                        <div id="POS:1:6"></div>
+                    </div>
+                    <div id="P:1:7"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 145px; top: 530px;">
+                        <div id="POS:1:7"></div>
+                    </div>
+                    <div id="P:1:8"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 145px; top: 605px;">
+                        <div id="POS:1:8"></div>
+                    </div>
+                    <div id="P:2:1"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 216px; top: 80px;">
+                        <div id="POS:2:1"></div>
+                    </div>
+                    <div id="P:2:2"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 216px; top: 155px;">
+                        <div id="POS:2:2"></div>
+                    </div>
+                    <div id="P:2:3"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 216px; top: 230px;">
+                        <div id="POS:2:3"></div>
+                    </div>
+                    <div id="P:2:4"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 216px; top: 305px;">
+                        <div id="POS:2:4"></div>
+                    </div>
+                    <div id="P:2:5"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 216px; top: 380px;">
+                        <div id="POS:2:5"></div>
+                    </div>
+                    <div id="P:2:6"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 216px; top: 455px;">
+                        <div id="POS:2:6"></div>
+                    </div>
+                    <div id="P:2:7"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 216px; top: 530px;">
+                        <div id="POS:2:7"></div>
+                    </div>
+                    <div id="P:2:8"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 216px; top: 605px;">
+                        <div id="POS:2:8"></div>
+                    </div>
+                    <div id="P:3:1"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 287px; top: 80px;">
+                        <div id="POS:3:1"></div>
+                    </div>
+                    <div id="P:3:2"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 287px; top: 155px;">
+                        <div id="POS:3:2"></div>
+                    </div>
+                    <div id="P:3:3"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 287px; top: 230px;">
+                        <div id="POS:3:3"></div>
+                    </div>
+                    <div id="P:3:4"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 287px; top: 305px;">
+                        <div id="POS:3:4"></div>
+                    </div>
+                    <div id="P:3:5"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 287px; top: 380px;">
+                        <div id="POS:3:5"></div>
+                    </div>
+                    <div id="P:3:6"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 287px; top: 455px;">
+                        <div id="POS:3:6"></div>
+                    </div>
+                    <div id="P:3:7"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 287px; top: 530px;">
+                        <div id="POS:3:7"></div>
+                    </div>
+                    <div id="P:3:8"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 287px; top: 605px;">
+                        <div id="POS:3:8"></div>
+                    </div>
+                    <div id="P:4:1"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 358px; top: 80px;">
+                        <div id="POS:4:1"></div>
+                    </div>
+                    <div id="P:4:2"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 358px; top: 155px;">
+                        <div id="POS:4:2"></div>
+                    </div>
+                    <div id="P:4:3"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 358px; top: 230px;">
+                        <div id="POS:4:3"></div>
+                    </div>
+                    <div id="P:4:4"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 358px; top: 305px;">
+                        <div id="POS:4:4"></div>
+                    </div>
+                    <div id="P:4:5"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 358px; top: 380px;">
+                        <div id="POS:4:5"></div>
+                    </div>
+                    <div id="P:4:6"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 358px; top: 455px;">
+                        <div id="POS:4:6"></div>
+                    </div>
+                    <div id="P:4:7"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 358px; top: 530px;">
+                        <div id="POS:4:7"></div>
+                    </div>
+                    <div id="P:4:8"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 358px; top: 605px;">
+                        <div id="POS:4:8"></div>
+                    </div>
+                    <div id="P:5:1"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 429px; top: 80px;">
+                        <div id="POS:5:1"></div>
+                    </div>
+                    <div id="P:5:2"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 429px; top: 155px;">
+                        <div id="POS:5:2"></div>
+                    </div>
+                    <div id="P:5:3"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 429px; top: 230px;">
+                        <div id="POS:5:3"></div>
+                    </div>
+                    <div id="P:5:4"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 429px; top: 305px;">
+                        <div id="POS:5:4"></div>
+                    </div>
+                    <div id="P:5:5"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 429px; top: 380px;">
+                        <div id="POS:5:5"></div>
+                    </div>
+                    <div id="P:5:6"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 429px; top: 455px;">
+                        <div id="POS:5:6"></div>
+                    </div>
+                    <div id="P:5:7"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 429px; top: 530px;">
+                        <div id="POS:5:7"></div>
+                    </div>
+                    <div id="P:5:8"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 429px; top: 605px;">
+                        <div id="POS:5:8"></div>
+                    </div>
+                    <div id="P:6:1"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 500px; top: 80px;">
+                        <div id="POS:6:1"></div>
+                    </div>
+                    <div id="P:6:2"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 500px; top: 155px;">
+                        <div id="POS:6:2"></div>
+                    </div>
+                    <div id="P:6:3"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 500px; top: 230px;">
+                        <div id="POS:6:3"></div>
+                    </div>
+                    <div id="P:6:4"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 500px; top: 305px;">
+                        <div id="POS:6:4"></div>
+                    </div>
+                    <div id="P:6:5"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 500px; top: 380px;">
+                        <div id="POS:6:5"></div>
+                    </div>
+                    <div id="P:6:6"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 500px; top: 455px;">
+                        <div id="POS:6:6"></div>
+                    </div>
+                    <div id="P:6:7"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 500px; top: 530px;">
+                        <div id="POS:6:7"></div>
+                    </div>
+                    <div id="P:6:8"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 500px; top: 605px;">
+                        <div id="POS:6:8"></div>
+                    </div>
+                    <div id="P:7:1"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 571px; top: 80px;">
+                        <div id="POS:7:1"></div>
+                    </div>
+                    <div id="P:7:2"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 571px; top: 155px;">
+                        <div id="POS:7:2"></div>
+                    </div>
+                    <div id="P:7:3"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 571px; top: 230px;">
+                        <div id="POS:7:3"></div>
+                    </div>
+                    <div id="P:7:4"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 571px; top: 305px;">
+                        <div id="POS:7:4"></div>
+                    </div>
+                    <div id="P:7:5"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 571px; top: 380px;">
+                        <div id="POS:7:5"></div>
+                    </div>
+                    <div id="P:7:6"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 571px; top: 455px;">
+                        <div id="POS:7:6"></div>
+                    </div>
+                    <div id="P:7:7"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 571px; top: 530px;">
+                        <div id="POS:7:7"></div>
+                    </div>
+                    <div id="P:7:8"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 571px; top: 605px;">
+                        <div id="POS:7:8"></div>
+                    </div>
+                    <div id="P:8:1"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 642px; top: 80px;">
+                        <div id="POS:8:1"></div>
+                    </div>
+                    <div id="P:8:2"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 642px; top: 155px;">
+                        <div id="POS:8:2"></div>
+                    </div>
+                    <div id="P:8:3"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 642px; top: 230px;">
+                        <div id="POS:8:3"></div>
+                    </div>
+                    <div id="P:8:4"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 642px; top: 305px;">
+                        <div id="POS:8:4"></div>
+                    </div>
+                    <div id="P:8:5"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 642px; top: 380px;">
+                        <div id="POS:8:5"></div>
+                    </div>
+                    <div id="P:8:6"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 642px; top: 455px;">
+                        <div id="POS:8:6"></div>
+                    </div>
+                    <div id="P:8:7"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 642px; top: 530px;">
+                        <div id="POS:8:7"></div>
+                    </div>
+                    <div id="P:8:8"
+                        style="background-color: rgba(0, 0, 0, 0); height: 74px; position: absolute; width: 71px; left: 642px; top: 605px;">
+                        <div id="POS:8:8"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+
+<script defer>
+    (() => {
+        let ws = new WebSocket("ws://dokso.in:2086")
+        let plrData
+        let enemyData
+        let boardContent = {
+            left: {},
+            right: {},
+            general: {}
+        }
+        let pieces = new Map()
+        let isOpposite = false
+        let hasDied = false
+        let currentPrompt
+        let selected
+        let selectedDivs = []
+        let pieceC = {}
+        let isTurn
+
+        /*<span style="
+            font-size: 60%;
+            color: rgb(140, 140, 140);
+        ">(you)</span>*/
+        /*
+            <div id="promptBG" class="promptBG">
+                <div id="promptD" class="promptDiv">
+                    <p id="promptTitle" class="promptTitle">Disconnected</p>
+                    <p id="promptText" class="promptT">WebSocket disconnected unexpectedly. Please reload this page.</p>
+
+                    <div class="promptBottom"><button id="promptClose" class="promptButton">Close</button></div>
+                </div>
+            </div>
+        */
+
+        class TextPrompt {
+            constructor(title, text) {
+                let bg = document.createElement("div")
+                let div = document.createElement("div")
+                let Ptitle = document.createElement("p")
+                let Ptext = document.createElement("p")
+                let Pbottom = document.createElement("div")
+                let close = document.createElement("button")
+                bg.className = "promptBG"
+                div.className = "promptDiv"
+                Ptitle.className = "promptTitle"
+                Ptext.className = "promptT"
+                close.className = "promptButton"
+                Pbottom.className = "promptBottom"
+                Ptitle.textContent = title
+                Ptext.textContent = text
+                close.textContent = "Close"
+                bg.appendChild(div)
+                div.appendChild(Ptitle)
+                div.appendChild(Ptext)
+                div.appendChild(Pbottom)
+                Pbottom.appendChild(close)
+                this.title = title
+                this.text = text
+                this.element = bg
+                this.div = div
+                let original = this
+                close.onclick = function () {
+                    original.onclose()
+                    original.close()
+                }
+            }
+
+            open() {
+                document.body.appendChild(this.element)
+            }
+
+            close() {
+                let orig = this
+                this.element.style.animation = "fadeOutBG .24s forwards"
+                this.div.style.animation = "fadeOut .24s forwards"
+                setTimeout(() => {
+                    orig.element.remove()
+                }, 260)
+            }
+        }
+
+        function showMessage(title, text) {
+            if (currentPrompt) {
+                currentPrompt.close()
+                currentPrompt = null
+            }
+            let newPrompt = new TextPrompt(title, text)
+            newPrompt.onclose = function () {
+                if (currentPrompt === newPrompt) {
+                    currentPrompt = null
+                }
+            }
+            currentPrompt = newPrompt
+            newPrompt.open()
+        }
+
+        function getImageForPiece(piece) {
+            let translate = {
+                rook: "rook",
+                pawn: "fish",
+                horse: "monkey",
+                bishop: "elephant",
+                queen: "queen",
+                king: "king"
+            }
+            let str = translate[piece.type] + (piece.owner === "host" ? "White" : "Black")
+            if (piece.queen) {
+                str = (piece.owner === "host" ? "white" : "black") + "FishQueen"
+            }
+            return "https://cdn.mau0.workers.dev/cdn/" + str + ".png"
+        }
+
+        function loadBoard(data) {
+            for (const [key, value] of Object.entries(data.general)) {
+                let newImg = document.createElement("img")
+                newImg.src = getImageForPiece(value)
+                newImg.draggable = false
+                newImg.className = "piece"
+                let coords = key.split(":")
+                let x = isOpposite ? 9 - parseInt(coords[0]) : parseInt(coords[0])
+                let y = isOpposite ? 9 - parseInt(coords[1]) : parseInt(coords[1])
+                let banana = document.createElement("img")
+                if (!(isOpposite ? value.owner === "enemy" : value.owner === "host")) {
+                    newImg.style.cursor = "default"
+                }
+                pieces.set(newImg, {
+                    ownerOf: isOpposite ? value.owner === "enemy" : value.owner === "host",
+                    owner: value.owner,
+                    type: value.type,
+                    element: newImg,
+                    parent: document.getElementById("POS:" + x + ":" + y),
+                    tparent: document.getElementById("P:" + x + ":" + y),
+                    banana: banana,
+                    x: x,
+                    y: y,
+                    tx: parseInt(coords[0]),
+                    ty: parseInt(coords[1])
+                })
+                pieceC[x + ":" + y] = pieces.get(newImg)
+                banana.draggable = false
+                banana.className = value.type === "king" ? "banana" : "monkeyBanana"
+                banana.style.display = value.banana ? "block" : "none"
+                banana.src = "https://cdn.mau0.workers.dev/cdn/banana.png"
+                document.getElementById("POS:" + x + ":" + y).appendChild(newImg)
+                document.getElementById("POS:" + x + ":" + y).appendChild(banana)
+            }
+            for (let x = 1; x < 9; x++) {
+                for (let y = 1; y < 9; y++) {
+                    let value = pieceC[x + ":" + y]
+                    if (!value) {
+                        pieceC[x + ":" + y] = { empty: true, x: x, y: y, tx: isOpposite ? 9 - x : x, ty: isOpposite ? 9 - y : y }
+                    }
+                }
+            }
+        }
+
+        function perform(type, data) {
+            ws.send(JSON.stringify({
+                type: type,
+                data: data
+            }))
+        }
+
+        function getPiece(x, y) {
+            if (x > 8 || x < 1 || y > 8 || y < 1) {
+                console.log(x, y)
+                return
+            }
+            return pieceC[x + ":" + y] || {
+                empty: true,
+                x: x,
+                y: y,
+                tx: isOpposite ? 9 - x : x,
+                ty: isOpposite ? 9 - y : y
+            }
+        }
+
+        function getMoveset(obj) {
+            let x = obj.x
+            let y = obj.y
+            let can = (object, canKill) => object ? (object.empty ? object : (object.ownerOf ? false : canKill && object || false)) : object
+            let add = (x, y) => isOpposite ? x - y : x + y
+            let clean = (obj) => {
+                for (const [key, value] of Object.entries(obj)) {
+                    if (!value) {
+                        delete obj[key]
+                    }
+                }
+            }
+            let getLocal = (obj) => {
+                let nobj = {}
+                for (const [key, value] of Object.entries(obj)) {
+                    let coords = key.split(":")
+                    let x = isOpposite ? 9 - parseInt(coords[0]) : parseInt(coords[0])
+                    let y = isOpposite ? 9 - parseInt(coords[1]) : parseInt(coords[1])
+                    nobj[x + ":" + y] = value
+                }
+                return nobj
+            }
+
+            if (!isTurn) {
+                return {
+                    true: {},
+                    local: {}
+                }
+            }
+
+            let set = {}
+            let ty = obj.ty
+            let tx = obj.tx
+            let _x
+            let _y
+
+            let queenMove = function () {
+                let oldX = obj.x
+                _x = obj.x
+                _y = obj.y
+                // WARNING: CODE HAZARD BELOW, DO NOT READ, EYES WILL BE BURNED UPON FURTHER INSPECTION.
+                for (_x = obj.x + 1; _x < 9; _x++) {
+                    if (can(getPiece(_x, _y), true)) {
+                        let X = isOpposite ? 9 - _x : _x
+                        let Y = isOpposite ? 9 - _y : _y
+                        let piece = getPiece(_x, _y)
+                        set[X + ":" + Y] = piece
+                        if (piece && !piece.empty && !piece.ownerOf) break
+                    } else {
+                        break
+                    }
+                }
+                _x = oldX
+                for (_x = obj.x - 1; _x > 0; _x--) {
+                    if (can(getPiece(_x, _y), true)) {
+                        let X = isOpposite ? 9 - _x : _x
+                        let Y = isOpposite ? 9 - _y : _y
+                        let piece = getPiece(_x, _y)
+                        set[X + ":" + Y] = piece
+                        if (piece && !piece.empty && !piece.ownerOf) break
+                    } else {
+                        break
+                    }
+                }
+                _x = oldX
+                for (_y = obj.y + 1; _y < 9; _y++) {
+                    if (can(getPiece(_x, _y), true)) {
+                        let X = isOpposite ? 9 - _x : _x
+                        let Y = isOpposite ? 9 - _y : _y
+                        let piece = getPiece(_x, _y)
+                        set[X + ":" + Y] = piece
+                        if (piece && !piece.empty && !piece.ownerOf) break
+                    } else {
+                        break
+                    }
+                }
+                for (_y = obj.y - 1; _y > 0; _y--) {
+                    console.log(getPiece(_x, _y))
+                    if (can(getPiece(_x, _y), true)) {
+                        let X = isOpposite ? 9 - _x : _x
+                        let Y = isOpposite ? 9 - _y : _y
+                        let piece = getPiece(_x, _y)
+                        set[X + ":" + Y] = piece
+                        if (piece && !piece.empty && !piece.ownerOf) break
+                    } else {
+                        break
+                    }
+                }
+
+                // diagonal movement
+                _x = oldX
+                for (_y = obj.y - 1; _y > 0; _y--) {
+                    _x += 1
+                    if (_x > 8) break
+                    if (can(getPiece(_x, _y), true)) {
+                        let X = isOpposite ? 9 - _x : _x
+                        let Y = isOpposite ? 9 - _y : _y
+                        let piece = getPiece(_x, _y)
+                        set[X + ":" + Y] = piece
+                        if (piece && !piece.empty && !piece.ownerOf) break
+                    } else {
+                        break
+                    }
+                }
+                _x = oldX
+                for (_y = obj.y - 1; _y > 0; _y--) {
+                    _x -= 1
+                    if (_x < 1) break
+                    if (can(getPiece(_x, _y), true)) {
+                        let X = isOpposite ? 9 - _x : _x
+                        let Y = isOpposite ? 9 - _y : _y
+                        let piece = getPiece(_x, _y)
+                        set[X + ":" + Y] = piece
+                        if (piece && !piece.empty && !piece.ownerOf) break
+                    } else {
+                        break
+                    }
+                }
+                _x = oldX
+                for (_y = obj.y + 1; _y < 9; _y++) {
+                    _x += 1
+                    if (_x > 8) break
+                    if (can(getPiece(_x, _y), true)) {
+                        let X = isOpposite ? 9 - _x : _x
+                        let Y = isOpposite ? 9 - _y : _y
+                        let piece = getPiece(_x, _y)
+                        set[X + ":" + Y] = piece
+                        if (piece && !piece.empty && !piece.ownerOf) break
+                    } else {
+                        break
+                    }
+                }
+                _x = oldX
+                for (_y = obj.y + 1; _y < 9; _y++) {
+                    _x -= 1
+                    if (_x < 1) break
+                    if (can(getPiece(_x, _y), true)) {
+                        let X = isOpposite ? 9 - _x : _x
+                        let Y = isOpposite ? 9 - _y : _y
+                        let piece = getPiece(_x, _y)
+                        set[X + ":" + Y] = piece
+                        if (piece && !piece.empty && !piece.ownerOf) break
+                    } else {
+                        break
+                    }
+                }
+                clean(set)
+                return {
+                    true: set,
+                    local: getLocal(set)
+                }
+            }
+
+            switch (obj.type) {
+                case "pawn":
+                    if (obj.queen) {
+                        return queenMove()
+                    }
+                    set[add(tx, 1) + ":" + ty] = can(getPiece(x + 1, y))
+                    set[add(tx, -1) + ":" + ty] = can(getPiece(x - 1, y))
+                    set[add(tx, 1) + ":" + add(ty, -1)] = can(getPiece(x + 1, y - 1), true)
+                    set[add(tx, -1) + ":" + add(ty, -1)] = can(getPiece(x - 1, y - 1), true)
+                    set[tx + ":" + add(ty, -1)] = can(getPiece(x, y - 1))
+                    clean(set)
+                    return {
+                        true: set,
+                        local: getLocal(set)
+                    }
+                    break
+                case "bishop":
+                    set[add(tx, 2) + ":" + add(ty, -2)] = can(getPiece(x + 2, y - 2), true)
+                    set[add(tx, -2) + ":" + add(ty, -2)] = can(getPiece(x - 2, y - 2), true)
+                    set[add(tx, 2) + ":" + add(ty, 2)] = can(getPiece(x + 2, y + 2), true)
+                    set[add(tx, -2) + ":" + add(ty, 2)] = can(getPiece(x - 2, y + 2), true)
+                    console.log(set)
+                    clean(set)
+                    return {
+                        true: set,
+                        local: getLocal(set)
+                    }
+                    break
+                case "queen":
+                    return queenMove()
+                    break
+                case "horse":
+                    let XX = isOpposite ? 9 - obj.x : obj.x
+                    let XY = isOpposite ? 9 - obj.y : obj.y
+                    let doDir = function (xDir, yDir, reset, canKill) {
+                        console.log("wow!")
+                        if (reset) {
+                            XX = isOpposite ? 9 - obj.x : obj.x
+                            XY = isOpposite ? 9 - obj.y : obj.y
+                        }
+                        XX = add(XX, xDir) 
+                        XY = add(XY, yDir)
+                        if (XX > 8 || XY > 8 || XX < 1 || XY < 1) {
+                            return
+                        }
+                        let piece = getPiece(isOpposite ? 9 - XX : XX, isOpposite ? 9 - XY : XY)
+
+                        if (canKill) {
+                            if (can(piece, true)) {
+                                set[XX + ":" + XY] = piece
+                            }
+                        }
+
+                        if (piece && (canKill ? piece.empty : !piece.empty)) {
+                            doDir(xDir, yDir, false, !canKill)
+                        } else if (piece && piece.empty && reset) {
+                            console.log(XX, XY)
+                            set[XX + ":" + XY] = piece
+                        }
+                    }
+                    doDir(0, -1, true, false)
+                    doDir(0, 1, true, false)
+                    doDir(-1, 1, true, false)
+                    doDir(1, 1, true, false)
+                    doDir(1, -1, true, false)
+                    doDir(-1, -1, true, false)
+                    doDir(-1, 0, true, false)
+                    doDir(1, 0, true, false)
+                    return {
+                        true: set,
+                        local: getLocal(set)
+                    }
+                    break
+                case "king":
+                    for (_x = obj.x - 1; _x < obj.x + 2; _x++) {
+                        for (_y = obj.y - 1; _y < obj.y + 2; _y++) {
+                            if (can(getPiece(_x, _y), true)) {
+                                let X = isOpposite ? 9 - _x : _x
+                                let Y = isOpposite ? 9 - _y : _y
+                                set[X + ":" + Y] = getPiece(_x, _y)
+                                console.log(X, Y)
+                            }
+                        }
+                    }
+                    clean(set)
+                    return {
+                        true: set,
+                        local: getLocal(set)
+                    }
+
+                    break
+                case "rook":
+                    console.log(hasDied)
+                    for (_x = 1; _x < 9; _x++) {
+                        for (_y = 1; _y < 9; _y++) {
+                            if (can(getPiece(_x, _y), hasDied ? Math.abs(x - _x) <= 1 && Math.abs(y - _y) <= 1 : false)) {
+                                let X = isOpposite ? 9 - _x : _x
+                                let Y = isOpposite ? 9 - _y : _y
+                                set[X + ":" + Y] = getPiece(_x, _y)
+                                console.log(X, Y)
+                            }
+                        }
+                    }
+                    clean(set)
+                    return {
+                        true: set,
+                        local: getLocal(set)
+                    }
+                    break
+            }
+
+            return {
+                true: {},
+                local: {}
+            }
+        }
+
+        document.addEventListener("click", function (event) {
+            let oldS = selected
+            if (pieces.get(event.target) && pieces.get(event.target).ownerOf && pieces.get(event.target) !== selected) {
+                if (selected) {
+                    selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                }
+                selectedDivs.forEach((div) => {
+                    div.remove()
+                })
+                selected = pieces.get(event.target)
+                selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0.5)"
+                let moveset = getMoveset(selected)
+                for (const [key, value] of Object.entries(moveset.local)) {
+                    let newDiv = document.createElement("div")
+                    let piece = value
+
+                    newDiv.className = "moveSelect"
+                    newDiv.id = "PSEL:" + key
+                    if (!piece.empty) {
+                        newDiv.className = "pieceSelect"
+                    }
+                    selectedDivs.push(newDiv)
+
+                    document.getElementById("POS:" + key).appendChild(newDiv)
+                }
+            } else {
+                if (selected) {
+                    let div = event.target
+                    let isA = pieces.get(event.target) && !pieces.get(event.target).ownerOf
+                    if (div.id && (div.id.startsWith("P:") || div.id.startsWith("PSEL:") || div.id.startsWith("POS:")) || isA) {
+                        let coords
+                        if (isA) {
+                            let piece = pieces.get(event.target)
+                            coords = [piece.x, piece.y]
+                        } else {
+                            coords = div.id.split(":")
+                            coords.shift()
+                        }
+                        let canMove = getMoveset(selected).local[coords[0] + ":" + coords[1]]
+                        if (!canMove) {
+                            selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                            selected = null
+                            selectedDivs.forEach((div) => {
+                                div.remove()
+                            })
+                        } else {
+                            let x = isOpposite ? 9 - coords[0] : coords[0]
+                            let y = isOpposite ? 9 - coords[1] : coords[1]
+                            console.log(isOpposite, x, y, selected.tx, selected.ty)
+                            perform("movePiece", {
+                                ox: selected.tx,
+                                oy: selected.ty,
+                                x: x,
+                                y: y
+                            })
+                            isTurn = false
+                            selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                            selected.element.style["opacity"] = "0.5"
+                            selected = null
+                            selectedDivs.forEach((div) => {
+                                div.remove()
+                            })
+                            hasDied = false
+                        }
+                    } else {
+                        selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                        selected = null
+                        selectedDivs.forEach((div) => {
+                            div.remove()
+                        })
+                    }
+                }
+            }
+            if (selected === oldS && selected && event.target === selected.element) {
+                selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                selected = null
+                selectedDivs.forEach((div) => {
+                    div.remove()
+                })
+            }
+        })
+
+        /*
+
+        document.addEventListener("dragstart", function (event) {
+            if (pieces.get(event.target) && pieces.get(event.target).ownerOf) {
+                if (selected) {
+                    selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                }
+                selectedDivs.forEach((div) => {
+                    div.remove()
+                })
+                selected = pieces.get(event.target)
+                selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0.5)"
+                selected.element.style.cursor = "grabbing"
+                let moveset = getMoveset(selected)
+                for (const [key, value] of Object.entries(moveset.local)) {
+                    let newDiv = document.createElement("div")
+                    let piece = value
+
+                    newDiv.className = "moveSelect"
+                    if (piece.ownerOf) {
+                        newDiv.className = "pieceSelect"
+                    }
+                    selectedDivs.push(newDiv)
+
+                    document.getElementById("POS:" + key).appendChild(newDiv)
+                }
+            } else {
+                if (selected) {
+                    let div = event.target
+                    if (div.id && div.id.startsWith("P:")) {
+                        let coords = div.id.split(":").shift()
+                        let canMove = getMoveset(selected).local[coords[0] + ":" + coords[1]]
+                        if (!canMove) {
+                            selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                            selected = null
+                            selectedDivs.forEach((div) => {
+                                div.remove()
+                            })
+                        }
+                    } else {
+                        selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                        selected = null
+                        selectedDivs.forEach((div) => {
+                            div.remove()
+                        })
+                    }
+                }
+            }
+        })
+
+        document.addEventListener("dragend", function (event) {
+            if (pieces.get(event.target) && pieces.get(event.target).ownerOf && selected === pieces.get(event.target)) {
+                selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                selected.element.style.cursor = "pointer"
+                selected.element.style.position = ""
+                selected.element.style.left = ""
+                selected.element.style.top = ""
+                selectedDivs.forEach((div) => {
+                    div.remove()
+                })
+            }
+        })*/
+
+        function playSound(audioName) {
+            let audio = new Audio("https://cdn.mau0.workers.dev/cdn/" + audioName + ".ogg")
+            audio.play()
+        }
+
+        cGame.onclick = function () {
+            perform("createRoom")
+            cGame.style.display = "none"
+            gameI.style.display = "none"
+            jGame.style.display = "none"
+        }
+
+        jGame.onclick = function () {
+            perform("joinRoom", gameI.value)
+            cGame.style.display = "none"
+            gameI.style.display = "none"
+            jGame.style.display = "none"
+        }
+
+        ws.addEventListener("message", function (msg) {
+            msg = JSON.parse(msg.data)
+
+            if (msg.type === "turn") {
+                if (msg.data === "host" && !isOpposite) {
+                    isTurn = true
+                } else if (msg.data === "enemy" && isOpposite) {
+                    isTurn = true
+                } else {
+                    isTurn = false
+                }
+            }
+
+            if (msg.type === "move") {
+                hasDied = msg.data.hasDied
+                let dt = msg.data
+                let movePiece = dt.movePiece
+                let x = isOpposite ? 9 - movePiece.x : movePiece.x
+                let y = isOpposite ? 9 - movePiece.y : movePiece.y
+                let ox = isOpposite ? 9 - movePiece.ox : movePiece.ox
+                let oy = isOpposite ? 9 - movePiece.oy : movePiece.oy
+                let onPiece = pieceC[ox + ":" + oy]
+                if (dt.promote) {
+                    onPiece.queen = true
+                    onPiece.element.src = onPiece.owner === "host" ? "https://cdn.mau0.workers.dev/cdn/whiteFishQueen.png" : "https://cdn.mau0.workers.dev/cdn/blackFishQueen.png"
+                }
+                if (dt.removePiece) {
+                    let piece = pieceC[x + ":" + y]
+                    delete pieceC[x + ":" + y]
+                    pieces.delete(piece.element)
+                    piece.element.remove()
+                    piece.banana.remove()
+                    piece.tparent.id = "P:" + ox + ":" + oy
+                    piece.parent.id = "POS:" + ox + ":" + oy
+                    piece.tparent.style.left = 145 + (71 * (ox - 1)) + "px"
+                    piece.tparent.style.top = 80 + (75 * (oy - 1)) + "px"
+                    if (selected === piece) {
+                        selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                        selected = null
+                        selectedDivs.forEach((div) => {
+                            div.remove()
+                        })
+                    }
+                    playSound("capture")
+                } else {
+                    playSound("move")
+                    let tp = document.getElementById("P:" + x + ":" + y)
+                    let tp2 = document.getElementById("POS:" + x + ":" + y)
+
+                    tp.id = "P:" + ox + ":" + oy
+                    tp2.id = "POS:" + ox + ":" + oy
+                    tp.style.left = 145 + (71 * (ox - 1)) + "px"
+                    tp.style.top = 80 + (75 * (oy - 1)) + "px"
+
+                }
+                if (selected === movePiece) {
+                    selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                    selected = null
+                    selectedDivs.forEach((div) => {
+                        div.remove()
+                    })
+                }
+
+                if (pieceC[ox + ":" + oy] === onPiece) {
+                    delete pieceC[ox + ":" + oy]
+                }
+                onPiece.tparent.id = "P:" + x + ":" + y
+                onPiece.parent.id = "POS:" + x + ":" + y
+                onPiece.x = x
+                onPiece.y = y
+                onPiece.tx = movePiece.x
+                onPiece.ty = movePiece.y
+                pieceC[x + ":" + y] = onPiece
+                /*
+d.style.left = 145 + (71 * x) + "px"
+d.style.top = 80 + (75 * y) + "px"*/
+                // √[(x₂ - x₁)² + (y₂ - y₁)²]
+                onPiece.element.style.opacity = 1
+                let oldLeft = onPiece.tparent.style.left
+                let oldTop = onPiece.tparent.style.top
+                oldLeft = parseInt(oldLeft.substring(0, oldLeft.length - 2))
+                oldTop = parseInt(oldTop.substring(0, oldTop.length - 2))
+                let newLeft = 145 + (71 * (x - 1))
+                let newTop = 80 + (75 * (y - 1))
+                let mag = Math.sqrt(Math.pow(Math.abs(newLeft - oldLeft), 2) + Math.pow(Math.abs(newTop - oldTop), 2))
+                console.log(mag)
+                onPiece.tparent.animate([
+                    {
+                        left: onPiece.tparent.style.left,
+                        top: onPiece.tparent.style.top
+                    },
+                    {
+                        left: 145 + (71 * (x - 1)) + "px",
+                        top: 80 + (75 * (y - 1)) + "px"
+                    }
+                ], {
+                    duration: Math.floor(mag / 2),
+                    fill: "none"
+                })
+                onPiece.tparent.style.left = 145 + (71 * (x - 1)) + "px"
+                onPiece.tparent.style.top = 80 + (75 * (y - 1)) + "px"
+            }
+
+            if (msg.type === "heartbeat") {
+                perform("beat")
+            }
+
+            if (msg.type === "showOptions") {
+                cGame.style.display = ""
+                gameI.style.display = ""
+                jGame.style.display = ""
+            }
+
+            if (msg.type === "message") {
+                showMessage(msg.data.title, msg.data.text)
+            }
+
+            if (msg.type === "disconnect") {
+                showMessage("Match ended", "The opponent has disconnected from the game.")
+            }
+
+            if (msg.type === "roomID") {
+                gameID.textContent = msg.data
+                gameIDC.style.display = ""
+            }
+
+            if (msg.type === "playerData") {
+                plrData = msg.data
+                host.textContent = msg.data.name
+                let span = document.createElement("span")
+                span.style["font-size"] = "60%"
+                span.style.color = "rgb(140, 140, 140)"
+                span.textContent = " (you)"
+                host.appendChild(span)
+            }
+
+            if (msg.type === "invalidMove") {
+                isTurn = true
+                showMessage("Warning", "An invalid move has been made. Please do not cheat. If you are not cheating then contact a developer to fix this issue.")
+            }
+
+            if (msg.type === "ready") {
+                if (msg.data.enemy.id === plrData.id) {
+                    isOpposite = true
+                }
+                cGame.style.display = "none"
+                gameI.style.display = "none"
+                jGame.style.display = "none"
+                gameIDC.style.display = "none"
+                options.style.display = "none"
+                boardC.style.opacity = 1
+                enemy.textContent = isOpposite ? msg.data.host.name : msg.data.enemy.name
+                enemyData = isOpposite ? msg.data.host : msg.data.enemy
+                loadBoard(msg.data.board)
+                isTurn = !isOpposite
+            }
+        })
+
+        ws.addEventListener("close", function () {
+            showMessage("Disconnected", "WebSocket disconnected unexpectedly. Please reload this page.")
+        })
+    })()
+</script>
+
+</html>
