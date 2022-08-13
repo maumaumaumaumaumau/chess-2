@@ -1209,6 +1209,15 @@
 
             if (!msg) return
 
+            if (msg.type === "finish") {
+                let play = msg.data === "host" ? !isOpposite && "host" : isOpposite && "enemy"
+                showMessage("Match ended", msg.data === play ? "Your opponent has lost the match. You win!" : "You have lost the match. You lose.")
+                cGame.style.display = ""
+                gameI.style.display = ""
+                jGame.style.display = ""
+                boardC.style.opacity = 0.3
+            }
+
             if (msg.type === "bulk") {
                 msg.data.forEach((obj) => {
                     onMessage({
@@ -1220,8 +1229,16 @@
             if (msg.type === "turn") {
                 if (msg.data === "host" && !isOpposite) {
                     isTurn = true
+                    if (selected) {
+                        selected.element.click()
+                        selected.element.click()
+                    }
                 } else if (msg.data === "enemy" && isOpposite) {
                     isTurn = true
+                    if (selected) {
+                        selected.element.click()
+                        selected.element.click()
+                    }
                 } else {
                     isTurn = false
                 }
