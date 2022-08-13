@@ -322,21 +322,21 @@
     opacity: 0.3;
 "><img id="board" src="https://cdn.mau0.workers.dev/cdn/board.png"
                         style="width: 100%;image-rendering: auto;height: 100%;user-select: none;" draggable="false">
-                    <div id="L:1"
+                    <div id="L:1:1"
                         style="background-color: rgba(0, 0, 0, 0);height: 74px;position: absolute;width: 60px;left: 38px;top: 306px;">
-                        <div id="LPOS:1"></div>
+                        <div id="LPOS:1:1"></div>
                     </div>
-                    <div id="L:2"
+                    <div id="L:1:2"
                         style="background-color: rgba(0, 0, 0, 0);height: 74px;position: absolute;width: 60px;left: 37px;top: 379px;">
-                        <div id="LPOS:2"></div>
+                        <div id="LPOS:1:2"></div>
                     </div>
-                    <div id="R:2"
+                    <div id="R:1:2"
                         style="background-color: rgba(0, 0, 0, 0);height: 74px;position: absolute;width: 60px;right: 38px;top: 379px;">
-                        <div id="RPOS:2"></div>
+                        <div id="RPOS:1:2"></div>
                     </div>
-                    <div id="R:1"
+                    <div id="R:1:1"
                         style="background-color: rgba(0, 0, 0, 0);height: 74px;position: absolute;width: 60px;right: 38px;top: 305px;">
-                        <div id="RPOS:1"></div>
+                        <div id="RPOS:1:1"></div>
                     </div>
 
                     <div id="P:1:1"
@@ -1200,22 +1200,18 @@
             audio.play()
         }
 
-        cGame.onclick = function () {
-            perform("createRoom")
-            cGame.style.display = "none"
-            gameI.style.display = "none"
-            jGame.style.display = "none"
-        }
-
-        jGame.onclick = function () {
-            perform("joinRoom", gameI.value)
-            cGame.style.display = "none"
-            gameI.style.display = "none"
-            jGame.style.display = "none"
-        }
-
-        ws.addEventListener("message", function (msg) {
+        function onMessage(msg) {
             msg = JSON.parse(msg.data)
+
+            if (!msg) return
+
+            if (msg.type === "bulk") {
+                msg.data.forEach((obj) => {
+                    onMessage({
+                        data: JSON.stringify(obj)
+                    })
+                })
+            }
 
             if (msg.type === "turn") {
                 if (msg.data === "host" && !isOpposite) {
@@ -1225,6 +1221,45 @@
                 } else {
                     isTurn = false
                 }
+            }
+
+            if (msg.type === "sidePiece") {
+                let pos = document.getElementById(msg.data.side + ":" + msg.data.x + ":" + msg.data.y)
+                let x = msg.data.side === "L" ? 0 : 9
+                let y = msg.data.y 
+                let ownerOf = msg.data.owner === "host" ? !isOpposite : isOpposite
+                x = isOpposite ? 10 - x : x 
+                y = isOpposite ? 3 - y : y 
+                y = 3 + y 
+                let newImg = document.createElement("img")
+                newImg.src = getImageForPiece(msg.data)
+                newImg.draggable = false
+                newImg.className = "piece"
+                let banana = document.createElement("img")
+                let value = msg.data
+                if (!(isOpposite ? value.owner === "enemy" : value.owner === "host")) {
+                    newImg.style.cursor = "default"
+                }
+                pieces.set(newImg, {
+                    ownerOf: isOpposite ? value.owner === "enemy" : value.owner === "host",
+                    owner: value.owner,
+                    type: value.type,
+                    element: newImg,
+                    parent: document.getElementById(msg.data.side + "POS:" + x + ":" + y),
+                    tparent: document.getElementById(msg.data.side + ":" + x + ":" + y),
+                    banana: banana,
+                    x: x,
+                    y: y,
+                    tx: msg.data.x,
+                    ty: msg.data.y,
+                })
+                pieceC[x + ":" + y] = pieces.get(newImg)
+                banana.draggable = false
+                banana.className = value.type === "king" ? "banana" : "monkeyBanana"
+                banana.style.display = value.banana ? "block" : "none"
+                banana.src = "https://cdn.mau0.workers.dev/cdn/banana.png"
+                document.getElementById(msg.data.side + "POS:" + msg.data.x + ":" + msg.data.y).appendChild(newImg)
+                document.getElementById(msg.data.side + "POS:" + msg.data.x + ":" + msg.data.y).appendChild(banana)
             }
 
             if (msg.type === "move") {
@@ -1370,7 +1405,23 @@ d.style.top = 80 + (75 * y) + "px"*/
                 loadBoard(msg.data.board)
                 isTurn = !isOpposite
             }
-        })
+        }
+
+        cGame.onclick = function () {
+            perform("createRoom")
+            cGame.style.display = "none"
+            gameI.style.display = "none"
+            jGame.style.display = "none"
+        }
+
+        jGame.onclick = function () {
+            perform("joinRoom", gameI.value)
+            cGame.style.display = "none"
+            gameI.style.display = "none"
+            jGame.style.display = "none"
+        }
+
+        ws.addEventListener("message", onMessage)
 
         ws.addEventListener("close", function () {
             showMessage("Disconnected", "WebSocket disconnected unexpectedly. Please reload this page.")
