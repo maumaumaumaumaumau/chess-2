@@ -1218,9 +1218,17 @@
                 options.style.display = ""
                 boardC.style.opacity = 0.3
                 for (const [key, value] of Object.entries(pieceC)) {
-                    value.element.remove()
-                    value.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                    if (value.element) {
+                        value.element.remove()
+                    }
+                    if (value.banana) {
+                        value.banana.remove()
+                    }
+                    if (value.tparent) {
+                        value.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                    }
                     pieces.delete(value)
+                    delete pieceC[key]
                 }
             }
 
