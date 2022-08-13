@@ -45,10 +45,10 @@
             height: calc(37px - 12px);
             background-color: rgba(72, 71, 100, .4);
             left: 50%;
-            top: calc(37px / 2);
+            top: calc(74px / 2);
             position: relative;
             transform: translate(-50%, -50%);
-            width: calc(71px - 12px);
+            width: calc(37px - 12px);
             border-radius: 100%;
         }
 
@@ -766,7 +766,10 @@
             }))
         }
 
-        function getPiece(x, y) {
+        function getPiece(x, y, monkey) {
+            if ((x < 1 || x > 8) && monkey && y > 3 && y < 6) {
+                return pieceC[x + ":" + y]
+            }
             if (x > 8 || x < 1 || y > 8 || y < 1) {
                 console.log(x, y)
                 return
@@ -1052,7 +1055,7 @@
 
         document.addEventListener("click", function (event) {
             let oldS = selected
-            if (pieces.get(event.target) && pieces.get(event.target).ownerOf && pieces.get(event.target) !== selected) {
+            if (pieces.get(event.target) && pieces.get(event.target).ownerOf && pieces.get(event.target) !== selected && !pieces.get(event.target).isInJail) {
                 if (selected) {
                     selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
                 }
@@ -1083,6 +1086,7 @@
                         let coords
                         if (isA) {
                             let piece = pieces.get(event.target)
+                            if (piece.isInJail) return;
                             coords = [piece.x, piece.y]
                         } else {
                             coords = div.id.split(":")
@@ -1228,7 +1232,6 @@
                 let x = msg.data.side === "L" ? 0 : 9
                 let y = msg.data.y 
                 let ownerOf = msg.data.owner === "host" ? !isOpposite : isOpposite
-                x = isOpposite ? 10 - x : x 
                 y = isOpposite ? 3 - y : y 
                 y = 3 + y 
                 let newImg = document.createElement("img")
@@ -1252,6 +1255,7 @@
                     y: y,
                     tx: msg.data.x,
                     ty: msg.data.y,
+                    isInJail: true
                 })
                 pieceC[x + ":" + y] = pieces.get(newImg)
                 banana.draggable = false
