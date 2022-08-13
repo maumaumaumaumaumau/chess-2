@@ -1261,6 +1261,9 @@
             }
 
             if (msg.type === "sidePiece") {
+                if (isOpposite) {
+                    msg.data.side = msg.data.size === "L" ? "R" : "L"
+                }
                 let pos = document.getElementById(msg.data.side + ":" + msg.data.x + ":" + msg.data.y)
                 let x = msg.data.side === "L" ? 0 : 9
                 let y = msg.data.y 
@@ -1405,6 +1408,24 @@ d.style.top = 80 + (75 * y) + "px"*/
 
             if (msg.type === "disconnect") {
                 showMessage("Match ended", "The opponent has disconnected from the game.")
+                cGame.style.display = ""
+                gameI.style.display = ""
+                jGame.style.display = ""
+                options.style.display = ""
+                boardC.style.opacity = 0.3
+                for (const [key, value] of Object.entries(pieceC)) {
+                    if (value.element) {
+                        value.element.remove()
+                    }
+                    if (value.banana) {
+                        value.banana.remove()
+                    }
+                    if (value.tparent) {
+                        value.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                    }
+                    pieces.delete(value)
+                    delete pieceC[key]
+                }
             }
 
             if (msg.type === "roomID") {
