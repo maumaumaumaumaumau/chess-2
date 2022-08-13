@@ -1210,7 +1210,7 @@
             if (!msg) return
 
             if (msg.type === "finish") {
-                let play = msg.data === "host" ? !isOpposite && "host" : isOpposite && "enemy"
+                let play = isOpposite ? "enemy" : "host"
                 showMessage("Match ended", msg.data === play ? "Your opponent has lost the match. You win!" : "You have lost the match. You lose.")
                 cGame.style.display = ""
                 gameI.style.display = ""
