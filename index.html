@@ -1215,7 +1215,13 @@
                 cGame.style.display = ""
                 gameI.style.display = ""
                 jGame.style.display = ""
+                options.style.display = ""
                 boardC.style.opacity = 0.3
+                for (const [key, value] of Object.entries(pieceC)) {
+                    value.element.remove()
+                    value.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                    pieces.delete(value)
+                }
             }
 
             if (msg.type === "bulk") {
