@@ -1244,14 +1244,16 @@
                 if (msg.data === "host" && !isOpposite) {
                     isTurn = true
                     if (selected) {
+                        let o = selected
                         selected.element.click()
-                        selected.element.click()
+                        o.click()
                     }
                 } else if (msg.data === "enemy" && isOpposite) {
                     isTurn = true
                     if (selected) {
+                        let o = selected
                         selected.element.click()
-                        selected.element.click()
+                        o.click()
                     }
                 } else {
                     isTurn = false
