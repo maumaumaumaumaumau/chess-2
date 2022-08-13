@@ -1279,13 +1279,15 @@
                 if (!(isOpposite ? value.owner === "enemy" : value.owner === "host")) {
                     newImg.style.cursor = "default"
                 }
+                let x2 = msg.data.x 
+                let y2 = (isOpposite ? 3 - msg.data.y : msg.data.y)
                 pieces.set(newImg, {
                     ownerOf: isOpposite ? value.owner === "enemy" : value.owner === "host",
                     owner: value.owner,
                     type: value.type,
                     element: newImg,
-                    parent: document.getElementById(msg.data.side + "POS:" + x + ":" + y),
-                    tparent: document.getElementById(msg.data.side + ":" + x + ":" + y),
+                    parent: document.getElementById(msg.data.side + "POS:" + x2 + ":" + y2),
+                    tparent: document.getElementById(msg.data.side + ":" + x2 + ":" + y2),
                     banana: banana,
                     x: x,
                     y: y,
@@ -1293,13 +1295,13 @@
                     ty: msg.data.y,
                     isInJail: true
                 })
-                pieceC[x + ":" + y] = pieces.get(newImg)
+                pieceC[x2 + ":" + y2] = pieces.get(newImg)
                 banana.draggable = false
                 banana.className = value.type === "king" ? "banana" : "monkeyBanana"
                 banana.style.display = value.banana ? "block" : "none"
                 banana.src = "https://cdn.mau0.workers.dev/cdn/banana.png"
-                document.getElementById(msg.data.side + "POS:" + msg.data.x + ":" + msg.data.y).appendChild(newImg)
-                document.getElementById(msg.data.side + "POS:" + msg.data.x + ":" + msg.data.y).appendChild(banana)
+                document.getElementById(msg.data.side + "POS:" + msg.data.x + ":" + (isOpposite ? 3 - msg.data.y : msg.data.y)).appendChild(newImg)
+                document.getElementById(msg.data.side + "POS:" + msg.data.x + ":" + (isOpposite ? 3 - msg.data.y : msg.data.y)).appendChild(banana)
             }
 
             if (msg.type === "move") {
