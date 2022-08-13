@@ -1262,7 +1262,7 @@
 
             if (msg.type === "sidePiece") {
                 if (isOpposite) {
-                    msg.data.side = msg.data.size === "L" ? "R" : "L"
+                    msg.data.side = msg.data.side === "L" ? "R" : "L"
                 }
                 let pos = document.getElementById(msg.data.side + ":" + msg.data.x + ":" + (isOpposite ? 3 - msg.data.y : msg.data.y))
                 let x = msg.data.side === "L" ? 0 : 9
