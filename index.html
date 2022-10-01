@@ -1373,11 +1373,17 @@
 
                 tp.id = side + ":" + 1 + ":" + (y - 3)
                 tp2.id = side + "POS:" + 1 + ":" + (y - 3)
-                console.log(piece.tparent.style.top, piece.tparent.style.left)
                 tp.style.left = piece.tparent.style.left
                 tp.style.top = piece.tparent.style.top 
                 tp.style.width = piece.tparent.style.width 
                 tp.style.height = piece.tparent.style.height
+                tp.style["background-color"] = "rgba(255, 255, 0, 0.5)"
+                moveHistory.push({
+                    object: tp, 
+                    x: x,
+                    y: y
+                })
+                moveIndex.set(tp, true)
 
                 delete piece.isInJail
                 delete piece.lbanana
@@ -1417,6 +1423,13 @@
                 piece.tparent.style.height = "74px"
                 piece.tparent.style.width = "71px"
 
+                moveHistory.push({
+                    object: piece.tparent,
+                    x: newX, 
+                    y: newY
+                })
+                moveIndex.set(piece.tparent, true)
+
                 piece.tparent.id = "P:" + newX + ":" + newY
                 piece.parent.id = "POS:" + newX + ":" + newY
                 piece.x = newX
@@ -1448,6 +1461,9 @@ d.style.top = 80 + (75 * y) + "px"*/
                     duration: Math.floor(mag / 2), 
                     fill: "none"
                 })
+                setTimeout(function() {
+                    piece.tparent.style["background-color"] = "rgba(255, 255, 0, 0.5)"
+                }, Math.floor(mag / 2) + 5)
                 piece.tparent.style.left = 145 + (71 * (newX - 1)) + "px"
                 piece.tparent.style.top = 80 + (75 * (newY - 1)) + "px"
             }
@@ -1533,7 +1549,6 @@ d.style.top = 80 + (75 * y) + "px"*/
                 if (pieceC[ox + ":" + oy] === onPiece) {
                     delete pieceC[ox + ":" + oy]
                 }
-                onPiece.tparent.style["background-color"] = "rgba(255, 255, 0, 0.5)"
                 moveHistory.push({
                     object: onPiece.tparent,
                     x: x, 
@@ -1573,6 +1588,9 @@ d.style.top = 80 + (75 * y) + "px"*/
                     duration: Math.floor(mag / 2),
                     fill: "none"
                 })
+                setTimeout(function() {
+                    onPiece.tparent.style["background-color"] = "rgba(255, 255, 0, 0.5)"
+                }, Math.floor(mag / 2) + 5)
                 onPiece.tparent.style.left = 145 + (71 * (x - 1)) + "px"
                 onPiece.tparent.style.top = 80 + (75 * (y - 1)) + "px"
             }
