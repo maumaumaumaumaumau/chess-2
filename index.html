@@ -1085,6 +1085,7 @@
                 selectedDivs.forEach((div) => {
                     div.remove()
                 })
+                selectedDivs = []
                 selected = spiece
                 selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0.5)"
                 let moveset = getMoveset(selected)
@@ -1128,6 +1129,7 @@
                             selectedDivs.forEach((div) => {
                                 div.remove()
                             })
+                            selectedDivs = []
                         } else {
                             let x = isOpposite ? 9 - coords[0] : coords[0]
                             let y = isOpposite ? 9 - coords[1] : coords[1]
@@ -1147,6 +1149,7 @@
                             selectedDivs.forEach((div) => {
                                 div.remove()
                             })
+                            selectedDivs = []
                             hasDied = false
                         }
                     } else {
@@ -1157,6 +1160,7 @@
                         selectedDivs.forEach((div) => {
                             div.remove()
                         })
+                        selectedDivs = []
                     }
                 }
             }
@@ -1168,6 +1172,7 @@
                 selectedDivs.forEach((div) => {
                     div.remove()
                 })
+                selectedDivs = []
             }
         })
 
@@ -1513,6 +1518,7 @@ d.style.top = 80 + (75 * y) + "px"*/
                         selectedDivs.forEach((div) => {
                             div.remove()
                         })
+                        selectedDivs = []
                     }
                     piece.tparent.style["background-color"] = "rgba(255, 255, 0, 0.5)"
                     moveHistory.push({
@@ -1546,6 +1552,7 @@ d.style.top = 80 + (75 * y) + "px"*/
                     selectedDivs.forEach((div) => {
                         div.remove()
                     })
+                    selectedDivs = []
                 }
 
                 if (pieceC[ox + ":" + oy] === onPiece) {
@@ -1618,6 +1625,16 @@ d.style.top = 80 + (75 * y) + "px"*/
                 jGame.style.display = ""
                 options.style.display = ""
                 boardC.style.opacity = 0.3
+                moveHistory.forEach((obj) => {
+                    obj.object.style["background-color"] = "rgba(255, 255, 0, 0)"
+                })
+                moveHistory = []
+                moveIndex = new Map()
+                selected = null 
+                selectedDivs.forEach((div) => {
+                    div.remove()
+                })
+                selectedDivs = []
                 for (const [key, value] of Object.entries(pieceC)) {
                     if (value.element) {
                         value.element.remove()
