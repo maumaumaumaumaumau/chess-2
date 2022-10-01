@@ -1005,6 +1005,7 @@
                         if (piece && (canKill ? piece.empty : !piece.empty)) {
                             if (XX > 8 || XX < 1) {
                                 if (piece.type === "king" && piece.ownerOf && piece.lbanana && depth > 1 && yDir === 0) {
+                                    console.log(XY)
                                     set[XX + ":" + XY] = piece
                                 }
                                 return
@@ -1022,6 +1023,7 @@
                     doDir(-1, -1, true, false)
                     doDir(-1, 0, true, false)
                     doDir(1, 0, true, false)
+                    console.log(getLocal(set))
                     return {
                         true: set,
                         local: getLocal(set)
@@ -1325,7 +1327,7 @@
                     tx: oside === "L" ? 0 : 9,
                     ty: msg.data.y + 3,
                     mx: msg.data.x,
-                    my: msg.data.y,
+                    my: isOpposite ? 3 - msg.data.y : msg.data.y,
                     isInJail: true,
                     lbanana: value.banana,
                     side: msg.data.side
