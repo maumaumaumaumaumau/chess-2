@@ -1258,8 +1258,17 @@
                 jGame.style.display = ""
                 options.style.display = ""
                 boardC.style.opacity = 0.3
-                moveIndex = new Map()
+                enemy.textContent = "(waiting for enemy)"
+                moveHistory.forEach((obj) => {
+                    obj.object.style["background-color"] = "rgba(255, 255, 0, 0)"
+                })
                 moveHistory = []
+                moveIndex = new Map()
+                selected = null
+                selectedDivs.forEach((div) => {
+                    div.remove()
+                })
+                selectedDivs = []
                 for (const [key, value] of Object.entries(pieceC)) {
                     if (value.element) {
                         value.element.remove()
@@ -1636,6 +1645,7 @@ d.style.top = 80 + (75 * y) + "px"*/
                     div.remove()
                 })
                 selectedDivs = []
+                enemy.textContent = "(waiting for enemy)"
                 for (const [key, value] of Object.entries(pieceC)) {
                     if (value.element) {
                         value.element.remove()
