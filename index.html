@@ -28,6 +28,14 @@
             user-select: none;
         }
 
+        .bearMiddle {
+            height: 65% !important;
+        }
+
+        .bearPiece {
+            height: 55% !important;
+        }
+
         .settings {
             text-align: left !important;
         }
@@ -501,6 +509,11 @@
                         style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 358px; top: 305px;">
                         <div id="POS:4:4"></div>
                     </div>
+                    <div id="MP"
+                        style="display: none; border-radius: 100%; background-color: rgba(0, 0, 0, 0);height: 65px;position: absolute;width: 65px;left: 396;top: 347px;z-index: 2;">
+                        <div id="MPOS">
+                        </div>
+                    </div>
                     <div id="P:4:5"
                         style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 358px; top: 380px;">
                         <div id="POS:4:5"></div>
@@ -698,6 +711,7 @@
         let circles = new Map()
         let rightdiv1
         let rightdiv2
+        let middleSquare
 
         if (localStorage.getItem("settings")) {
             try {
@@ -1059,7 +1073,30 @@
         }
 
         function loadBoard(data) {
+            if (!rules.noBear) {
+                MP.style.display = ""
+                let img = document.createElement("img")
+                // <img src="https://cdn.mau0.workers.dev/cdn/bearPiece.png" class="piece bearMiddle">
+                img.src = "https://cdn.mau0.workers.dev/cdn/bearPiece.png"
+                img.className = "piece bearMiddle"
+                MPOS.appendChild(img)
+                middleSquare = {
+                    x: 4.5,
+                    y: 4.5,
+                    tx: 4.5,
+                    ty: 4.5,
+                    ownerOf: true,
+                    owner: "any",
+                    type: "bear",
+                    element: img,
+                    parent: document.getElementById("MPOS"),
+                    tparent: document.getElementById("MP")
+                }
+            } else {
+                MP.style.display = "none"
+            }
             for (const [key, value] of Object.entries(data.general)) {
+                if (key === "4.5:4.5") continue
                 let newImg = document.createElement("img")
                 newImg.src = getImageForPiece(value)
                 newImg.draggable = false
@@ -1151,7 +1188,15 @@
         function getMoveset(obj) {
             let x = obj.x
             let y = obj.y
-            let can = (object, canKill) => object ? (object.empty ? object : (object.ownerOf ? false : canKill && object || false)) : object
+            let can = (object, canKill) => {
+                if (!object) return false
+                let st1 = object.ownerOf ? false : canKill
+                if (object.owner === "any") {
+                    st1 = canKill
+                }
+                let state = object ? (object.empty ? object : (st1 && object || false)) : object
+                return state
+            }
             let add = (x, y) => isOpposite ? x - y : x + y
             let clean = (obj) => {
                 for (const [key, value] of Object.entries(obj)) {
@@ -1436,6 +1481,36 @@
                     }
 
                     break
+                case "bear":
+                    if (x === 4.5) {
+                        for (_x = 4; _x < 6; _x++) {
+                            for (_y = 4; _y < 6; _y++) {
+                                if (can(getPiece(_x, _y), false)) {
+                                    let X = isOpposite ? 9 - _x : _x
+                                    let Y = isOpposite ? 9 - _y : _y
+                                    set[X + ":" + Y] = getPiece(_x, _y)
+                                }
+                            }
+                        }
+                    } else {
+                        for (_x = 1; _x < 9; _x++) {
+                            for (_y = 1; _y < 9; _y++) {
+                                let piece = getPiece(_x, _y)
+                                if (can(piece, false) && Math.abs(x - _x) <= 1 && Math.abs(y - _y) <= 1) {
+                                    let X = isOpposite ? 9 - _x : _x
+                                    let Y = isOpposite ? 9 - _y : _y
+                                    console.log(X, Y, _x, _y)
+                                    set[X + ":" + Y] = piece
+                                }
+                            }
+                        }
+                    }
+                    clean(set)
+                    return {
+                        true: set,
+                        local: getLocal(set)
+                    }
+                    break
                 case "rook":
                     console.log(hasDied)
                     for (_x = 1; _x < 9; _x++) {
@@ -1528,6 +1603,66 @@
                     value.arrowElement.remove()
                 })
                 arrows = new Map()
+            }
+            if (middleSquare && event.target === middleSquare.element && !rules.noBear) {
+                if (selected) {
+                    if (!moveIndex.get(selected.tparent)) {
+                        selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                    }
+                }
+                selectedDivs.forEach((div) => {
+                    div.remove()
+                })
+                selectedDivs = []
+                selected = middleSquare
+                selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0.5)"
+                let moveset = getMoveset(selected)
+                for (const [key, value] of Object.entries(moveset.local)) {
+                    let newDiv = document.createElement("div")
+                    let piece = value
+
+                    newDiv.className = "moveSelect"
+                    newDiv.id = "PSEL:" + key
+                    if (!piece.empty) {
+                        newDiv.className = "pieceSelect"
+                    }
+                    selectedDivs.push(newDiv)
+                    if (piece.isInJail) {
+                        console.log("wow", piece.side, piece.x, piece.y)
+                        document.getElementById(piece.side + "POS:" + piece.mx + ":" + piece.my).appendChild(newDiv)
+                    } else {
+                        document.getElementById("POS:" + key).appendChild(newDiv)
+                    }
+                }
+                return
+            }
+            if (spiece && spiece.owner === "any") {
+                if (selected) {
+                    let coords = [spiece.x, spiece.y]
+                    let canMove = getMoveset(selected).local[coords[0] + ":" + coords[1]]
+                    if (canMove) {
+                        let x = isOpposite ? 9 - coords[0] : coords[0]
+                        let y = isOpposite ? 9 - coords[1] : coords[1]
+                        perform("movePiece", {
+                            ox: selected.tx,
+                            oy: selected.ty,
+                            x: x,
+                            y: y
+                        })
+                        isTurn = false
+                        if (!moveIndex.get(selected.tparent)) {
+                            selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                        }
+                        selected.element.style["opacity"] = "0.5"
+                        selected = null
+                        selectedDivs.forEach((div) => {
+                            div.remove()
+                        })
+                        selectedDivs = []
+                        hasDied = false
+                        return
+                    }
+                }
             }
             if (spiece && spiece.ownerOf && spiece !== selected && !spiece.isInJail) {
                 if (selected) {
@@ -1704,7 +1839,7 @@
 
             if (msg.type === "finish") {
                 let play = isOpposite ? "enemy" : "host"
-                showMessage("Match ended", msg.data !== play ? "Your opponent has lost the match. You win!" : "You have lost the match. You lose.")
+                showMessage("Match ended", msg.data !== play ? "You win! Your opponent has lost the match." : "You lose. You have lost the match.")
                 cGame.style.display = ""
                 gameI.style.display = ""
                 jGame.style.display = ""
@@ -1717,6 +1852,12 @@
                 moveHistory.forEach((obj) => {
                     obj.object.style["background-color"] = "rgba(255, 255, 0, 0)"
                 })
+                MP.style.display = "none"
+                arrows.forEach((value) => {
+                    value.arrowElement.remove()
+                })
+                arrows = new Map()
+                clearRules()
                 moveHistory = []
                 moveIndex = new Map()
                 selected = null
@@ -1724,6 +1865,11 @@
                     div.remove()
                 })
                 selectedDivs = []
+                if (middleSquare) {
+                    middleSquare.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                    middleSquare.element.remove()
+                    middleSquare = null
+                }
                 for (const [key, value] of Object.entries(pieceC)) {
                     if (value.element) {
                         value.element.remove()
@@ -1753,14 +1899,12 @@
                     if (selected) {
                         let o = selected
                         selected.element.click()
-                        o.click()
                     }
                 } else if (msg.data === "enemy" && isOpposite) {
                     isTurn = true
                     if (selected) {
                         let o = selected
                         selected.element.click()
-                        o.click()
                     }
                 } else {
                     isTurn = false
@@ -1940,6 +2084,78 @@ d.style.top = 80 + (75 * y) + "px"*/
                 piece.tparent.style.top = 80 + (75 * (newY - 1)) + "px"
             }
 
+            if (msg.type === "moveBear") {
+                moveIndex = new Map()
+                moveHistory.forEach((obj) => {
+                    if (selected && selected.x === obj.x && selected.y === obj.y) {
+                        return
+                    }
+                    obj.object.style["background-color"] = "rgba(255, 255, 0, 0)"
+                })
+                moveHistory = []
+                let dt = msg.data.movePiece
+                let x = isOpposite ? 9 - dt.x : dt.x
+                let y = isOpposite ? 9 - dt.y : dt.y
+                console.log(x, y)
+                let square = middleSquare
+                let oldParent = MP
+                let newTParent = document.getElementById("P:" + x + ":" + y)
+                let newParent = document.getElementById("POS:" + x + ":" + y)
+                let newLeft = newTParent.style.left
+                let newTop = newTParent.style.top
+                let otp = square.tparent
+                pieces.set(square.element, square)
+                square.element.className = "piece bearPiece"
+                middleSquare = null
+                pieceC[x + ":" + y] = square
+                square.element.remove()
+                square.tparent.style["display"] = "none"
+                square.x = x
+                square.y = y
+                square.tx = dt.x
+                square.ty = dt.y
+                square.tparent = newTParent
+                square.parent = newParent
+                square.element.style.opacity = 1
+
+                newTParent.style.left = "393px"
+                newTParent.style.top = "342px"
+                newTParent.appendChild(square.element)
+
+                newLeft = parseInt(newLeft.substring(0, newLeft.length - 2))
+                newTop = parseInt(newTop.substring(0, newTop.length - 2))
+
+                moveHistory.push({
+                    object: square.tparent,
+                    x: x,
+                    y: y
+                })
+                otp.style["background-color"] = "rgba(255, 255, 0, 0)"
+                let oldLeft = 393
+                let oldTop = 342
+                let mag = Math.sqrt(Math.pow(Math.abs(newLeft - oldLeft), 2) + Math.pow(Math.abs(newTop - oldTop), 2))
+                playSound("move")
+                console.log(mag, newLeft)
+                square.tparent.animate([
+                    {
+                        left: square.tparent.style.left,
+                        top: square.tparent.style.top
+                    },
+                    {
+                        left: newLeft + "px",
+                        top: newTop + "px"
+                    }
+                ], {
+                    duration: Math.floor(mag / 2),
+                    fill: "none"
+                })
+                setTimeout(function () {
+                    square.tparent.style["background-color"] = "rgba(255, 255, 0, 0.5)"
+                }, Math.floor(mag / 2) + 5)
+                square.tparent.style.left = newLeft + "px"
+                square.tparent.style.top = newTop + "px"
+            }
+
             if (msg.type === "move") {
                 hasDied = msg.data.hasDied
                 let dt = msg.data
@@ -1972,7 +2188,7 @@ d.style.top = 80 + (75 * y) + "px"*/
                     delete pieceC[x + ":" + y]
                     pieces.delete(piece.element)
                     piece.element.remove()
-                    piece.banana.remove()
+                    if (piece.banana) piece.banana.remove()
                     piece.tparent.id = "P:" + ox + ":" + oy
                     piece.parent.id = "POS:" + ox + ":" + oy
                     piece.tparent.style.left = 145 + (71 * (ox - 1)) + "px"
@@ -2096,15 +2312,26 @@ d.style.top = 80 + (75 * y) + "px"*/
                 moveHistory.forEach((obj) => {
                     obj.object.style["background-color"] = "rgba(255, 255, 0, 0)"
                 })
+                MP.style.display = "none"
                 moveHistory = []
                 moveIndex = new Map()
                 selected = null
                 selectedDivs.forEach((div) => {
                     div.remove()
                 })
+                arrows.forEach((value) => {
+                    value.arrowElement.remove()
+                })
+                arrows = new Map()
+                clearRules()
                 selectedDivs = []
                 enemy.textContent = "(waiting for enemy)"
                 enemyData = null
+                if (middleSquare) {
+                    middleSquare.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                    middleSquare.element.remove()
+                    middleSquare = null
+                }
                 for (const [key, value] of Object.entries(pieceC)) {
                     if (value.element) {
                         value.element.remove()
@@ -2211,8 +2438,8 @@ d.style.top = 80 + (75 * y) + "px"*/
             document.getElementById("usernameEdit").style.display = "none"
         }
 
-        sOptions.onclick = function() {
-            sectionPrompt("Settings", config, function(data) {
+        sOptions.onclick = function () {
+            sectionPrompt("Settings", config, function (data) {
                 if (!data) return
                 config = data
                 saveSettings()
