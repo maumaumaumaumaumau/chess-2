@@ -18,9 +18,78 @@
     <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/whiteFishQueen.png" as="image">
     <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/banana.png" as="image">
     <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/board.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/normalMonkeyng" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/rookHorizontal.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/nobear.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/edit.png" as="image">
     <title>Chess 2 Online</title>
-
     <style>
+        br {
+            user-select: none;
+        }
+
+        .settings {
+            text-align: left !important;
+        }
+
+        .promptCheck {
+            margin-left: 30px;
+        }
+
+        .promptInput:hover {
+            background-color: rgb(35, 35, 35);
+            border-color: rgb(100, 100, 100);
+        }
+
+        .promptInput:focus {
+            background-color: rgb(30, 30, 30);
+            border-color: rgb(100, 100, 100);
+        }
+
+        .promptInput {
+            outline: none;
+            display: inline;
+            padding: 10px;
+            background-color: rgb(30, 30, 30);
+            border: 1px solid rgb(70, 70, 70);
+            border-radius: 4px;
+            width: 90%;
+            text-align: center;
+            margin: 0.7em 0 2.7em 0;
+            font-family: system-ui;
+            color: rgb(255, 255, 255);
+            transition-property: color, background-color, border-color;
+            transition: .2s cubic-bezier(.3, 0, .5, 1);
+        }
+
+        .edit {
+            filter: invert(40%);
+            position: relative;
+            width: 16px;
+            margin-bottom: 4px;
+            cursor: pointer
+        }
+
+        .variantImage {
+            height: 30px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            position: relative;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        .variantContainer {
+            border-radius: 100%;
+            background-color: rgb(40, 40, 40);
+            width: 30px;
+            height: 30px;
+            padding: 4px;
+            margin-bottom: 10px;
+            box-shadow: 0 0 7px 0.5px black;
+        }
+
         .piece {
             height: 70%;
             user-select: none;
@@ -77,6 +146,15 @@
             overflow-wrap: break-word;
         }
 
+        .promptSubTitle {
+            font-family: system-ui;
+            text-align: left;
+            font-size: 110%;
+            color: rgb(255, 255, 255);
+            margin-top: -8px;
+            text-indent: 20px;
+        }
+
         .promptBottom {
             position: relative;
             bottom: 0px;
@@ -85,6 +163,7 @@
             background-color: rgb(30, 30, 30);
             border-radius: 0 0 4px 4px;
             border-top: 1px solid rgb(48 48 48);
+            text-align: right;
         }
 
         .promptTitle {
@@ -100,9 +179,8 @@
             border-radius: 6px;
             height: 35px;
             top: 50%;
-            transform: translateY(-50%);
-            position: absolute;
-            right: 10px;
+            transform: translateY(calc(-50% - .5px));
+            position: relative;
             width: 100px;
             color: rgb(255, 255, 255);
             font-family: system-ui;
@@ -111,6 +189,7 @@
             border-width: 1px;
             transition: .2s cubic-bezier(.3, 0, .5, 1);
             transition-property: color, background-color, border-color;
+            margin-right: 10px;
         }
 
         .promptButton:hover {
@@ -159,6 +238,7 @@
             min-height: 100px;
             opacity: 0;
             animation: fadeDiv .240s forwards;
+            text-align: center;
         }
 
         @keyframes fadeBG {
@@ -224,6 +304,8 @@
     top: 50%;
     background-color: rgb(30, 30, 30);
 ">
+        <div id="variants" style="width: 38px;left: 60px;position: absolute;top: 105px;">
+        </div>
         <div style="
     width: 800px;
     height: 100%;
@@ -231,51 +313,17 @@
     transform: translateX(-50%);
     position: absolute;
 ">
-            <p id="enemy" style="
-    position: absolute;
-    margin-top: 30px;
-    color: rgb(255, 255, 255);
-    font-family: system-ui;
-    font-size: 140%;
-    left: -30px;
-    text-align: left;
-    width: 100%;
-    top: 4px;
-">(waiting for enemy)</p>
-            <p id="host" style="
-    position: absolute;
-    margin-top: 30px;
-    color: rgb(255, 255, 255);
-    font-family: system-ui;
-    font-size: 140%;
-    left: -30px;
-    text-align: left;
-    width: 100%;
-    bottom: 10px;
-">(waiting for connection) </p>
-            <div style="
-    width: 100%;
-    position: absolute;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    left: 50%;
-    background-color: rgb(40 40 40);
-    padding: 30px;
-    box-shadow: 0 0 21px 1px black;
-    height: 700px;
-">
-                <div id="options" style="
-    height: calc(100% - 60px);
-    width: calc(100% - 60px);
-    left: 50%;
-    top: 50%;
-    position: absolute;
-    transform: translate(-50%, -50%);
-    z-index: 2;
-">
-                    <div id="gameIDC" style="
-    display: none;
-">
+            <p id="enemy"
+                style="position: absolute;margin-top: 30px;color: rgb(255, 255, 255);font-family: system-ui;font-size: 140%;left: -30px;text-align: left;width: 100%;top: 4px;">
+                (waiting for enemy)</p>
+            <p id="host"
+                style="position: absolute;margin-top: 30px;color: rgb(255, 255, 255);font-family: system-ui;font-size: 140%;left: -30px;text-align: left;width: 100%;bottom: 10px;">
+                (waiting for connection) </p>
+            <div
+                style="width: 100%;position: absolute;top: 50%;transform: translate(-50%, -50%);left: 50%;background-color: rgb(40 40 40);padding: 30px;box-shadow: 0 0 21px 1px black;height: 700px;">
+                <div id="options"
+                    style="height: calc(100% - 60px);width: calc(100% - 60px);left: 50%;top: 50%;position: absolute;transform: translate(-50%, -50%);z-index: 2;">
+                    <div id="gameIDC" style="display: none;">
                         <p id="gameID" style="
     color: rgb(255, 255, 255);
     font-size: 200%;
@@ -293,36 +341,37 @@
     top: 47%;
     position: absolute;
     transform: translate(-50%, -50%);
+    user-select: none;
 ">Use this game ID to invite someone to the game!</p>
-                    </div><button id="cGame" style="
-    left: 50%;
-    top: 47%;
-    position: relative;
-    transform: translate(-50%, -50%);
-    height: 21px;
-">Create Game</button>
-                    <br><input maxlength="16" id="gameI" placeholder="Game ID" style="
-    left: calc(50% - 55px);
-    top: 53%;
-    transform: translate(-50%, -50%);
-    width: 112px;
-    position: relative;
-    font-family: monospace;
-    font-size: 90%;
-    height: 22px;
-"><button id="jGame" style="
-    left: calc(50% - 65px);
-    top: 53%;
-    position: relative;
-    transform: translate(-50%, -50%);
-    height: 21px;
-">Join Game</button>
+                    </div><button id="cGame"
+                        style="left: 50%;top: 45%;position: relative;transform: translate(-50%, -50%);height: 21px;user-select: none;">Create
+                        Game</button>
+                    <br><input maxlength="16" id="gameI" placeholder="Game ID"
+                        style="left: calc(50% - 55px);top: 50%;transform: translate(-50%, -50%);width: 112px;position: relative;font-family: monospace;font-size: 90%;height: 22px;user-select: none;"><button
+                        id="jGame"
+                        style="left: calc(50% - 65px);top: 50%;position: relative;transform: translate(-50%, -50%);height: 21px;user-select: none;">Join
+                        Game</button>
+                    <br>
+                    <button id="sOptions"
+                        style="left: calc(50%);top: 55%;position: relative;transform: translate(-50%, -50%);height: 21px;user-select: none;">Game
+                        Options</button>
                 </div>
+
                 <div id="boardC" style="
     opacity: 0.3;
 "><img id="board" src="https://cdn.mau0.workers.dev/cdn/board.png"
                         style="pointer-events: none;width: 100%;image-rendering: pixelated;height: 100%;user-select: none; margin-top: 0px;"
                         draggable="false">
+                    <svg id="arrowContainer"
+                        style="opacity: 0.7;z-index: 2; width: 800px;height: 700px;position:absolute;left: 50%;top: 50%;pointer-events: none;user-select: none;transform: translate(-50%, -50%);">
+                        <defs>
+                            <marker id="arrow" orient="auto" markerWidth="4" markerHeight="8" refX="1.5" refY="2.01">
+                                <path d="M0,0.5 V3.5 L2.5,2 Z" fill="rgb(255, 170, 0)"></path>
+                            </marker>
+                        </defs>
+
+                    </svg>
+
                     <div id="L:1:1"
                         style="background-color: rgba(0, 0, 0, 0);height: 75px;position: absolute;width: 60px;left: 38px;top: 306px;">
                         <div id="LPOS:1:1"></div>
@@ -614,17 +663,56 @@
             right: {},
             general: {}
         }
+        let rules = {}
         let bananas = new Map()
         let pieces = new Map()
         let moveIndex = new Map()
         let moveHistory = []
         let isOpposite = false
         let hasDied = false
-        let currentPrompt
+        let usernameAvailable = false
+        let currentTextPrompt
+        let currentInputPrompt
+        let currentCheckPrompt
         let selected
         let selectedDivs = []
         let pieceC = {}
+        let config = {
+            "Variants": {
+                "noDiagonalRook": {
+                    value: false,
+                    description: "No diagonal crow capture"
+                },
+                "newMonkey": {
+                    value: false,
+                    description: "Buffed monkey"
+                },
+                "noBear": {
+                    value: false,
+                    description: "No bear"
+                }
+            }
+        }
         let isTurn
+        let arrows = new Map()
+        let circles = new Map()
+        let rightdiv1
+        let rightdiv2
+
+        if (localStorage.getItem("settings")) {
+            try {
+                let items = JSON.parse(localStorage.getItem("settings"))
+                for (const [key, value] of Object.entries(items)) {
+                    if (!config[key]) continue
+                    for (const [k, v] of Object.entries(value)) {
+                        if (!config[key][k]) continue
+                        config[key][k].value = !(!(v))
+                    }
+                }
+            } catch (err) {
+
+            }
+        }
 
         /*<span style="
             font-size: 60%;
@@ -688,18 +776,248 @@
             }
         }
 
+        class InputPrompt {
+            constructor(title, placeholder, max) {
+                let bg = document.createElement("div")
+                let div = document.createElement("div")
+                let Ptitle = document.createElement("p")
+                let Pinput = document.createElement("input")
+                let Pbottom = document.createElement("div")
+                let cancel = document.createElement("button")
+                let complete = document.createElement("button")
+                bg.className = "promptBG"
+                div.className = "promptDiv"
+                Ptitle.className = "promptTitle"
+                Pinput.className = "promptInput"
+                cancel.className = "promptButton"
+                complete.className = "promptButton"
+                Pbottom.className = "promptBottom"
+                Ptitle.textContent = title
+                Pinput.placeholder = placeholder
+                complete.textContent = "Done"
+                cancel.textContent = "Cancel"
+                bg.appendChild(div)
+                div.appendChild(Ptitle)
+                div.appendChild(Pinput)
+                div.appendChild(Pbottom)
+                Pbottom.appendChild(complete)
+                Pbottom.appendChild(cancel)
+                this.title = title
+                this.input = Pinput
+                this.element = bg
+                this.div = div
+                if (max) {
+                    Pinput.maxLength = max
+                }
+                let original = this
+                complete.onclick = function () {
+                    original.onfinish(Pinput.value)
+                    original.close()
+                }
+                cancel.onclick = function () {
+                    original.onfinish(false)
+                    original.close()
+                }
+            }
+
+            open() {
+                document.body.appendChild(this.element)
+            }
+
+            close() {
+                let orig = this
+                this.element.style.animation = "fadeOutBG .24s forwards"
+                this.div.style.animation = "fadeOut .24s forwards"
+                setTimeout(() => {
+                    orig.element.remove()
+                }, 260)
+            }
+        }
+
+        class SectionPrompt {
+            constructor(title, sections) {
+                let bg = document.createElement("div")
+                let div = document.createElement("div")
+                let Ptitle = document.createElement("p")
+                let Pbottom = document.createElement("div")
+                let cancel = document.createElement("button")
+                let complete = document.createElement("button")
+                bg.className = "promptBG"
+                div.className = "promptDiv settings"
+                Ptitle.className = "promptTitle"
+                cancel.className = "promptButton"
+                complete.className = "promptButton"
+                Pbottom.className = "promptBottom"
+                Ptitle.textContent = title
+                complete.textContent = "Done"
+                cancel.textContent = "Cancel"
+                complete.type = "submit"
+                bg.appendChild(div)
+                div.appendChild(Ptitle)
+                Pbottom.appendChild(complete)
+                Pbottom.appendChild(cancel)
+                this.title = title
+                this.element = bg
+                this.div = div
+                let original = this
+                let elements = {}
+
+                for (const [key, value] of Object.entries(sections)) {
+                    let subtitle = document.createElement("p")
+                    subtitle.textContent = key
+                    subtitle.className = "promptSubTitle"
+                    div.appendChild(subtitle)
+                    elements[key] = {}
+
+                    for (const [k, v] of Object.entries(value)) {
+                        let r = Math.random().toString()
+                        let input = document.createElement("input")
+                        input.className = "promptCheck"
+                        input.type = "checkbox"
+                        input.checked = v.value
+                        input.id = r
+                        let label = document.createElement("label")
+                        label.className = "promptT"
+                        label.htmlFor = r
+                        label.textContent = v.description
+                        elements[key][k] = input
+                        div.appendChild(input)
+                        div.appendChild(label)
+                        div.appendChild(document.createElement("br"))
+                        div.appendChild(document.createElement("br"))
+                    }
+                }
+
+                div.appendChild(Pbottom)
+
+                complete.onclick = function () {
+                    let elContent = {}
+                    for (const [key, value] of Object.entries(sections)) {
+                        elContent[key] = {}
+                        for (const [k, v] of Object.entries(elements[key])) {
+                            console.log(v.checked)
+                            elContent[key][k] = {
+                                value: v.checked,
+                                description: sections[key][k].description
+                            }
+                        }
+                    }
+                    original.onfinish(elContent)
+                    original.close()
+                }
+                cancel.onclick = function () {
+                    original.onfinish(false)
+                    original.close()
+                }
+            }
+
+            open() {
+                document.body.appendChild(this.element)
+            }
+
+            close() {
+                let orig = this
+                this.element.style.animation = "fadeOutBG .24s forwards"
+                this.div.style.animation = "fadeOut .24s forwards"
+                setTimeout(() => {
+                    orig.element.remove()
+                }, 260)
+            }
+        }
+
+        function saveSettings() {
+            let newS = {}
+
+            for (const [key, value] of Object.entries(config)) {
+                newS[key] = {}
+                for (const [k, v] of Object.entries(value)) {
+                    newS[key][k] = v.value
+                }
+            }
+
+            localStorage.setItem("settings", JSON.stringify(newS))
+        }
+
+        function doesWorkChar(str) {
+            if (str.charCodeAt(0) > 127) return false
+            if (str === " ") return true
+            return isNaN(Number(str)) ? (str.toLowerCase() !== str.toUpperCase() ? true : (str === "_" ? true : (str === "-" ? true : false))) : true
+        }
+
+        function doesWork(str) {
+            let can = true
+            let errored = ""
+            str.split("").forEach(function (v) {
+                if (!can) return;
+                can = doesWorkChar(v)
+                if (!can) {
+                    errored = v
+                }
+            })
+            return { can: can, err: errored }
+        }
+
+        function getReal(div, piece, banana) {
+            if (piece) {
+                div = piece.tparent
+            }
+            if (banana) {
+                div = banana.tparent
+            }
+            if (div.id.startsWith("PSEL:")) {
+                div = document.getElementById("P:" + div.id.substring(5))
+            }
+            if (div.id.startsWith("POS:")) {
+                div = document.getElementById("P:" + div.id.substring(4))
+            }
+            return div
+        }
+
+        function prompt(title, placeholder, max, callback) {
+            if (currentInputPrompt) {
+                currentInputPrompt.onfinish(false)
+                currentInputPrompt.close()
+                currentInputPrompt = null
+            }
+            let newPrompt = new InputPrompt(title, placeholder, max)
+            newPrompt.onfinish = function (inp) {
+                if (currentInputPrompt === newPrompt) {
+                    currentInputPrompt = null
+                }
+                callback(inp)
+            }
+            currentPrompt = newPrompt
+            newPrompt.open()
+        }
+
+        function sectionPrompt(title, sections, callback) {
+            if (currentCheckPrompt) {
+                currentCheckPrompt.close()
+                currentCheckPrompt = null
+            }
+            let newPrompt = new SectionPrompt(title, sections)
+            newPrompt.onfinish = function (inp) {
+                if (currentCheckPrompt === newPrompt) {
+                    currentCheckPrompt = null
+                }
+                callback(inp)
+            }
+            currentCheckPrompt = newPrompt
+            newPrompt.open()
+        }
+
         function showMessage(title, text) {
-            if (currentPrompt) {
-                currentPrompt.close()
-                currentPrompt = null
+            if (currentTextPrompt) {
+                currentTextPrompt.close()
+                currentTextPrompt = null
             }
             let newPrompt = new TextPrompt(title, text)
             newPrompt.onclose = function () {
-                if (currentPrompt === newPrompt) {
-                    currentPrompt = null
+                if (currentTextPrompt === newPrompt) {
+                    currentTextPrompt = null
                 }
             }
-            currentPrompt = newPrompt
+            currentTextPrompt = newPrompt
             newPrompt.open()
         }
 
@@ -717,6 +1035,27 @@
                 str = (piece.owner === "host" ? "white" : "black") + "FishQueen"
             }
             return "https://cdn.mau0.workers.dev/cdn/" + str + ".png"
+        }
+
+        function allowed(div, div2) {
+            if (!div) return false
+            if (!div2) return false
+            let a1 = false
+            let a2 = false
+            if (div2.id.startsWith("P:") || div2.id.startsWith("R:") || div2.id.startsWith("L:")) {
+                a1 = true
+            }
+            if (div.id.startsWith("P:") || div.id.startsWith("R:") || div.id.startsWith("L:")) {
+                a2 = true
+            }
+            if (a1 && a2) return true
+        }
+
+        function getCoords(div) {
+            return {
+                x: parseInt(div.style.left.substring(0, div.style.left.length - 2)),
+                y: parseInt(div.style.top.substring(0, div.style.top.length - 2))
+            }
         }
 
         function loadBoard(data) {
@@ -770,6 +1109,26 @@
                 type: type,
                 data: data
             }))
+        }
+
+        function clearRules() {
+            rules = {}
+            variants.innerHTML = ""
+        }
+
+        function loadRules(m) { // m is the rules, can't use rules variable due to js variable limits
+            clearRules()
+            m.forEach((rule) => {
+                rules[rule.id] = true
+                let container = document.createElement("div")
+                container.className = "variantContainer"
+                let ruleI = document.createElement("img")
+                ruleI.src = "https://cdn.mau0.workers.dev/cdn/" + rule.img
+                ruleI.title = rule.desc + " (variant)"
+                ruleI.className = "variantImage"
+                container.appendChild(ruleI)
+                variants.appendChild(container)
+            })
         }
 
         function getPiece(x, y, monkey) {
@@ -976,6 +1335,16 @@
                 case "horse":
                     let XX = isOpposite ? 9 - obj.x : obj.x
                     let XY = isOpposite ? 9 - obj.y : obj.y
+                    let dirs = [
+                        [0, -1],
+                        [0, 1],
+                        [-1, 1],
+                        [1, 1],
+                        [1, -1],
+                        [-1, -1],
+                        [-1, 0],
+                        [1, 0]
+                    ]
                     let doDir = function (xDir, yDir, reset, canKill, depth) {
                         if (reset) {
                             XX = isOpposite ? 9 - obj.x : obj.x
@@ -996,11 +1365,30 @@
                             }
                         }
                         let piece = getPiece(isOpposite ? 9 - XX : XX, isOpposite ? 9 - XY : XY, true)
+                        let oldX = XX
+                        let oldY = XY
 
                         if (canKill) {
                             if (can(piece, true)) {
                                 set[XX + ":" + XY] = piece
                             }
+                        }
+
+                        if (piece && piece.empty && canKill && rules.newMonkey) {
+                            dirs.forEach((direction) => {
+                                if (direction[0] === -xDir && direction[1] === -yDir) return
+                                if (direction[0] === xDir && direction[1] === yDir) return
+                                XX = add(XX, direction[0])
+                                XY = add(XY, direction[1])
+                                let piece = getPiece(isOpposite ? 9 - XX : XX, isOpposite ? 9 - XY : XY)
+                                if (piece && !set[XX + ":" + XY] && !piece.empty) {
+                                    XX = oldX
+                                    XY = oldY
+                                    doDir(direction[0], direction[1], false, !canKill, depth + 1)
+                                }
+                                XX = oldX
+                                XY = oldY
+                            })
                         }
 
                         if (piece && (canKill ? piece.empty : !piece.empty)) {
@@ -1052,11 +1440,17 @@
                     console.log(hasDied)
                     for (_x = 1; _x < 9; _x++) {
                         for (_y = 1; _y < 9; _y++) {
-                            if (can(getPiece(_x, _y), hasDied ? Math.abs(x - _x) <= 1 && Math.abs(y - _y) <= 1 : false)) {
+                            let canKill = hasDied ? Math.abs(x - _x) <= 1 && Math.abs(y - _y) <= 1 : false
+                            let piece = getPiece(_x, _y)
+                            if (can(piece, canKill)) {
+                                if (canKill) {
+                                    if (Math.abs(x - _x) === 1 && Math.abs(y - _y) === 1 && rules.noDiagonalRook && !piece.empty) {
+                                        continue
+                                    }
+                                }
                                 let X = isOpposite ? 9 - _x : _x
                                 let Y = isOpposite ? 9 - _y : _y
                                 set[X + ":" + Y] = getPiece(_x, _y)
-                                console.log(X, Y)
                             }
                         }
                     }
@@ -1074,9 +1468,67 @@
             }
         }
 
+        document.oncontextmenu = function (ev) {
+            if (boardC.contains(ev.target) || ev.target === boardC) {
+                ev.preventDefault()
+            }
+        }
+
+        document.onmousedown = function (ev) {
+            if (ev.button !== 2) return
+            if (boardC.contains(ev.target)) {
+                rightdiv1 = ev.target
+            }
+        }
+
+        document.onmouseup = function (ev) {
+            if (ev.button !== 2) return
+            if (boardC.contains(ev.target)) {
+                if (!rightdiv1) return
+                rightdiv2 = ev.target
+                let div = getReal(rightdiv1, pieces.get(rightdiv1), bananas.get(rightdiv1))
+                let div2 = getReal(rightdiv2, pieces.get(rightdiv2), bananas.get(rightdiv2))
+                rightdiv1 = null
+                rightdiv2 = null
+                if (div === div2) return
+                if (arrows.get(div.id + ":" + div2.id)) {
+                    let arrow = arrows.get(div.id + ":" + div2.id)
+                    arrow.arrowElement.remove()
+                    arrows.delete(div.id + ":" + div2.id)
+                    return
+                }
+                if (allowed(div, div2)) {
+                    let divCoords = getCoords(div)
+                    let divCoords2 = getCoords(div2)
+                    let arrow = document.createElementNS("http://www.w3.org/2000/svg", "line")
+                    arrow.setAttribute("stroke", "rgba(255, 170, 0)")
+                    arrow.setAttribute("stroke-width", "9")
+                    arrow.setAttribute("marker-end", "url(#arrow)")
+                    arrow.setAttribute("x2", divCoords2.x + 5)
+                    arrow.setAttribute("y2", divCoords2.y + 7)
+                    arrow.setAttribute("x1", divCoords.x + 5)
+                    arrow.setAttribute("y1", divCoords.y + 7)
+                    arrow.style.overflow = "visible"
+                    arrowContainer.appendChild(arrow)
+                    arrows.set(div.id + ":" + div2.id, {
+                        origin: div,
+                        new: div2,
+                        arrowElement: arrow
+                    })
+                }
+            }
+        }
+
         document.addEventListener("click", function (event) {
+            if (event.button !== 0) return
             let oldS = selected
             let spiece = pieces.get(event.target) || bananas.get(event.target)
+            if (boardC.contains(event.target)) {
+                arrows.forEach((value) => {
+                    value.arrowElement.remove()
+                })
+                arrows = new Map()
+            }
             if (spiece && spiece.ownerOf && spiece !== selected && !spiece.isInJail) {
                 if (selected) {
                     if (!moveIndex.get(selected.tparent)) {
@@ -1257,8 +1709,11 @@
                 gameI.style.display = ""
                 jGame.style.display = ""
                 options.style.display = ""
+                sOptions.style.display = ""
+                document.getElementById("usernameEdit").style.display = ""
                 boardC.style.opacity = 0.3
                 enemy.textContent = "(waiting for enemy)"
+                enemyData = null
                 moveHistory.forEach((obj) => {
                     obj.object.style["background-color"] = "rgba(255, 255, 0, 0)"
                 })
@@ -1622,6 +2077,8 @@ d.style.top = 80 + (75 * y) + "px"*/
                 cGame.style.display = ""
                 gameI.style.display = ""
                 jGame.style.display = ""
+                sOptions.style.display = ""
+                document.getElementById("usernameEdit").style.display = ""
             }
 
             if (msg.type === "message") {
@@ -1634,6 +2091,7 @@ d.style.top = 80 + (75 * y) + "px"*/
                 gameI.style.display = ""
                 jGame.style.display = ""
                 options.style.display = ""
+                sOptions.style.display = ""
                 boardC.style.opacity = 0.3
                 moveHistory.forEach((obj) => {
                     obj.object.style["background-color"] = "rgba(255, 255, 0, 0)"
@@ -1646,6 +2104,7 @@ d.style.top = 80 + (75 * y) + "px"*/
                 })
                 selectedDivs = []
                 enemy.textContent = "(waiting for enemy)"
+                enemyData = null
                 for (const [key, value] of Object.entries(pieceC)) {
                     if (value.element) {
                         value.element.remove()
@@ -1667,13 +2126,42 @@ d.style.top = 80 + (75 * y) + "px"*/
             }
 
             if (msg.type === "playerData") {
+                if (usernameAvailable) {
+                    host.textContent = "(loading username)"
+                    usernameAvailable = false
+                    return
+                }
                 plrData = msg.data
                 host.textContent = msg.data.name
                 let span = document.createElement("span")
                 span.style["font-size"] = "60%"
                 span.style.color = "rgb(140, 140, 140)"
-                span.textContent = " (you)"
+                span.textContent = " (you) "
+                let img = document.createElement("img")
+                img.className = "edit"
+                img.src = "https://cdn.mau0.workers.dev/cdn/edit.png"
+                img.title = "Edit username"
+                img.id = "usernameEdit"
+                img.onclick = function () {
+                    prompt("Edit username", "New username", 20, function (result) {
+                        if (result === false) return;
+                        if (enemyData) {
+                            return
+                        }
+                        if (result.length === 0 || result.replace(/ /g, "").length === 0) { // NOTE TO SELF: sanitize this on the server
+                            return showMessage("Error", "Your username cannot be empty.")
+                        }
+                        result = result.substring(0, 20)
+                        let works = doesWork(result)
+                        if (!works.can) {
+                            return showMessage("Error", "Your username contains an invalid character '" + works.err + "'")
+                        }
+                        localStorage.setItem("username", result)
+                        perform("setUsername", result)
+                    })
+                }
                 host.appendChild(span)
+                host.appendChild(img)
             }
 
             if (msg.type === "invalidMove") {
@@ -1690,19 +2178,28 @@ d.style.top = 80 + (75 * y) + "px"*/
                 jGame.style.display = "none"
                 gameIDC.style.display = "none"
                 options.style.display = "none"
+                document.getElementById("usernameEdit").style.display = "none"
                 boardC.style.opacity = 1
                 enemy.textContent = isOpposite ? msg.data.host.name : msg.data.enemy.name
                 enemyData = isOpposite ? msg.data.host : msg.data.enemy
+                loadRules(msg.data.board.rules)
                 loadBoard(msg.data.board)
                 isTurn = !isOpposite
             }
         }
 
         cGame.onclick = function () {
-            perform("createRoom")
+            let variants = config.Variants
+            let arr = []
+            for (const [key, value] of Object.entries(variants)) {
+                if (value.value) arr.push(key)
+            }
+            perform("createRoom", arr)
             cGame.style.display = "none"
             gameI.style.display = "none"
             jGame.style.display = "none"
+            sOptions.style.display = "none"
+            document.getElementById("usernameEdit").style.display = "none"
         }
 
         jGame.onclick = function () {
@@ -1710,11 +2207,31 @@ d.style.top = 80 + (75 * y) + "px"*/
             cGame.style.display = "none"
             gameI.style.display = "none"
             jGame.style.display = "none"
+            sOptions.style.display = "none"
+            document.getElementById("usernameEdit").style.display = "none"
+        }
+
+        sOptions.onclick = function() {
+            sectionPrompt("Settings", config, function(data) {
+                if (!data) return
+                config = data
+                saveSettings()
+            })
         }
 
         ws.addEventListener("message", onMessage)
 
         ws.addEventListener("open", function () {
+            if (localStorage.getItem("username")) {
+                if (typeof (localStorage.getItem("username")) !== "string") {
+                    localStorage.removeItem("username")
+                } else {
+                    let str = localStorage.getItem("username").substring(0, 20)
+                    localStorage.setItem("username", str)
+                    usernameAvailable = true
+                    perform("setUsername", str)
+                }
+            }
             if (window.location.hash) {
                 gameI.value = window.location.hash.substring(1, 17)
                 jGame.click()
