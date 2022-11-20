@@ -1118,7 +1118,7 @@
 
         function loadRules(m) { // m is the rules, can't use rules variable due to js variable limits
             clearRules()
-            m.forEach((rule) => {
+            for (const [k, rule] of Object.entries(m)) {
                 rules[rule.id] = true
                 let container = document.createElement("div")
                 container.className = "variantContainer"
@@ -1128,7 +1128,7 @@
                 ruleI.className = "variantImage"
                 container.appendChild(ruleI)
                 variants.appendChild(container)
-            })
+            }
         }
 
         function getPiece(x, y, monkey) {
