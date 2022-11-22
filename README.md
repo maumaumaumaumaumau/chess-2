@@ -3,7 +3,7 @@
 
 Credits to:<br>
 <ul>
-  <li><b>Oat Jenkins:</b> Original game concept, pieces, assets</li>
+  <li><b>Oats Jenkins:</b> Original game concept, pieces, assets</li>
   <li><b>maumaumaumaumaumau:</b> Programmer</li>
   <li><b>dokso:</b> Backend hosting (game server)</li>
 </ul>
