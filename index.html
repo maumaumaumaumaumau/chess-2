@@ -1137,7 +1137,7 @@
                 banana.className = value.type === "king" ? "banana" : "monkeyBanana"
                 banana.style.display = value.banana ? "block" : "none"
                 banana.src = "https://cdn.mau0.workers.dev/cdn/banana.png"
-                if (spectating ? true : !(isOpposite ? value.owner === "enemy" : value.owner === "host")) {
+                if (spectating ? false : !(isOpposite ? value.owner === "enemy" : value.owner === "host")) {
                     newImg.style.cursor = "default"
                     banana.style.cursor = "default"
                 }
