@@ -1868,6 +1868,7 @@
             if (!msg) return
 
             if (msg.type === "finish") {
+                location.hash = ""
                 spect.style.display = "none"
                 let play = isOpposite ? "enemy" : "host"
                 if (spectating) {
@@ -2338,6 +2339,7 @@ d.style.top = 80 + (75 * y) + "px"*/
             }
 
             if (msg.type === "disconnect") {
+                location.hash = ""
                 spect.style.display = "none"
                 if (spectating) {
                     showMessage("Match ended", "One of the two parties has disconnected from the game.")
@@ -2392,6 +2394,7 @@ d.style.top = 80 + (75 * y) + "px"*/
             if (msg.type === "roomID") {
                 gameID.textContent = msg.data
                 gameIDC.style.display = ""
+                location.hash = msg.data
             }
 
             if (msg.type === "playerData") {
@@ -2448,6 +2451,7 @@ d.style.top = 80 + (75 * y) + "px"*/
                     isTurn = false
                     isOpposite = false
                 }
+                location.hash = msg.data.roomID
                 cGame.style.display = "none"
                 gameI.style.display = "none"
                 jGame.style.display = "none"
