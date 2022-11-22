@@ -1137,7 +1137,7 @@
                 banana.className = value.type === "king" ? "banana" : "monkeyBanana"
                 banana.style.display = value.banana ? "block" : "none"
                 banana.src = "https://cdn.mau0.workers.dev/cdn/banana.png"
-                if (!(isOpposite ? value.owner === "enemy" : value.owner === "host")) {
+                if (spectating ? true : !(isOpposite ? value.owner === "enemy" : value.owner === "host")) {
                     newImg.style.cursor = "default"
                     banana.style.cursor = "default"
                 }
@@ -1681,7 +1681,7 @@
                     }
                 }
             }
-            if (spiece && spiece.ownerOf && spiece !== selected && !spiece.isInJail) {
+            if (spiece && (spectating ? true : spiece.ownerOf) && spiece !== selected && !spiece.isInJail) {
                 if (selected) {
                     if (!moveIndex.get(selected.tparent)) {
                         selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
@@ -1716,7 +1716,7 @@
             } else {
                 if (selected) {
                     let div = event.target
-                    let isA = spiece && !spiece.ownerOf
+                    let isA = spiece && !(spectating ? true : spiece.ownerOf)
                     if (div.id && (div.id.startsWith("P:") || div.id.startsWith("PSEL:") || div.id.startsWith("POS:")) || isA) {
                         let coords
                         if (isA) {
