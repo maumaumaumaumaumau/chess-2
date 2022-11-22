@@ -21,6 +21,7 @@
     <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/normalMonkeyng" as="image">
     <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/rookHorizontal.png" as="image">
     <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/nobear.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/bearPiece.png" as="image">
     <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/edit.png" as="image">
     <title>Chess 2 Online</title>
     <style>
@@ -1137,7 +1138,7 @@
                 banana.style.display = value.banana ? "block" : "none"
                 banana.src = "https://cdn.mau0.workers.dev/cdn/banana.png"
                 if (value.type === "bear") {
-                    newImg.src = "https:/cdn.mau0.workers.dev/cdn/bearPiece.png"
+                    newImg.src = "https://cdn.mau0.workers.dev/cdn/bearPiece.png"
                 }
                 if (!(isOpposite ? value.owner === "enemy" : value.owner === "host")) {
                     newImg.style.cursor = "default"
