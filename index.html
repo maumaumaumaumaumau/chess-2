@@ -320,6 +320,19 @@
     transform: translateX(-50%);
     position: absolute;
 ">
+            <p id="spect"
+                style="display: none;position: absolute;margin-top: 30px;color: rgb(200, 50, 50);font-family: system-ui;font-size: 140%;left: 30px;text-align: right;width: 100%;top: 4px;">
+                <span style="
+    width: 10px;
+    height: 10px;
+    background-color: rgb(255, 50, 50);
+    display: inline-block;
+    border-radius: 100%;
+    left: -10px;
+    position: relative;
+    transform: translateY(-25%);
+"></span>SPECTATING
+            </p>
             <p id="enemy"
                 style="position: absolute;margin-top: 30px;color: rgb(255, 255, 255);font-family: system-ui;font-size: 140%;left: -30px;text-align: left;width: 100%;top: 4px;">
                 (waiting for enemy)</p>
@@ -711,6 +724,7 @@
         let rightdiv1
         let rightdiv2
         let middleSquare
+        let spectating = false
 
         if (localStorage.getItem("settings")) {
             try {
@@ -1413,7 +1427,7 @@
                         let oldY = XY
 
                         if (canKill) {
-                            if (can(piece, true)) {
+                            if (can(piece, true) && XX < 9 && XX > 0) {
                                 set[XX + ":" + XY] = piece
                             }
                         }
@@ -1422,6 +1436,7 @@
                             dirs.forEach((direction) => {
                                 if (direction[0] === -xDir && direction[1] === -yDir) return
                                 if (direction[0] === xDir && direction[1] === yDir) return
+                                if (XX > 8 || XY < 1) return
                                 XX = add(XX, direction[0])
                                 XY = add(XY, direction[1])
                                 let piece = getPiece(isOpposite ? 9 - XX : XX, isOpposite ? 9 - XY : XY)
@@ -1615,27 +1630,29 @@
                 selectedDivs = []
                 selected = middleSquare
                 selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0.5)"
-                let moveset = getMoveset(selected)
-                for (const [key, value] of Object.entries(moveset.local)) {
-                    let newDiv = document.createElement("div")
-                    let piece = value
+                if (!spectating) {
+                    let moveset = getMoveset(selected)
+                    for (const [key, value] of Object.entries(moveset.local)) {
+                        let newDiv = document.createElement("div")
+                        let piece = value
 
-                    newDiv.className = "moveSelect"
-                    newDiv.id = "PSEL:" + key
-                    if (!piece.empty) {
-                        newDiv.className = "pieceSelect"
-                    }
-                    selectedDivs.push(newDiv)
-                    if (piece.isInJail) {
-                        console.log("wow", piece.side, piece.x, piece.y)
-                        document.getElementById(piece.side + "POS:" + piece.mx + ":" + piece.my).appendChild(newDiv)
-                    } else {
-                        document.getElementById("POS:" + key).appendChild(newDiv)
+                        newDiv.className = "moveSelect"
+                        newDiv.id = "PSEL:" + key
+                        if (!piece.empty) {
+                            newDiv.className = "pieceSelect"
+                        }
+                        selectedDivs.push(newDiv)
+                        if (piece.isInJail) {
+                            console.log("wow", piece.side, piece.x, piece.y)
+                            document.getElementById(piece.side + "POS:" + piece.mx + ":" + piece.my).appendChild(newDiv)
+                        } else {
+                            document.getElementById("POS:" + key).appendChild(newDiv)
+                        }
                     }
                 }
                 return
             }
-            if (spiece && spiece.owner === "any") {
+            if (spiece && spiece.owner === "any" && !spectating) {
                 if (selected) {
                     let coords = [spiece.x, spiece.y]
                     let canMove = getMoveset(selected).local[coords[0] + ":" + coords[1]]
@@ -1675,22 +1692,24 @@
                 selectedDivs = []
                 selected = spiece
                 selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0.5)"
-                let moveset = getMoveset(selected)
-                for (const [key, value] of Object.entries(moveset.local)) {
-                    let newDiv = document.createElement("div")
-                    let piece = value
+                if (!spectating) {
+                    let moveset = getMoveset(selected)
+                    for (const [key, value] of Object.entries(moveset.local)) {
+                        let newDiv = document.createElement("div")
+                        let piece = value
 
-                    newDiv.className = "moveSelect"
-                    newDiv.id = "PSEL:" + key
-                    if (!piece.empty) {
-                        newDiv.className = "pieceSelect"
-                    }
-                    selectedDivs.push(newDiv)
-                    if (piece.isInJail) {
-                        console.log("wow", piece.side, piece.x, piece.y)
-                        document.getElementById(piece.side + "POS:" + piece.mx + ":" + piece.my).appendChild(newDiv)
-                    } else {
-                        document.getElementById("POS:" + key).appendChild(newDiv)
+                        newDiv.className = "moveSelect"
+                        newDiv.id = "PSEL:" + key
+                        if (!piece.empty) {
+                            newDiv.className = "pieceSelect"
+                        }
+                        selectedDivs.push(newDiv)
+                        if (piece.isInJail) {
+                            console.log("wow", piece.side, piece.x, piece.y)
+                            document.getElementById(piece.side + "POS:" + piece.mx + ":" + piece.my).appendChild(newDiv)
+                        } else {
+                            document.getElementById("POS:" + key).appendChild(newDiv)
+                        }
                     }
                 }
             } else {
@@ -1706,6 +1725,17 @@
                         } else {
                             coords = div.id.split(":")
                             coords.shift()
+                        }
+                        if (spectating) {
+                            if (!moveIndex.get(selected.tparent)) {
+                                selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                            }
+                            selected = null
+                            selectedDivs.forEach((div) => {
+                                div.remove()
+                            })
+                            selectedDivs = []
+                            return
                         }
                         let canMove = getMoveset(selected).local[coords[0] + ":" + coords[1]]
                         if (!canMove) {
@@ -1837,8 +1867,14 @@
             if (!msg) return
 
             if (msg.type === "finish") {
+                spect.style.display = "none"
                 let play = isOpposite ? "enemy" : "host"
-                showMessage("Match ended", msg.data !== play ? "You win! Your opponent has lost the match." : "You lose. You have lost the match.")
+                if (spectating) {
+                    showMessage("Match ended", msg.data === "host" ? "White has won!" : "Black has won!")
+                } else {
+                    showMessage("Match ended", msg.data !== play ? "You win! Your opponent has lost the match." : "You lose. You have lost the match.")
+                }
+                spectating = false
                 cGame.style.display = ""
                 gameI.style.display = ""
                 jGame.style.display = ""
@@ -1892,7 +1928,7 @@
                 })
             }
 
-            if (msg.type === "turn") {
+            if (msg.type === "turn" && !spectating) { // SUGGESTION: bold out names instead? /shrug
                 if (msg.data === "host" && !isOpposite) {
                     isTurn = true
                     if (selected) {
@@ -2301,7 +2337,13 @@ d.style.top = 80 + (75 * y) + "px"*/
             }
 
             if (msg.type === "disconnect") {
-                showMessage("Match ended", "The opponent has disconnected from the game.")
+                spect.style.display = "none"
+                if (spectating) {
+                    showMessage("Match ended", "One of the two parties has disconnected from the game.")
+                } else {
+                    showMessage("Match ended", "The opponent has disconnected from the game.")
+                }
+                spectating = false
                 cGame.style.display = ""
                 gameI.style.display = ""
                 jGame.style.display = ""
@@ -2390,7 +2432,7 @@ d.style.top = 80 + (75 * y) + "px"*/
                 host.appendChild(img)
             }
 
-            if (msg.type === "invalidMove") {
+            if (msg.type === "invalidMove" && !spectating) {
                 isTurn = true
                 showMessage("Warning", "An invalid move has been made. Please do not cheat. If you are not cheating then contact a developer to fix this issue.")
             }
@@ -2398,6 +2440,12 @@ d.style.top = 80 + (75 * y) + "px"*/
             if (msg.type === "ready") {
                 if (msg.data.enemy.id === plrData.id) {
                     isOpposite = true
+                }
+                if (msg.data.spectating) {
+                    spect.style.display = ""
+                    spectating = true
+                    isTurn = false
+                    isOpposite = false
                 }
                 cGame.style.display = "none"
                 gameI.style.display = "none"
@@ -2410,7 +2458,7 @@ d.style.top = 80 + (75 * y) + "px"*/
                 enemyData = isOpposite ? msg.data.host : msg.data.enemy
                 loadRules(msg.data.board.rules)
                 loadBoard(msg.data.board)
-                isTurn = !isOpposite
+                if (!msg.data.spectating) isTurn = !isOpposite
             }
         }
 
