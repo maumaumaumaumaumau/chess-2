@@ -1,4 +1,9 @@
 <img src="/chess2.png">
-Chess 2
--
-the only files listed on here are the frontend, backend will be closed source (for now)
+<h1>Chess 2</h1>
+
+Credits to:
+  <b>Oat Jenkins:</b> Original game concept, pieces, assets
+  <b>maumaumaumaumaumau:</b> Programmer
+  <b>dokso:</b> Backend hosting (game server)
+  
+Backend will be closed-source until the project is completely done (all QoL features added)
