@@ -1112,9 +1112,9 @@
             for (const [key, value] of Object.entries(data.general)) {
                 if (key === "4.5:4.5") continue
                 let newImg = document.createElement("img")
-                newImg.src = getImageForPiece(value)
+                newImg.src = value.type === "bear" ? "https://cdn.mau0.workers.dev/cdn/bearPiece.png" : getImageForPiece(value)
                 newImg.draggable = false
-                newImg.className = "piece"
+                newImg.className = "piece" + (value.type === "bear" ? " bearPiece" : "")
                 let coords = key.split(":")
                 let x = isOpposite ? 9 - parseInt(coords[0]) : parseInt(coords[0])
                 let y = isOpposite ? 9 - parseInt(coords[1]) : parseInt(coords[1])
@@ -1137,9 +1137,6 @@
                 banana.className = value.type === "king" ? "banana" : "monkeyBanana"
                 banana.style.display = value.banana ? "block" : "none"
                 banana.src = "https://cdn.mau0.workers.dev/cdn/banana.png"
-                if (value.type === "bear") {
-                    newImg.src = "https://cdn.mau0.workers.dev/cdn/bearPiece.png"
-                }
                 if (!(isOpposite ? value.owner === "enemy" : value.owner === "host")) {
                     newImg.style.cursor = "default"
                     banana.style.cursor = "default"
