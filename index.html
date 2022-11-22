@@ -1086,7 +1086,7 @@
         }
 
         function loadBoard(data) {
-            if (!rules.noBear) {
+            if (!rules.noBear && !(spectating && !data.middle)) {
                 MP.style.display = ""
                 let img = document.createElement("img")
                 // <img src="https://cdn.mau0.workers.dev/cdn/bearPiece.png" class="piece bearMiddle">
@@ -1136,6 +1136,9 @@
                 banana.className = value.type === "king" ? "banana" : "monkeyBanana"
                 banana.style.display = value.banana ? "block" : "none"
                 banana.src = "https://cdn.mau0.workers.dev/cdn/banana.png"
+                if (value.type === "bear") {
+                    newImg.src = "https:/cdn.mau0.workers.dev/cdn/bearPiece.png"
+                }
                 if (!(isOpposite ? value.owner === "enemy" : value.owner === "host")) {
                     newImg.style.cursor = "default"
                     banana.style.cursor = "default"
