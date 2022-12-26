@@ -1890,7 +1890,6 @@
                 jGame.style.display = ""
                 options.style.display = ""
                 sOptions.style.display = ""
-                document.getElementById("usernameEdit").style.display = ""
                 boardC.style.opacity = 0.3
                 enemy.textContent = "(waiting for enemy)"
                 enemyData = null
@@ -1915,10 +1914,14 @@
                     middleSquare.element.remove()
                     middleSquare = null
                 }
-                onMessage(JSON.stringify({
-                    method: "playerData",
-                    data: plrData
-                }))
+                if (document.getElementById("usernameEdit")) {
+                    document.getElementById("usernameEdit").style.display = ""
+                } else {
+                    onMessage(JSON.stringify({
+                        method: "playerData",
+                        data: plrData
+                    }))
+                }
                 for (const [key, value] of Object.entries(pieceC)) {
                     if (value.element) {
                         value.element.remove()
@@ -2383,10 +2386,14 @@ d.style.top = 80 + (75 * y) + "px"*/
                 selectedDivs = []
                 enemy.textContent = "(waiting for enemy)"
                 enemyData = null
-                onMessage(JSON.stringify({
-                    method: "playerData",
-                    data: plrData
-                }))
+                if (document.getElementById("usernameEdit")) {
+                    document.getElementById("usernameEdit").style.display = ""
+                } else {
+                    onMessage(JSON.stringify({
+                        method: "playerData",
+                        data: plrData
+                    }))
+                }
                 if (middleSquare) {
                     middleSquare.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
                     middleSquare.element.remove()
