@@ -1,4 +1,5 @@
 <html>
+
 <head>
     <meta id="viewport" name="viewport" content="width=1150px, initial-scale=0.1, ">
     <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/monkeyBlack.png" as="image">
@@ -1254,6 +1255,7 @@
                         let piece = getPiece(_x, _y)
                         set[X + ":" + Y] = piece
                         if (piece && !piece.empty && !piece.ownerOf) break
+                        if (piece && !piece.empty && piece.type === "bear") break
                     } else {
                         break
                     }
@@ -1266,6 +1268,7 @@
                         let piece = getPiece(_x, _y)
                         set[X + ":" + Y] = piece
                         if (piece && !piece.empty && !piece.ownerOf) break
+                        if (piece && !piece.empty && piece.type === "bear") break
                     } else {
                         break
                     }
@@ -1278,6 +1281,7 @@
                         let piece = getPiece(_x, _y)
                         set[X + ":" + Y] = piece
                         if (piece && !piece.empty && !piece.ownerOf) break
+                        if (piece && !piece.empty && piece.type === "bear") break
                     } else {
                         break
                     }
@@ -1290,6 +1294,7 @@
                         let piece = getPiece(_x, _y)
                         set[X + ":" + Y] = piece
                         if (piece && !piece.empty && !piece.ownerOf) break
+                        if (piece && !piece.empty && piece.type === "bear") break
                     } else {
                         break
                     }
@@ -1306,6 +1311,7 @@
                         let piece = getPiece(_x, _y)
                         set[X + ":" + Y] = piece
                         if (piece && !piece.empty && !piece.ownerOf) break
+                        if (piece && !piece.empty && piece.type === "bear") break
                     } else {
                         break
                     }
@@ -1320,6 +1326,7 @@
                         let piece = getPiece(_x, _y)
                         set[X + ":" + Y] = piece
                         if (piece && !piece.empty && !piece.ownerOf) break
+                        if (piece && !piece.empty && piece.type === "bear") break
                     } else {
                         break
                     }
@@ -1334,6 +1341,7 @@
                         let piece = getPiece(_x, _y)
                         set[X + ":" + Y] = piece
                         if (piece && !piece.empty && !piece.ownerOf) break
+                        if (piece && !piece.empty && piece.type === "bear") break
                     } else {
                         break
                     }
@@ -1348,6 +1356,7 @@
                         let piece = getPiece(_x, _y)
                         set[X + ":" + Y] = piece
                         if (piece && !piece.empty && !piece.ownerOf) break
+                        if (piece && !piece.empty && piece.type === "bear") break
                     } else {
                         break
                     }
@@ -2521,4 +2530,5 @@ d.style.top = 80 + (75 * y) + "px"*/
         })
     })()
 </script>
+
 </html>
