@@ -37,10 +37,6 @@
             height: 55% !important;
         }
 
-        .settings {
-            text-align: left !important;
-        }
-
         .promptCheck {
             margin-left: 30px;
         }
@@ -249,6 +245,11 @@
             text-align: center;
         }
 
+        .settings {
+            text-align: left;
+            animation: fadeDivSettings .240s forwards;
+        }
+
         @keyframes fadeBG {
             from {
                 opacity: 0;
@@ -266,6 +267,20 @@
 
             to {
                 opacity: 0;
+            }
+        }
+
+        @keyframes fadeDivSettings {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1.2);
+                filter: blur(4px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, calc(-50% + .3px)) scale(1);
+                filter: none;
             }
         }
 
@@ -700,6 +715,7 @@
         let currentTextPrompt
         let currentInputPrompt
         let currentCheckPrompt
+        let currentConfirmationPrompt
         let selected
         let selectedDivs = []
         let pieceC = {}
@@ -716,6 +732,12 @@
                 "noBear": {
                     value: false,
                     description: "No bear"
+                }
+            },
+            "Miscellaneous": {
+                "recordMatch": {
+                    value: false,
+                    description: "Record match"
                 }
             }
         }
@@ -756,6 +778,76 @@
                 </div>
             </div>
         */
+
+        function rd(min, max) {
+            return Math.round(Math.random() * (max - min) + min)
+        }
+
+        function rdstring(len) {
+            var i
+            var cstr = ""
+            var dic = "abcdef0123456789"
+            for (i = 0; i < len; i++) {
+                var randomnumber = rd(0, dic.length)
+                cstr += dic.substring(randomnumber, randomnumber + 1)
+            }
+            return cstr
+        }
+
+        class ConfirmationPrompt {
+            constructor(title, text) {
+                let bg = document.createElement("div")
+                let div = document.createElement("div")
+                let Ptitle = document.createElement("p")
+                let Ptext = document.createElement("p")
+                let Pbottom = document.createElement("div")
+                let close = document.createElement("button")
+                let ok = document.createElement("button")
+                bg.className = "promptBG"
+                div.className = "promptDiv"
+                Ptitle.className = "promptTitle"
+                Ptext.className = "promptT"
+                close.className = "promptButton"
+                ok.className = "promptButton"
+                Pbottom.className = "promptBottom"
+                Ptitle.textContent = title
+                Ptext.textContent = text
+                ok.textContent = "Confirm"
+                close.textContent = "Cancel"
+                bg.appendChild(div)
+                div.appendChild(Ptitle)
+                div.appendChild(Ptext)
+                div.appendChild(Pbottom)
+                Pbottom.appendChild(ok)
+                Pbottom.appendChild(close)
+                this.title = title
+                this.text = text
+                this.element = bg
+                this.div = div
+                let original = this
+                ok.onclick = function () {
+                    original.onclose(true)
+                    original.close()
+                }
+                close.onclick = function () {
+                    original.onclose(false)
+                    original.close()
+                }
+            }
+
+            open() {
+                document.body.appendChild(this.element)
+            }
+
+            close() {
+                let orig = this
+                this.element.style.animation = "fadeOutBG .24s forwards"
+                this.div.style.animation = "fadeOut .24s forwards"
+                setTimeout(() => {
+                    orig.element.remove()
+                }, 260)
+            }
+        }
 
         class TextPrompt {
             constructor(title, text) {
@@ -914,6 +1006,7 @@
                         div.appendChild(document.createElement("br"))
                         div.appendChild(document.createElement("br"))
                     }
+                    div.appendChild(document.createElement("br"))
                 }
 
                 div.appendChild(Pbottom)
@@ -1031,6 +1124,17 @@
                 callback(inp)
             }
             currentCheckPrompt = newPrompt
+            newPrompt.open()
+        }
+
+        function confirmationPrompt(title, desc, callback) {
+            if (currentConfirmationPrompt) {
+                currentConfirmationPrompt.close()
+                currentConfirmationPrompt = null
+            }
+            let newPrompt = new ConfirmationPrompt(title, desc)
+            newPrompt.onclose = callback
+            currentConfirmationPrompt = newPrompt
             newPrompt.open()
         }
 
@@ -1917,10 +2021,12 @@
                 if (document.getElementById("usernameEdit")) {
                     document.getElementById("usernameEdit").style.display = ""
                 } else {
-                    onMessage({ data: JSON.stringify({
-                        type: "playerData",
-                        data: plrData
-                    })})
+                    onMessage({
+                        data: JSON.stringify({
+                            type: "playerData",
+                            data: plrData
+                        })
+                    })
                 }
                 for (const [key, value] of Object.entries(pieceC)) {
                     if (value.element) {
@@ -2389,10 +2495,12 @@ d.style.top = 80 + (75 * y) + "px"*/
                 if (document.getElementById("usernameEdit")) {
                     document.getElementById("usernameEdit").style.display = ""
                 } else {
-                    onMessage({ data: JSON.stringify({
-                        type: "playerData",
-                        data: plrData
-                    })})
+                    onMessage({
+                        data: JSON.stringify({
+                            type: "playerData",
+                            data: plrData
+                        })
+                    })
                 }
                 if (middleSquare) {
                     middleSquare.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
@@ -2464,6 +2572,17 @@ d.style.top = 80 + (75 * y) + "px"*/
                 showMessage("Warning", "An invalid move has been made. Please do not cheat. If you are not cheating then contact a developer to fix this issue.")
             }
 
+            if (msg.type == "download") {
+                confirmationPrompt("Download", "The match was recorded, do you wish to download the match?", function (confirmed) {
+                    if (confirmed) {
+                        let a = document.createElement("a")
+                        a.href = "data:binary," + encodeURIComponent(msg.data)
+                        a.download = "SavedC2Match-" + rdstring(8) + ".c2r"
+                        a.click()
+                    }
+                })
+            }
+
             if (msg.type === "ready") {
                 if (msg.data.enemy.id === plrData.id) {
                     isOpposite = true
@@ -2495,11 +2614,17 @@ d.style.top = 80 + (75 * y) + "px"*/
 
         cGame.onclick = function () {
             let variants = config.Variants
+            let misc = config.Miscellaneous
             let arr = []
             for (const [key, value] of Object.entries(variants)) {
                 if (value.value) arr.push(key)
             }
-            perform("createRoom", arr)
+            perform("createRoom", {
+                variants: variants,
+                settings: {
+                    record: misc.recordMatch.value
+                }
+            })
             cGame.style.display = "none"
             gameI.style.display = "none"
             jGame.style.display = "none"
