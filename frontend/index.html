@@ -1016,7 +1016,7 @@
                     for (const [key, value] of Object.entries(sections)) {
                         elContent[key] = {}
                         for (const [k, v] of Object.entries(elements[key])) {
-                            console.log(v.checked)
+                            console.log(v.checked, key)
                             elContent[key][k] = {
                                 value: v.checked,
                                 description: sections[key][k].description
@@ -1990,7 +1990,7 @@
                     confirmationPrompt("Download", "The match was recorded, do you wish to download the match?", function (confirmed) {
                         if (confirmed) {
                             let a = document.createElement("a")
-                            a.href = "data:binary," + encodeURIComponent(msg.data)
+                            a.href = "data:binary," + encodeURIComponent(msg.data.download)
                             a.download = "SavedC2Match-" + rdstring(8) + ".c2r"
                             a.click()
                             delete msg.data.download 
@@ -2486,12 +2486,11 @@ d.style.top = 80 + (75 * y) + "px"*/
             }
 
             if (msg.type === "disconnect") {
-                console.log(msg.data.download)
                 if (msg.data.download) {
                     confirmationPrompt("Download", "The match was recorded, do you wish to download the match?", function (confirmed) {
                         if (confirmed) {
                             let a = document.createElement("a")
-                            a.href = "data:binary," + encodeURIComponent(msg.data)
+                            a.href = "data:binary," + encodeURIComponent(msg.data.download)
                             a.download = "SavedC2Match-" + rdstring(8) + ".c2r"
                             a.click()
                             delete msg.data.download 
@@ -2655,6 +2654,7 @@ d.style.top = 80 + (75 * y) + "px"*/
             for (const [key, value] of Object.entries(variants)) {
                 if (value.value) arr.push(key)
             }
+            console.log(misc)
             perform("createRoom", {
                 variants: variants,
                 settings: {
