@@ -1,5 +1,5 @@
 {
-  "name": "Chess 2",
+  "name": "chess-2",
   "version": "0.0.1",
   "description": "Chess 2 the online game implementation.",
   "main": "index.js",
