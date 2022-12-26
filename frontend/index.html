@@ -1918,7 +1918,7 @@
                     document.getElementById("usernameEdit").style.display = ""
                 } else {
                     onMessage({ data: JSON.stringify({
-                        method: "playerData",
+                        type: "playerData",
                         data: plrData
                     })})
                 }
@@ -2390,7 +2390,7 @@ d.style.top = 80 + (75 * y) + "px"*/
                     document.getElementById("usernameEdit").style.display = ""
                 } else {
                     onMessage({ data: JSON.stringify({
-                        method: "playerData",
+                        type: "playerData",
                         data: plrData
                     })})
                 }
