@@ -1129,11 +1129,17 @@
 
         function confirmationPrompt(title, desc, callback) {
             if (currentConfirmationPrompt) {
+                currentConfirmationPrompt.onclose(false)
                 currentConfirmationPrompt.close()
                 currentConfirmationPrompt = null
             }
             let newPrompt = new ConfirmationPrompt(title, desc)
-            newPrompt.onclose = callback
+            newPrompt.onclose = function(s) {
+                if (currentConfirmationPrompt == newPrompt) {
+                    currentConfirmationPrompt = null 
+                }
+                return callback(s)
+            }
             currentConfirmationPrompt = newPrompt
             newPrompt.open()
         }
@@ -1980,6 +1986,26 @@
             if (!msg) return
 
             if (msg.type === "finish") {
+                if (msg.data.download) {
+                    confirmationPrompt("Download", "The match was recorded, do you wish to download the match?", function (confirmed) {
+                        if (confirmed) {
+                            let a = document.createElement("a")
+                            a.href = "data:binary," + encodeURIComponent(msg.data)
+                            a.download = "SavedC2Match-" + rdstring(8) + ".c2r"
+                            a.click()
+                            delete msg.data.download 
+                            return onMessage({
+                                data: JSON.stringify(msg)
+                            })
+                        } else {
+                            delete msg.data.download 
+                            return onMessage({
+                                data: JSON.stringify(msg)
+                            })
+                        }
+                    })
+                    return
+                }
                 location.hash = ""
                 spect.style.display = "none"
                 let play = isOpposite ? "enemy" : "host"
@@ -2460,6 +2486,27 @@ d.style.top = 80 + (75 * y) + "px"*/
             }
 
             if (msg.type === "disconnect") {
+                console.log(msg.data.download)
+                if (msg.data.download) {
+                    confirmationPrompt("Download", "The match was recorded, do you wish to download the match?", function (confirmed) {
+                        if (confirmed) {
+                            let a = document.createElement("a")
+                            a.href = "data:binary," + encodeURIComponent(msg.data)
+                            a.download = "SavedC2Match-" + rdstring(8) + ".c2r"
+                            a.click()
+                            delete msg.data.download 
+                            return onMessage({
+                                data: JSON.stringify(msg)
+                            })
+                        } else {
+                            delete msg.data.download 
+                            return onMessage({
+                                data: JSON.stringify(msg)
+                            })
+                        }
+                    })
+                    return
+                }
                 location.hash = ""
                 spect.style.display = "none"
                 if (spectating) {
@@ -2570,17 +2617,6 @@ d.style.top = 80 + (75 * y) + "px"*/
             if (msg.type === "invalidMove" && !spectating) {
                 isTurn = true
                 showMessage("Warning", "An invalid move has been made. Please do not cheat. If you are not cheating then contact a developer to fix this issue.")
-            }
-
-            if (msg.type == "download") {
-                confirmationPrompt("Download", "The match was recorded, do you wish to download the match?", function (confirmed) {
-                    if (confirmed) {
-                        let a = document.createElement("a")
-                        a.href = "data:binary," + encodeURIComponent(msg.data)
-                        a.download = "SavedC2Match-" + rdstring(8) + ".c2r"
-                        a.click()
-                    }
-                })
             }
 
             if (msg.type === "ready") {
