@@ -1,0 +1,21 @@
+{
+  "name": "Chess 2",
+  "version": "0.0.1",
+  "description": "Chess 2 the online game implementation.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "body-parser": "^1.19.0"
+  },
+  "engines": {
+    "node": "18.x"
+  },
+  "license": "Apache License 2.0",
+  "keywords": [
+    "node",
+    "mongo"
+  ]
+}
