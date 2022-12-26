@@ -1917,10 +1917,10 @@
                 if (document.getElementById("usernameEdit")) {
                     document.getElementById("usernameEdit").style.display = ""
                 } else {
-                    onMessage(JSON.stringify({
+                    onMessage({ data: JSON.stringify({
                         method: "playerData",
                         data: plrData
-                    }))
+                    })})
                 }
                 for (const [key, value] of Object.entries(pieceC)) {
                     if (value.element) {
@@ -2389,10 +2389,10 @@ d.style.top = 80 + (75 * y) + "px"*/
                 if (document.getElementById("usernameEdit")) {
                     document.getElementById("usernameEdit").style.display = ""
                 } else {
-                    onMessage(JSON.stringify({
+                    onMessage({ data: JSON.stringify({
                         method: "playerData",
                         data: plrData
-                    }))
+                    })})
                 }
                 if (middleSquare) {
                     middleSquare.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
