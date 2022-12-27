@@ -1,0 +1,2505 @@
+<html>
+
+<head>
+    <meta id="viewport" name="viewport" content="width=1150px, initial-scale=0.1, ">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/monkeyBlack.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/monkeyWhite.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/elephantWhite.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/elephantBlack.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/kingBlack.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/kingWhite.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/queenBlack.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/queenWhite.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/rookWhite.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/rookBlack.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/fishBlack.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/fishWhite.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/blackFishQueen.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/whiteFishQueen.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/banana.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/board.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/normalMonkeyng" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/rookHorizontal.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/nobear.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/bearPiece.png" as="image">
+    <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/edit.png" as="image">
+    <title>Chess 2 Online</title>
+    <style>
+        br {
+            user-select: none;
+        }
+
+        .bearMiddle {
+            height: 65% !important;
+        }
+
+        .bearPiece {
+            height: 55% !important;
+        }
+
+        .promptCheck {
+            margin-left: 30px;
+        }
+
+        .promptInput:hover {
+            background-color: rgb(35, 35, 35);
+            border-color: rgb(100, 100, 100);
+        }
+
+        .promptInput:focus {
+            background-color: rgb(30, 30, 30);
+            border-color: rgb(100, 100, 100);
+        }
+
+        .promptInput {
+            outline: none;
+            display: inline;
+            padding: 10px;
+            background-color: rgb(30, 30, 30);
+            border: 1px solid rgb(70, 70, 70);
+            border-radius: 4px;
+            width: 90%;
+            text-align: center;
+            margin: 0.7em 0 2.7em 0;
+            font-family: system-ui;
+            color: rgb(255, 255, 255);
+            transition-property: color, background-color, border-color;
+            transition: .2s cubic-bezier(.3, 0, .5, 1);
+        }
+
+        .edit {
+            filter: invert(40%);
+            position: relative;
+            width: 16px;
+            margin-bottom: 4px;
+            cursor: pointer
+        }
+
+        .variantImage {
+            height: 30px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            position: relative;
+            user-select: none;
+        }
+
+        .variantContainer {
+            border-radius: 100%;
+            background-color: rgb(40, 40, 40);
+            width: 30px;
+            height: 30px;
+            padding: 4px;
+            margin-bottom: 10px;
+            box-shadow: 0 0 7px 0.5px black;
+        }
+
+        .piece {
+            height: 70%;
+            user-select: none;
+            cursor: pointer;
+            left: 50%;
+            top: 50%;
+            position: absolute;
+            transform: translate(-50%, -50%);
+        }
+
+        .banana {
+            height: 25%;
+            user-select: none;
+            cursor: pointer;
+            left: 50%;
+            top: 8px;
+            position: absolute;
+            transform: translateX(-50%);
+        }
+
+        .moveSelect {
+            height: calc(37px - 12px);
+            background-color: rgba(72, 71, 100, .4);
+            left: 50%;
+            top: calc(74px / 2);
+            position: relative;
+            transform: translate(-50%, -50%);
+            width: calc(37px - 12px);
+            border-radius: 100%;
+        }
+
+        .pieceSelect {
+            height: calc(74px - 12px);
+            background-color: rgba(0, 0, 0, 0);
+            left: 50%;
+            top: calc(74px / 2);
+            position: relative;
+            transform: translate(-50%, -50%);
+            width: calc(71px - 12px);
+            border-radius: 100%;
+            border-width: 4px;
+            border-color: rgba(72, 71, 100, .4);
+            border-style: solid;
+        }
+
+        .promptT {
+            font-family: system-ui;
+            text-align: center;
+            font-size: 90%;
+            color: rgb(180, 180, 180);
+            white-space: break-spaces;
+            padding: 10px;
+            transform: translateY(-14px);
+            overflow-wrap: break-word;
+        }
+
+        .promptSubTitle {
+            font-family: system-ui;
+            text-align: left;
+            font-size: 110%;
+            color: rgb(255, 255, 255);
+            margin-top: -8px;
+            text-indent: 20px;
+        }
+
+        .promptBottom {
+            position: relative;
+            bottom: 0px;
+            width: 100%;
+            height: 60px;
+            background-color: rgb(30, 30, 30);
+            border-radius: 0 0 4px 4px;
+            border-top: 1px solid rgb(48 48 48);
+            text-align: right;
+        }
+
+        .promptTitle {
+            font-family: system-ui;
+            text-align: center;
+            font-size: 130%;
+            color: rgb(255, 255, 255);
+        }
+
+        .promptButton {
+            background-color: rgb(35, 35, 35);
+            border-color: rgb(70, 70, 70);
+            border-radius: 6px;
+            height: 35px;
+            top: 50%;
+            transform: translateY(calc(-50% - .5px));
+            position: relative;
+            width: 100px;
+            color: rgb(255, 255, 255);
+            font-family: system-ui;
+            font-size: 90%;
+            border-style: solid;
+            border-width: 1px;
+            transition: .2s cubic-bezier(.3, 0, .5, 1);
+            transition-property: color, background-color, border-color;
+            margin-right: 10px;
+        }
+
+        .promptButton:hover {
+            background-color: rgb(45, 45, 45);
+            border-color: rgb(100, 100, 100);
+        }
+
+        .promptButton:active {
+            background-color: rgb(35, 35, 35);
+            border-color: rgb(95, 95, 95);
+            transition: .05s cubic-bezier(.3, 0, .5, 1);
+        }
+
+        .monkeyBanana {
+            height: 15%;
+            user-select: none;
+            cursor: pointer;
+            left: 50%;
+            bottom: 26px;
+            position: absolute;
+            transform: translateX(-50%);
+        }
+
+        .promptBG {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            background-color: rgb(0, 0, 0, 0.5);
+            z-index: 4;
+            opacity: 0;
+            animation: fadeBG .300s forwards;
+        }
+
+        .promptDiv {
+            z-index: 5;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            background-color: rgb(40, 40, 40);
+            box-shadow: 0 0 16px 1px black;
+            border-radius: 4px;
+            min-height: 100px;
+            opacity: 0;
+            animation: fadeDiv .240s forwards;
+            text-align: center;
+        }
+
+        .settings {
+            text-align: left;
+            animation: fadeDivSettings .240s forwards;
+        }
+
+        @keyframes fadeBG {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOutBG {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeDivSettings {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1.2);
+                filter: blur(4px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, calc(-50% + .3px)) scale(1);
+                filter: none;
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+                filter: none;
+            }
+
+            to {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1.3);
+                box-shadow: 0 0 0 0;
+                filter: blur(1px);
+            }
+        }
+
+        @keyframes fadeDiv {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1.2);
+                filter: blur(4px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+                filter: none;
+            }
+        }
+    </style>
+</head>
+
+<body style="
+    background: rgb(40, 40, 40);
+">
+    <input style="height:0px; width:0px; display:block;" accept=".c2r" id="ufile" type="file">
+    <div style="
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 1100px;
+    height: 950px;
+    top: 50%;
+    background-color: rgb(30, 30, 30);
+">
+        <div id="variants" style="width: 38px;left: 60px;position: absolute;top: 105px;">
+        </div>
+        <div style="
+    width: 800px;
+    height: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    position: absolute;
+">
+            <p id="spect"
+                style="display: none;position: absolute;margin-top: 30px;color: rgb(200, 50, 50);font-family: system-ui;font-size: 140%;left: 30px;text-align: right;width: 100%;top: 4px;">
+                <span style="
+    width: 10px;
+    height: 10px;
+    background-color: rgb(255, 50, 50);
+    display: inline-block;
+    border-radius: 100%;
+    left: -10px;
+    position: relative;
+    transform: translateY(-25%);
+"></span>SPECTATING
+            </p>
+            <p id="enemy"
+                style="position: absolute;margin-top: 30px;color: rgb(255, 255, 255);font-family: system-ui;font-size: 140%;left: -30px;text-align: left;width: 100%;top: 4px;">
+                (enemy)</p>
+            <p id="host"
+                style="position: absolute;margin-top: 30px;color: rgb(255, 255, 255);font-family: system-ui;font-size: 140%;left: -30px;text-align: left;width: 100%;bottom: 10px;">
+                (host) </p>
+            <div
+                style="width: 100%;position: absolute;top: 50%;transform: translate(-50%, -50%);left: 50%;background-color: rgb(40 40 40);padding: 30px;box-shadow: 0 0 21px 1px black;height: 700px;">
+                <div id="options"
+                    style="height: calc(100% - 60px);width: calc(100% - 60px);left: 50%;top: 50%;position: absolute;transform: translate(-50%, -50%);z-index: 2;">
+                    <div id="gameIDC">
+                        <p style="
+    color: rgb(255, 255, 255);
+    font-size: 70%;
+    font-family: system-ui;
+    left: 50%;
+    top: 53%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    user-select: none;
+">Use a c2r file to analyze the game.</p>
+                    </div>
+                    <button id="analyze"
+                        style="left: calc(50%);top: 50%;position: relative;transform: translate(-50%, -50%);height: 21px;user-select: none;">Analyze
+                        game</button>
+                    <br>
+                </div>
+
+                <div id="boardC" style="
+    opacity: 0.3;
+"><img id="board" src="https://cdn.mau0.workers.dev/cdn/board.png"
+                        style="pointer-events: none;width: 100%;image-rendering: pixelated;height: 100%;user-select: none; margin-top: 0px;"
+                        draggable="false">
+                    <svg id="arrowContainer"
+                        style="opacity: 0.7;z-index: 2; width: 800px;height: 700px;position:absolute;left: 50%;top: 50%;pointer-events: none;user-select: none;transform: translate(-50%, -50%);">
+                        <defs>
+                            <marker id="arrow" orient="auto" markerWidth="4" markerHeight="8" refX="1.5" refY="2.01">
+                                <path d="M0,0.5 V3.5 L2.5,2 Z" fill="rgb(255, 170, 0)"></path>
+                            </marker>
+                        </defs>
+
+                    </svg>
+
+                    <div id="L:1:1"
+                        style="background-color: rgba(0, 0, 0, 0);height: 75px;position: absolute;width: 60px;left: 38px;top: 306px;">
+                        <div id="LPOS:1:1"></div>
+                    </div>
+                    <div id="L:1:2"
+                        style="background-color: rgba(0, 0, 0, 0);height: 75px;position: absolute;width: 60px;left: 37px;top: 379px;">
+                        <div id="LPOS:1:2"></div>
+                    </div>
+                    <div id="R:1:2"
+                        style="background-color: rgba(0, 0, 0, 0);height: 75px;position: absolute;width: 60px;left: 762px;top: 379px;">
+                        <div id="RPOS:1:2"></div>
+                    </div>
+                    <div id="R:1:1"
+                        style="background-color: rgba(0, 0, 0, 0);height: 75px;position: absolute;width: 60px;left: 762px;top: 305px;">
+                        <div id="RPOS:1:1"></div>
+                    </div>
+
+                    <div id="P:1:1"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 145px; top: 80px;">
+                        <div id="POS:1:1"></div>
+                    </div>
+                    <div id="P:1:2"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 145px; top: 155px;">
+                        <div id="POS:1:2"></div>
+                    </div>
+                    <div id="P:1:3"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 145px; top: 230px;">
+                        <div id="POS:1:3"></div>
+                    </div>
+                    <div id="P:1:4"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 145px; top: 305px;">
+                        <div id="POS:1:4"></div>
+                    </div>
+                    <div id="P:1:5"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 145px; top: 380px;">
+                        <div id="POS:1:5"></div>
+                    </div>
+                    <div id="P:1:6"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 145px; top: 455px;">
+                        <div id="POS:1:6"></div>
+                    </div>
+                    <div id="P:1:7"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 145px; top: 530px;">
+                        <div id="POS:1:7"></div>
+                    </div>
+                    <div id="P:1:8"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 145px; top: 605px;">
+                        <div id="POS:1:8"></div>
+                    </div>
+                    <div id="P:2:1"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 216px; top: 80px;">
+                        <div id="POS:2:1"></div>
+                    </div>
+                    <div id="P:2:2"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 216px; top: 155px;">
+                        <div id="POS:2:2"></div>
+                    </div>
+                    <div id="P:2:3"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 216px; top: 230px;">
+                        <div id="POS:2:3"></div>
+                    </div>
+                    <div id="P:2:4"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 216px; top: 305px;">
+                        <div id="POS:2:4"></div>
+                    </div>
+                    <div id="P:2:5"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 216px; top: 380px;">
+                        <div id="POS:2:5"></div>
+                    </div>
+                    <div id="P:2:6"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 216px; top: 455px;">
+                        <div id="POS:2:6"></div>
+                    </div>
+                    <div id="P:2:7"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 216px; top: 530px;">
+                        <div id="POS:2:7"></div>
+                    </div>
+                    <div id="P:2:8"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 216px; top: 605px;">
+                        <div id="POS:2:8"></div>
+                    </div>
+                    <div id="P:3:1"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 287px; top: 80px;">
+                        <div id="POS:3:1"></div>
+                    </div>
+                    <div id="P:3:2"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 287px; top: 155px;">
+                        <div id="POS:3:2"></div>
+                    </div>
+                    <div id="P:3:3"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 287px; top: 230px;">
+                        <div id="POS:3:3"></div>
+                    </div>
+                    <div id="P:3:4"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 287px; top: 305px;">
+                        <div id="POS:3:4"></div>
+                    </div>
+                    <div id="P:3:5"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 287px; top: 380px;">
+                        <div id="POS:3:5"></div>
+                    </div>
+                    <div id="P:3:6"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 287px; top: 455px;">
+                        <div id="POS:3:6"></div>
+                    </div>
+                    <div id="P:3:7"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 287px; top: 530px;">
+                        <div id="POS:3:7"></div>
+                    </div>
+                    <div id="P:3:8"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 287px; top: 605px;">
+                        <div id="POS:3:8"></div>
+                    </div>
+                    <div id="P:4:1"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 358px; top: 80px;">
+                        <div id="POS:4:1"></div>
+                    </div>
+                    <div id="P:4:2"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 358px; top: 155px;">
+                        <div id="POS:4:2"></div>
+                    </div>
+                    <div id="P:4:3"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 358px; top: 230px;">
+                        <div id="POS:4:3"></div>
+                    </div>
+                    <div id="P:4:4"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 358px; top: 305px;">
+                        <div id="POS:4:4"></div>
+                    </div>
+                    <div id="MP"
+                        style="display: none; border-radius: 100%; background-color: rgba(0, 0, 0, 0);height: 65px;position: absolute;width: 65px;left: 396;top: 347px;z-index: 2;">
+                        <div id="MPOS">
+                        </div>
+                    </div>
+                    <div id="P:4:5"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 358px; top: 380px;">
+                        <div id="POS:4:5"></div>
+                    </div>
+                    <div id="P:4:6"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 358px; top: 455px;">
+                        <div id="POS:4:6"></div>
+                    </div>
+                    <div id="P:4:7"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 358px; top: 530px;">
+                        <div id="POS:4:7"></div>
+                    </div>
+                    <div id="P:4:8"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 358px; top: 605px;">
+                        <div id="POS:4:8"></div>
+                    </div>
+                    <div id="P:5:1"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 429px; top: 80px;">
+                        <div id="POS:5:1"></div>
+                    </div>
+                    <div id="P:5:2"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 429px; top: 155px;">
+                        <div id="POS:5:2"></div>
+                    </div>
+                    <div id="P:5:3"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 429px; top: 230px;">
+                        <div id="POS:5:3"></div>
+                    </div>
+                    <div id="P:5:4"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 429px; top: 305px;">
+                        <div id="POS:5:4"></div>
+                    </div>
+                    <div id="P:5:5"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 429px; top: 380px;">
+                        <div id="POS:5:5"></div>
+                    </div>
+                    <div id="P:5:6"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 429px; top: 455px;">
+                        <div id="POS:5:6"></div>
+                    </div>
+                    <div id="P:5:7"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 429px; top: 530px;">
+                        <div id="POS:5:7"></div>
+                    </div>
+                    <div id="P:5:8"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 429px; top: 605px;">
+                        <div id="POS:5:8"></div>
+                    </div>
+                    <div id="P:6:1"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 500px; top: 80px;">
+                        <div id="POS:6:1"></div>
+                    </div>
+                    <div id="P:6:2"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 500px; top: 155px;">
+                        <div id="POS:6:2"></div>
+                    </div>
+                    <div id="P:6:3"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 500px; top: 230px;">
+                        <div id="POS:6:3"></div>
+                    </div>
+                    <div id="P:6:4"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 500px; top: 305px;">
+                        <div id="POS:6:4"></div>
+                    </div>
+                    <div id="P:6:5"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 500px; top: 380px;">
+                        <div id="POS:6:5"></div>
+                    </div>
+                    <div id="P:6:6"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 500px; top: 455px;">
+                        <div id="POS:6:6"></div>
+                    </div>
+                    <div id="P:6:7"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 500px; top: 530px;">
+                        <div id="POS:6:7"></div>
+                    </div>
+                    <div id="P:6:8"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 500px; top: 605px;">
+                        <div id="POS:6:8"></div>
+                    </div>
+                    <div id="P:7:1"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 571px; top: 80px;">
+                        <div id="POS:7:1"></div>
+                    </div>
+                    <div id="P:7:2"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 571px; top: 155px;">
+                        <div id="POS:7:2"></div>
+                    </div>
+                    <div id="P:7:3"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 571px; top: 230px;">
+                        <div id="POS:7:3"></div>
+                    </div>
+                    <div id="P:7:4"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 571px; top: 305px;">
+                        <div id="POS:7:4"></div>
+                    </div>
+                    <div id="P:7:5"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 571px; top: 380px;">
+                        <div id="POS:7:5"></div>
+                    </div>
+                    <div id="P:7:6"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 571px; top: 455px;">
+                        <div id="POS:7:6"></div>
+                    </div>
+                    <div id="P:7:7"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 571px; top: 530px;">
+                        <div id="POS:7:7"></div>
+                    </div>
+                    <div id="P:7:8"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 571px; top: 605px;">
+                        <div id="POS:7:8"></div>
+                    </div>
+                    <div id="P:8:1"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 642px; top: 80px;">
+                        <div id="POS:8:1"></div>
+                    </div>
+                    <div id="P:8:2"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 642px; top: 155px;">
+                        <div id="POS:8:2"></div>
+                    </div>
+                    <div id="P:8:3"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 642px; top: 230px;">
+                        <div id="POS:8:3"></div>
+                    </div>
+                    <div id="P:8:4"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 642px; top: 305px;">
+                        <div id="POS:8:4"></div>
+                    </div>
+                    <div id="P:8:5"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 642px; top: 380px;">
+                        <div id="POS:8:5"></div>
+                    </div>
+                    <div id="P:8:6"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 642px; top: 455px;">
+                        <div id="POS:8:6"></div>
+                    </div>
+                    <div id="P:8:7"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 642px; top: 530px;">
+                        <div id="POS:8:7"></div>
+                    </div>
+                    <div id="P:8:8"
+                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 642px; top: 605px;">
+                        <div id="POS:8:8"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+
+<script defer>
+    (() => {
+        let plrData
+        let enemyData
+        let boardContent = {
+            left: {},
+            right: {},
+            general: {}
+        }
+        let rules = {}
+        let bananas = new Map()
+        let pieces = new Map()
+        let moveIndex = new Map()
+        let moveHistory = []
+        let isOpposite = false
+        let hasDied = false
+        let usernameAvailable = false
+        let currentTextPrompt
+        let currentInputPrompt
+        let currentCheckPrompt
+        let currentConfirmationPrompt
+        let selected
+        let selectedDivs = []
+        let pieceC = {}
+        let isTurn = false
+        let arrows = new Map()
+        let circles = new Map()
+        let rightdiv1
+        let rightdiv2
+        let middleSquare
+        let spectating = true
+
+        /*<span style="
+            font-size: 60%;
+            color: rgb(140, 140, 140);
+        ">(you)</span>*/
+        /*
+            <div id="promptBG" class="promptBG">
+                <div id="promptD" class="promptDiv">
+                    <p id="promptTitle" class="promptTitle">Disconnected</p>
+                    <p id="promptText" class="promptT">WebSocket disconnected unexpectedly. Please reload this page.</p>
+
+                    <div class="promptBottom"><button id="promptClose" class="promptButton">Close</button></div>
+                </div>
+            </div>
+        */
+
+        function rd(min, max) {
+            return Math.round(Math.random() * (max - min) + min)
+        }
+
+        function rdstring(len) {
+            var i
+            var cstr = ""
+            var dic = "abcdef0123456789"
+            for (i = 0; i < len; i++) {
+                var randomnumber = rd(0, dic.length)
+                cstr += dic.substring(randomnumber, randomnumber + 1)
+            }
+            return cstr
+        }
+
+        class ConfirmationPrompt {
+            constructor(title, text) {
+                let bg = document.createElement("div")
+                let div = document.createElement("div")
+                let Ptitle = document.createElement("p")
+                let Ptext = document.createElement("p")
+                let Pbottom = document.createElement("div")
+                let close = document.createElement("button")
+                let ok = document.createElement("button")
+                bg.className = "promptBG"
+                div.className = "promptDiv"
+                Ptitle.className = "promptTitle"
+                Ptext.className = "promptT"
+                close.className = "promptButton"
+                ok.className = "promptButton"
+                Pbottom.className = "promptBottom"
+                Ptitle.textContent = title
+                Ptext.textContent = text
+                ok.textContent = "Confirm"
+                close.textContent = "Cancel"
+                bg.appendChild(div)
+                div.appendChild(Ptitle)
+                div.appendChild(Ptext)
+                div.appendChild(Pbottom)
+                Pbottom.appendChild(ok)
+                Pbottom.appendChild(close)
+                this.title = title
+                this.text = text
+                this.element = bg
+                this.div = div
+                let original = this
+                ok.onclick = function () {
+                    original.onclose(true)
+                    original.close()
+                }
+                close.onclick = function () {
+                    original.onclose(false)
+                    original.close()
+                }
+            }
+
+            open() {
+                document.body.appendChild(this.element)
+            }
+
+            close() {
+                let orig = this
+                this.element.style.animation = "fadeOutBG .24s forwards"
+                this.div.style.animation = "fadeOut .24s forwards"
+                setTimeout(() => {
+                    orig.element.remove()
+                }, 260)
+            }
+        }
+
+        class TextPrompt {
+            constructor(title, text) {
+                let bg = document.createElement("div")
+                let div = document.createElement("div")
+                let Ptitle = document.createElement("p")
+                let Ptext = document.createElement("p")
+                let Pbottom = document.createElement("div")
+                let close = document.createElement("button")
+                bg.className = "promptBG"
+                div.className = "promptDiv"
+                Ptitle.className = "promptTitle"
+                Ptext.className = "promptT"
+                close.className = "promptButton"
+                Pbottom.className = "promptBottom"
+                Ptitle.textContent = title
+                Ptext.textContent = text
+                close.textContent = "Close"
+                bg.appendChild(div)
+                div.appendChild(Ptitle)
+                div.appendChild(Ptext)
+                div.appendChild(Pbottom)
+                Pbottom.appendChild(close)
+                this.title = title
+                this.text = text
+                this.element = bg
+                this.div = div
+                let original = this
+                close.onclick = function () {
+                    original.onclose()
+                    original.close()
+                }
+            }
+
+            open() {
+                document.body.appendChild(this.element)
+            }
+
+            close() {
+                let orig = this
+                this.element.style.animation = "fadeOutBG .24s forwards"
+                this.div.style.animation = "fadeOut .24s forwards"
+                setTimeout(() => {
+                    orig.element.remove()
+                }, 260)
+            }
+        }
+
+        class InputPrompt {
+            constructor(title, placeholder, max) {
+                let bg = document.createElement("div")
+                let div = document.createElement("div")
+                let Ptitle = document.createElement("p")
+                let Pinput = document.createElement("input")
+                let Pbottom = document.createElement("div")
+                let cancel = document.createElement("button")
+                let complete = document.createElement("button")
+                bg.className = "promptBG"
+                div.className = "promptDiv"
+                Ptitle.className = "promptTitle"
+                Pinput.className = "promptInput"
+                cancel.className = "promptButton"
+                complete.className = "promptButton"
+                Pbottom.className = "promptBottom"
+                Ptitle.textContent = title
+                Pinput.placeholder = placeholder
+                complete.textContent = "Done"
+                cancel.textContent = "Cancel"
+                bg.appendChild(div)
+                div.appendChild(Ptitle)
+                div.appendChild(Pinput)
+                div.appendChild(Pbottom)
+                Pbottom.appendChild(complete)
+                Pbottom.appendChild(cancel)
+                this.title = title
+                this.input = Pinput
+                this.element = bg
+                this.div = div
+                if (max) {
+                    Pinput.maxLength = max
+                }
+                let original = this
+                complete.onclick = function () {
+                    original.onfinish(Pinput.value)
+                    original.close()
+                }
+                cancel.onclick = function () {
+                    original.onfinish(false)
+                    original.close()
+                }
+            }
+
+            open() {
+                document.body.appendChild(this.element)
+            }
+
+            close() {
+                let orig = this
+                this.element.style.animation = "fadeOutBG .24s forwards"
+                this.div.style.animation = "fadeOut .24s forwards"
+                setTimeout(() => {
+                    orig.element.remove()
+                }, 260)
+            }
+        }
+
+        class SectionPrompt {
+            constructor(title, sections) {
+                let bg = document.createElement("div")
+                let div = document.createElement("div")
+                let Ptitle = document.createElement("p")
+                let Pbottom = document.createElement("div")
+                let cancel = document.createElement("button")
+                let complete = document.createElement("button")
+                bg.className = "promptBG"
+                div.className = "promptDiv settings"
+                Ptitle.className = "promptTitle"
+                cancel.className = "promptButton"
+                complete.className = "promptButton"
+                Pbottom.className = "promptBottom"
+                Ptitle.textContent = title
+                complete.textContent = "Done"
+                cancel.textContent = "Cancel"
+                complete.type = "submit"
+                bg.appendChild(div)
+                div.appendChild(Ptitle)
+                Pbottom.appendChild(complete)
+                Pbottom.appendChild(cancel)
+                this.title = title
+                this.element = bg
+                this.div = div
+                let original = this
+                let elements = {}
+
+                for (const [key, value] of Object.entries(sections)) {
+                    let subtitle = document.createElement("p")
+                    subtitle.textContent = key
+                    subtitle.className = "promptSubTitle"
+                    div.appendChild(subtitle)
+                    elements[key] = {}
+
+                    for (const [k, v] of Object.entries(value)) {
+                        let r = Math.random().toString()
+                        let input = document.createElement("input")
+                        input.className = "promptCheck"
+                        input.type = "checkbox"
+                        input.checked = v.value
+                        input.id = r
+                        let label = document.createElement("label")
+                        label.className = "promptT"
+                        label.htmlFor = r
+                        label.textContent = v.description
+                        elements[key][k] = input
+                        div.appendChild(input)
+                        div.appendChild(label)
+                        div.appendChild(document.createElement("br"))
+                        div.appendChild(document.createElement("br"))
+                    }
+                    div.appendChild(document.createElement("br"))
+                }
+
+                div.appendChild(Pbottom)
+
+                complete.onclick = function () {
+                    let elContent = {}
+                    for (const [key, value] of Object.entries(sections)) {
+                        elContent[key] = {}
+                        for (const [k, v] of Object.entries(elements[key])) {
+                            console.log(v.checked, key)
+                            elContent[key][k] = {
+                                value: v.checked,
+                                description: sections[key][k].description
+                            }
+                        }
+                    }
+                    original.onfinish(elContent)
+                    original.close()
+                }
+                cancel.onclick = function () {
+                    original.onfinish(false)
+                    original.close()
+                }
+            }
+
+            open() {
+                document.body.appendChild(this.element)
+            }
+
+            close() {
+                let orig = this
+                this.element.style.animation = "fadeOutBG .24s forwards"
+                this.div.style.animation = "fadeOut .24s forwards"
+                setTimeout(() => {
+                    orig.element.remove()
+                }, 260)
+            }
+        }
+
+        function doesWorkChar(str) {
+            if (str.charCodeAt(0) > 127) return false
+            if (str === " ") return true
+            return isNaN(Number(str)) ? (str.toLowerCase() !== str.toUpperCase() ? true : (str === "_" ? true : (str === "-" ? true : false))) : true
+        }
+
+        function doesWork(str) {
+            let can = true
+            let errored = ""
+            str.split("").forEach(function (v) {
+                if (!can) return;
+                can = doesWorkChar(v)
+                if (!can) {
+                    errored = v
+                }
+            })
+            return { can: can, err: errored }
+        }
+
+        function getReal(div, piece, banana) {
+            if (piece) {
+                div = piece.tparent
+            }
+            if (banana) {
+                div = banana.tparent
+            }
+            if (div.id.startsWith("PSEL:")) {
+                div = document.getElementById("P:" + div.id.substring(5))
+            }
+            if (div.id.startsWith("POS:")) {
+                div = document.getElementById("P:" + div.id.substring(4))
+            }
+            return div
+        }
+
+        function prompt(title, placeholder, max, callback) {
+            if (currentInputPrompt) {
+                currentInputPrompt.onfinish(false)
+                currentInputPrompt.close()
+                currentInputPrompt = null
+            }
+            let newPrompt = new InputPrompt(title, placeholder, max)
+            newPrompt.onfinish = function (inp) {
+                if (currentInputPrompt === newPrompt) {
+                    currentInputPrompt = null
+                }
+                callback(inp)
+            }
+            currentPrompt = newPrompt
+            newPrompt.open()
+        }
+
+        function sectionPrompt(title, sections, callback) {
+            if (currentCheckPrompt) {
+                currentCheckPrompt.close()
+                currentCheckPrompt = null
+            }
+            let newPrompt = new SectionPrompt(title, sections)
+            newPrompt.onfinish = function (inp) {
+                if (currentCheckPrompt === newPrompt) {
+                    currentCheckPrompt = null
+                }
+                callback(inp)
+            }
+            currentCheckPrompt = newPrompt
+            newPrompt.open()
+        }
+
+        function confirmationPrompt(title, desc, callback) {
+            if (currentConfirmationPrompt) {
+                currentConfirmationPrompt.onclose(false)
+                currentConfirmationPrompt.close()
+                currentConfirmationPrompt = null
+            }
+            let newPrompt = new ConfirmationPrompt(title, desc)
+            newPrompt.onclose = function (s) {
+                if (currentConfirmationPrompt == newPrompt) {
+                    currentConfirmationPrompt = null
+                }
+                return callback(s)
+            }
+            currentConfirmationPrompt = newPrompt
+            newPrompt.open()
+        }
+
+        function showMessage(title, text) {
+            if (currentTextPrompt) {
+                currentTextPrompt.close()
+                currentTextPrompt = null
+            }
+            let newPrompt = new TextPrompt(title, text)
+            newPrompt.onclose = function () {
+                if (currentTextPrompt === newPrompt) {
+                    currentTextPrompt = null
+                }
+            }
+            currentTextPrompt = newPrompt
+            newPrompt.open()
+        }
+
+        function getImageForPiece(piece) {
+            let translate = {
+                rook: "rook",
+                pawn: "fish",
+                horse: "monkey",
+                bishop: "elephant",
+                queen: "queen",
+                king: "king"
+            }
+            let str = translate[piece.type] + (piece.owner === "host" ? "White" : "Black")
+            if (piece.queen) {
+                str = (piece.owner === "host" ? "white" : "black") + "FishQueen"
+            }
+            return "https://cdn.mau0.workers.dev/cdn/" + str + ".png"
+        }
+
+        function allowed(div, div2) {
+            if (!div) return false
+            if (!div2) return false
+            let a1 = false
+            let a2 = false
+            if (div2.id.startsWith("P:") || div2.id.startsWith("R:") || div2.id.startsWith("L:")) {
+                a1 = true
+            }
+            if (div.id.startsWith("P:") || div.id.startsWith("R:") || div.id.startsWith("L:")) {
+                a2 = true
+            }
+            if (a1 && a2) return true
+        }
+
+        function getCoords(div) {
+            return {
+                x: parseInt(div.style.left.substring(0, div.style.left.length - 2)),
+                y: parseInt(div.style.top.substring(0, div.style.top.length - 2))
+            }
+        }
+
+        function loadBoard(data) {
+            if (!rules.noBear && !(spectating && !data.middle)) {
+                MP.style.display = ""
+                let img = document.createElement("img")
+                // <img src="https://cdn.mau0.workers.dev/cdn/bearPiece.png" class="piece bearMiddle">
+                img.src = "https://cdn.mau0.workers.dev/cdn/bearPiece.png"
+                img.className = "piece bearMiddle"
+                MPOS.appendChild(img)
+                middleSquare = {
+                    x: 4.5,
+                    y: 4.5,
+                    tx: 4.5,
+                    ty: 4.5,
+                    ownerOf: true,
+                    owner: "any",
+                    type: "bear",
+                    element: img,
+                    parent: document.getElementById("MPOS"),
+                    tparent: document.getElementById("MP")
+                }
+            } else {
+                MP.style.display = "none"
+            }
+            for (const [key, value] of Object.entries(data.general)) {
+                if (key === "4.5:4.5") continue
+                let newImg = document.createElement("img")
+                newImg.src = value.type === "bear" ? "https://cdn.mau0.workers.dev/cdn/bearPiece.png" : getImageForPiece(value)
+                newImg.draggable = false
+                newImg.className = "piece" + (value.type === "bear" ? " bearPiece" : "")
+                let coords = key.split(":")
+                let x = isOpposite ? 9 - parseInt(coords[0]) : parseInt(coords[0])
+                let y = isOpposite ? 9 - parseInt(coords[1]) : parseInt(coords[1])
+                let banana = document.createElement("img")
+                pieces.set(newImg, {
+                    ownerOf: isOpposite ? value.owner === "enemy" : value.owner === "host",
+                    owner: value.owner,
+                    type: value.type,
+                    element: newImg,
+                    parent: document.getElementById("POS:" + x + ":" + y),
+                    tparent: document.getElementById("P:" + x + ":" + y),
+                    banana: banana,
+                    x: x,
+                    y: y,
+                    tx: parseInt(coords[0]),
+                    ty: parseInt(coords[1])
+                })
+                pieceC[x + ":" + y] = pieces.get(newImg)
+                banana.draggable = false
+                banana.className = value.type === "king" ? "banana" : "monkeyBanana"
+                banana.style.display = value.banana ? "block" : "none"
+                banana.src = "https://cdn.mau0.workers.dev/cdn/banana.png"
+                if (spectating ? false : !(isOpposite ? value.owner === "enemy" : value.owner === "host")) {
+                    newImg.style.cursor = "default"
+                    banana.style.cursor = "default"
+                }
+                bananas.set(banana, pieces.get(newImg))
+                document.getElementById("POS:" + x + ":" + y).appendChild(newImg)
+                document.getElementById("POS:" + x + ":" + y).appendChild(banana)
+            }
+            for (let x = 1; x < 9; x++) {
+                for (let y = 1; y < 9; y++) {
+                    let value = pieceC[x + ":" + y]
+                    if (!value) {
+                        pieceC[x + ":" + y] = { empty: true, x: x, y: y, tx: isOpposite ? 9 - x : x, ty: isOpposite ? 9 - y : y }
+                    }
+                }
+            }
+        }
+
+        function clearRules() {
+            rules = {}
+            variants.innerHTML = ""
+        }
+
+        function loadRules(m) { // m is the rules, can't use rules variable due to js variable limits
+            clearRules()
+            for (const [k, rule] of Object.entries(m)) {
+                rules[rule.id] = true
+                let container = document.createElement("div")
+                container.className = "variantContainer"
+                let ruleI = document.createElement("img")
+                ruleI.src = "https://cdn.mau0.workers.dev/cdn/" + rule.img
+                ruleI.title = rule.desc + " (variant)"
+                ruleI.className = "variantImage"
+                container.appendChild(ruleI)
+                variants.appendChild(container)
+            }
+        }
+
+        function getPiece(x, y, monkey) {
+            if ((x < 1 || x > 8) && monkey && y > 3 && y < 6) {
+                return pieceC[x + ":" + y]
+            }
+            if (x > 8 || x < 1 || y > 8 || y < 1) {
+                console.log(x, y)
+                return
+            }
+            return pieceC[x + ":" + y] || {
+                empty: true,
+                x: x,
+                y: y,
+                tx: isOpposite ? 9 - x : x,
+                ty: isOpposite ? 9 - y : y
+            }
+        }
+
+        function getMoveset(obj) {
+            let x = obj.x
+            let y = obj.y
+            let can = (object, canKill) => {
+                if (!object) return false
+                let st1 = object.ownerOf ? false : canKill
+                if (object.owner === "any") {
+                    st1 = canKill
+                }
+                let state = object ? (object.empty ? object : (st1 && object || false)) : object
+                return state
+            }
+            let add = (x, y) => isOpposite ? x - y : x + y
+            let clean = (obj) => {
+                for (const [key, value] of Object.entries(obj)) {
+                    if (!value) {
+                        delete obj[key]
+                    }
+                }
+            }
+            let getLocal = (obj) => {
+                let nobj = {}
+                for (const [key, value] of Object.entries(obj)) {
+                    let coords = key.split(":")
+                    let x = isOpposite ? 9 - parseInt(coords[0]) : parseInt(coords[0])
+                    let y = isOpposite ? 9 - parseInt(coords[1]) : parseInt(coords[1])
+                    nobj[x + ":" + y] = value
+                }
+                return nobj
+            }
+
+            if (!isTurn) {
+                return {
+                    true: {},
+                    local: {}
+                }
+            }
+
+            let set = {}
+            let ty = obj.ty
+            let tx = obj.tx
+            let _x
+            let _y
+
+            let queenMove = function () {
+                let oldX = obj.x
+                _x = obj.x
+                _y = obj.y
+                // WARNING: CODE HAZARD BELOW, DO NOT READ, EYES WILL BE BURNED UPON FURTHER INSPECTION.
+                for (_x = obj.x + 1; _x < 9; _x++) {
+                    if (can(getPiece(_x, _y), true)) {
+                        let X = isOpposite ? 9 - _x : _x
+                        let Y = isOpposite ? 9 - _y : _y
+                        let piece = getPiece(_x, _y)
+                        set[X + ":" + Y] = piece
+                        if (piece && !piece.empty && !piece.ownerOf) break
+                        if (piece && !piece.empty && piece.type === "bear") break
+                    } else {
+                        break
+                    }
+                }
+                _x = oldX
+                for (_x = obj.x - 1; _x > 0; _x--) {
+                    if (can(getPiece(_x, _y), true)) {
+                        let X = isOpposite ? 9 - _x : _x
+                        let Y = isOpposite ? 9 - _y : _y
+                        let piece = getPiece(_x, _y)
+                        set[X + ":" + Y] = piece
+                        if (piece && !piece.empty && !piece.ownerOf) break
+                        if (piece && !piece.empty && piece.type === "bear") break
+                    } else {
+                        break
+                    }
+                }
+                _x = oldX
+                for (_y = obj.y + 1; _y < 9; _y++) {
+                    if (can(getPiece(_x, _y), true)) {
+                        let X = isOpposite ? 9 - _x : _x
+                        let Y = isOpposite ? 9 - _y : _y
+                        let piece = getPiece(_x, _y)
+                        set[X + ":" + Y] = piece
+                        if (piece && !piece.empty && !piece.ownerOf) break
+                        if (piece && !piece.empty && piece.type === "bear") break
+                    } else {
+                        break
+                    }
+                }
+                for (_y = obj.y - 1; _y > 0; _y--) {
+                    console.log(getPiece(_x, _y))
+                    if (can(getPiece(_x, _y), true)) {
+                        let X = isOpposite ? 9 - _x : _x
+                        let Y = isOpposite ? 9 - _y : _y
+                        let piece = getPiece(_x, _y)
+                        set[X + ":" + Y] = piece
+                        if (piece && !piece.empty && !piece.ownerOf) break
+                        if (piece && !piece.empty && piece.type === "bear") break
+                    } else {
+                        break
+                    }
+                }
+
+                // diagonal movement
+                _x = oldX
+                for (_y = obj.y - 1; _y > 0; _y--) {
+                    _x += 1
+                    if (_x > 8) break
+                    if (can(getPiece(_x, _y), true)) {
+                        let X = isOpposite ? 9 - _x : _x
+                        let Y = isOpposite ? 9 - _y : _y
+                        let piece = getPiece(_x, _y)
+                        set[X + ":" + Y] = piece
+                        if (piece && !piece.empty && !piece.ownerOf) break
+                        if (piece && !piece.empty && piece.type === "bear") break
+                    } else {
+                        break
+                    }
+                }
+                _x = oldX
+                for (_y = obj.y - 1; _y > 0; _y--) {
+                    _x -= 1
+                    if (_x < 1) break
+                    if (can(getPiece(_x, _y), true)) {
+                        let X = isOpposite ? 9 - _x : _x
+                        let Y = isOpposite ? 9 - _y : _y
+                        let piece = getPiece(_x, _y)
+                        set[X + ":" + Y] = piece
+                        if (piece && !piece.empty && !piece.ownerOf) break
+                        if (piece && !piece.empty && piece.type === "bear") break
+                    } else {
+                        break
+                    }
+                }
+                _x = oldX
+                for (_y = obj.y + 1; _y < 9; _y++) {
+                    _x += 1
+                    if (_x > 8) break
+                    if (can(getPiece(_x, _y), true)) {
+                        let X = isOpposite ? 9 - _x : _x
+                        let Y = isOpposite ? 9 - _y : _y
+                        let piece = getPiece(_x, _y)
+                        set[X + ":" + Y] = piece
+                        if (piece && !piece.empty && !piece.ownerOf) break
+                        if (piece && !piece.empty && piece.type === "bear") break
+                    } else {
+                        break
+                    }
+                }
+                _x = oldX
+                for (_y = obj.y + 1; _y < 9; _y++) {
+                    _x -= 1
+                    if (_x < 1) break
+                    if (can(getPiece(_x, _y), true)) {
+                        let X = isOpposite ? 9 - _x : _x
+                        let Y = isOpposite ? 9 - _y : _y
+                        let piece = getPiece(_x, _y)
+                        set[X + ":" + Y] = piece
+                        if (piece && !piece.empty && !piece.ownerOf) break
+                        if (piece && !piece.empty && piece.type === "bear") break
+                    } else {
+                        break
+                    }
+                }
+                clean(set)
+                return {
+                    true: set,
+                    local: getLocal(set)
+                }
+            }
+
+            switch (obj.type) {
+                case "pawn":
+                    if (obj.queen) {
+                        return queenMove()
+                    }
+                    set[add(tx, 1) + ":" + ty] = can(getPiece(x + 1, y))
+                    set[add(tx, -1) + ":" + ty] = can(getPiece(x - 1, y))
+                    set[add(tx, 1) + ":" + add(ty, -1)] = can(getPiece(x + 1, y - 1), true)
+                    set[add(tx, -1) + ":" + add(ty, -1)] = can(getPiece(x - 1, y - 1), true)
+                    set[tx + ":" + add(ty, -1)] = can(getPiece(x, y - 1))
+                    clean(set)
+                    return {
+                        true: set,
+                        local: getLocal(set)
+                    }
+                    break
+                case "bishop":
+                    set[add(tx, 2) + ":" + add(ty, -2)] = can(getPiece(x + 2, y - 2), true)
+                    set[add(tx, -2) + ":" + add(ty, -2)] = can(getPiece(x - 2, y - 2), true)
+                    set[add(tx, 2) + ":" + add(ty, 2)] = can(getPiece(x + 2, y + 2), true)
+                    set[add(tx, -2) + ":" + add(ty, 2)] = can(getPiece(x - 2, y + 2), true)
+                    console.log(set)
+                    clean(set)
+                    return {
+                        true: set,
+                        local: getLocal(set)
+                    }
+                    break
+                case "queen":
+                    return queenMove()
+                    break
+                case "horse":
+                    let XX = isOpposite ? 9 - obj.x : obj.x
+                    let XY = isOpposite ? 9 - obj.y : obj.y
+                    let dirs = [
+                        [0, -1],
+                        [0, 1],
+                        [-1, 1],
+                        [1, 1],
+                        [1, -1],
+                        [-1, -1],
+                        [-1, 0],
+                        [1, 0]
+                    ]
+                    let doDir = function (xDir, yDir, reset, canKill, depth) {
+                        if (reset) {
+                            XX = isOpposite ? 9 - obj.x : obj.x
+                            XY = isOpposite ? 9 - obj.y : obj.y
+                        }
+                        depth = depth || 1
+                        XX = add(XX, xDir)
+                        XY = add(XY, yDir)
+                        if (set[XX + ":" + XY]) {
+                            return
+                        }
+                        if (XX > 8 || XY > 8 || XX < 1 || XY < 1) {
+                            if (XY > 3 && XY < 6) {
+                                if (XX < 0) return
+                                if (XX > 9) return
+                            } else {
+                                return
+                            }
+                        }
+                        let piece = getPiece(isOpposite ? 9 - XX : XX, isOpposite ? 9 - XY : XY, true)
+                        let oldX = XX
+                        let oldY = XY
+
+                        if (canKill) {
+                            if (can(piece, true) && XX < 9 && XX > 0) {
+                                set[XX + ":" + XY] = piece
+                            }
+                        }
+
+                        if (piece && piece.empty && canKill && rules.newMonkey) {
+                            dirs.forEach((direction) => {
+                                if (direction[0] === -xDir && direction[1] === -yDir) return
+                                if (direction[0] === xDir && direction[1] === yDir) return
+                                if (XX > 8 || XY < 1) return
+                                XX = add(XX, direction[0])
+                                XY = add(XY, direction[1])
+                                let piece = getPiece(isOpposite ? 9 - XX : XX, isOpposite ? 9 - XY : XY)
+                                if (piece && !set[XX + ":" + XY] && !piece.empty) {
+                                    XX = oldX
+                                    XY = oldY
+                                    doDir(direction[0], direction[1], false, !canKill, depth + 1)
+                                }
+                                XX = oldX
+                                XY = oldY
+                            })
+                        }
+
+                        if (piece && (canKill ? piece.empty : !piece.empty)) {
+                            if (XX > 8 || XX < 1) {
+                                if (piece.type === "king" && piece.ownerOf && piece.lbanana && depth > 1 && yDir === 0) {
+                                    console.log(XY)
+                                    set[XX + ":" + XY] = piece
+                                }
+                                return
+                            }
+                            doDir(xDir, yDir, false, !canKill, depth + 1)
+                        } else if (piece && piece.empty && reset) {
+                            set[XX + ":" + XY] = piece
+                        }
+                    }
+                    doDir(0, -1, true, false)
+                    doDir(0, 1, true, false)
+                    doDir(-1, 1, true, false)
+                    doDir(1, 1, true, false)
+                    doDir(1, -1, true, false)
+                    doDir(-1, -1, true, false)
+                    doDir(-1, 0, true, false)
+                    doDir(1, 0, true, false)
+                    console.log(getLocal(set))
+                    return {
+                        true: set,
+                        local: getLocal(set)
+                    }
+                    break
+                case "king":
+                    for (_x = obj.x - 1; _x < obj.x + 2; _x++) {
+                        for (_y = obj.y - 1; _y < obj.y + 2; _y++) {
+                            if (can(getPiece(_x, _y), true)) {
+                                let X = isOpposite ? 9 - _x : _x
+                                let Y = isOpposite ? 9 - _y : _y
+                                set[X + ":" + Y] = getPiece(_x, _y)
+                                console.log(X, Y)
+                            }
+                        }
+                    }
+                    clean(set)
+                    return {
+                        true: set,
+                        local: getLocal(set)
+                    }
+
+                    break
+                case "bear":
+                    if (x === 4.5) {
+                        for (_x = 4; _x < 6; _x++) {
+                            for (_y = 4; _y < 6; _y++) {
+                                if (can(getPiece(_x, _y), false)) {
+                                    let X = isOpposite ? 9 - _x : _x
+                                    let Y = isOpposite ? 9 - _y : _y
+                                    set[X + ":" + Y] = getPiece(_x, _y)
+                                }
+                            }
+                        }
+                    } else {
+                        for (_x = 1; _x < 9; _x++) {
+                            for (_y = 1; _y < 9; _y++) {
+                                let piece = getPiece(_x, _y)
+                                if (can(piece, false) && Math.abs(x - _x) <= 1 && Math.abs(y - _y) <= 1) {
+                                    let X = isOpposite ? 9 - _x : _x
+                                    let Y = isOpposite ? 9 - _y : _y
+                                    console.log(X, Y, _x, _y)
+                                    set[X + ":" + Y] = piece
+                                }
+                            }
+                        }
+                    }
+                    clean(set)
+                    return {
+                        true: set,
+                        local: getLocal(set)
+                    }
+                    break
+                case "rook":
+                    console.log(hasDied)
+                    for (_x = 1; _x < 9; _x++) {
+                        for (_y = 1; _y < 9; _y++) {
+                            let canKill = hasDied ? Math.abs(x - _x) <= 1 && Math.abs(y - _y) <= 1 : false
+                            let piece = getPiece(_x, _y)
+                            if (can(piece, canKill)) {
+                                if (canKill) {
+                                    if (Math.abs(x - _x) === 1 && Math.abs(y - _y) === 1 && rules.noDiagonalRook && !piece.empty) {
+                                        continue
+                                    }
+                                }
+                                let X = isOpposite ? 9 - _x : _x
+                                let Y = isOpposite ? 9 - _y : _y
+                                set[X + ":" + Y] = getPiece(_x, _y)
+                            }
+                        }
+                    }
+                    clean(set)
+                    return {
+                        true: set,
+                        local: getLocal(set)
+                    }
+                    break
+            }
+
+            return {
+                true: {},
+                local: {}
+            }
+        }
+
+        document.oncontextmenu = function (ev) {
+            console.log(ev.target)
+            if (boardC.contains(ev.target) || ev.target === boardC) {
+                ev.preventDefault()
+            }
+        }
+
+        document.onmousedown = function (ev) {
+            if (ev.button !== 2) return
+            if (boardC.contains(ev.target)) {
+                rightdiv1 = ev.target
+            }
+        }
+
+        document.onmouseup = function (ev) {
+            if (ev.button !== 2) return
+            if (boardC.contains(ev.target)) {
+                if (!rightdiv1) return
+                rightdiv2 = ev.target
+                let div = getReal(rightdiv1, pieces.get(rightdiv1), bananas.get(rightdiv1))
+                let div2 = getReal(rightdiv2, pieces.get(rightdiv2), bananas.get(rightdiv2))
+                rightdiv1 = null
+                rightdiv2 = null
+                if (div === div2) return
+                if (arrows.get(div.id + ":" + div2.id)) {
+                    let arrow = arrows.get(div.id + ":" + div2.id)
+                    arrow.arrowElement.remove()
+                    arrows.delete(div.id + ":" + div2.id)
+                    return
+                }
+                if (allowed(div, div2)) {
+                    let divCoords = getCoords(div)
+                    let divCoords2 = getCoords(div2)
+                    let arrow = document.createElementNS("http://www.w3.org/2000/svg", "line")
+                    arrow.setAttribute("stroke", "rgba(255, 170, 0)")
+                    arrow.setAttribute("stroke-width", "9")
+                    arrow.setAttribute("marker-end", "url(#arrow)")
+                    arrow.setAttribute("x2", divCoords2.x + 5)
+                    arrow.setAttribute("y2", divCoords2.y + 7)
+                    arrow.setAttribute("x1", divCoords.x + 5)
+                    arrow.setAttribute("y1", divCoords.y + 7)
+                    arrow.style.overflow = "visible"
+                    arrowContainer.appendChild(arrow)
+                    arrows.set(div.id + ":" + div2.id, {
+                        origin: div,
+                        new: div2,
+                        arrowElement: arrow
+                    })
+                }
+            }
+        }
+
+        document.addEventListener("click", function (event) {
+            if (event.button !== 0) return
+            let oldS = selected
+            let spiece = pieces.get(event.target) || bananas.get(event.target)
+            if (boardC.contains(event.target)) {
+                arrows.forEach((value) => {
+                    value.arrowElement.remove()
+                })
+                arrows = new Map()
+            }
+            if (middleSquare && event.target === middleSquare.element && !rules.noBear) {
+                if (selected) {
+                    if (!moveIndex.get(selected.tparent)) {
+                        selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                    }
+                }
+                selectedDivs.forEach((div) => {
+                    div.remove()
+                })
+                selectedDivs = []
+                selected = middleSquare
+                selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0.5)"
+                if (!spectating) {
+                    let moveset = getMoveset(selected)
+                    for (const [key, value] of Object.entries(moveset.local)) {
+                        let newDiv = document.createElement("div")
+                        let piece = value
+
+                        newDiv.className = "moveSelect"
+                        newDiv.id = "PSEL:" + key
+                        if (!piece.empty) {
+                            newDiv.className = "pieceSelect"
+                        }
+                        selectedDivs.push(newDiv)
+                        if (piece.isInJail) {
+                            console.log("wow", piece.side, piece.x, piece.y)
+                            document.getElementById(piece.side + "POS:" + piece.mx + ":" + piece.my).appendChild(newDiv)
+                        } else {
+                            document.getElementById("POS:" + key).appendChild(newDiv)
+                        }
+                    }
+                }
+                return
+            }
+            if (spiece && spiece.owner === "any" && !spectating) {
+                if (selected) {
+                    let coords = [spiece.x, spiece.y]
+                    let canMove = getMoveset(selected).local[coords[0] + ":" + coords[1]]
+                    if (canMove) {
+                        let x = isOpposite ? 9 - coords[0] : coords[0]
+                        let y = isOpposite ? 9 - coords[1] : coords[1]
+                        isTurn = false
+                        if (!moveIndex.get(selected.tparent)) {
+                            selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                        }
+                        selected.element.style["opacity"] = "0.5"
+                        selected = null
+                        selectedDivs.forEach((div) => {
+                            div.remove()
+                        })
+                        selectedDivs = []
+                        hasDied = false
+                        return
+                    }
+                }
+            }
+            if (spiece && (spectating ? true : spiece.ownerOf) && spiece !== selected && !spiece.isInJail) {
+                if (selected) {
+                    if (!moveIndex.get(selected.tparent)) {
+                        selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                    }
+                }
+                selectedDivs.forEach((div) => {
+                    div.remove()
+                })
+                selectedDivs = []
+                selected = spiece
+                selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0.5)"
+                if (!spectating) {
+                    let moveset = getMoveset(selected)
+                    for (const [key, value] of Object.entries(moveset.local)) {
+                        let newDiv = document.createElement("div")
+                        let piece = value
+
+                        newDiv.className = "moveSelect"
+                        newDiv.id = "PSEL:" + key
+                        if (!piece.empty) {
+                            newDiv.className = "pieceSelect"
+                        }
+                        selectedDivs.push(newDiv)
+                        if (piece.isInJail) {
+                            console.log("wow", piece.side, piece.x, piece.y)
+                            document.getElementById(piece.side + "POS:" + piece.mx + ":" + piece.my).appendChild(newDiv)
+                        } else {
+                            document.getElementById("POS:" + key).appendChild(newDiv)
+                        }
+                    }
+                }
+            } else {
+                if (selected) {
+                    let div = event.target
+                    let isA = spiece && !(spectating ? true : spiece.ownerOf)
+                    if (div.id && (div.id.startsWith("P:") || div.id.startsWith("PSEL:") || div.id.startsWith("POS:")) || isA) {
+                        let coords
+                        if (isA) {
+                            let piece = spiece
+                            if (piece.isInJail) return;
+                            coords = [piece.x, piece.y]
+                        } else {
+                            coords = div.id.split(":")
+                            coords.shift()
+                        }
+                        if (spectating) {
+                            if (!moveIndex.get(selected.tparent)) {
+                                selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                            }
+                            selected = null
+                            selectedDivs.forEach((div) => {
+                                div.remove()
+                            })
+                            selectedDivs = []
+                            return
+                        }
+                        let canMove = getMoveset(selected).local[coords[0] + ":" + coords[1]]
+                        if (!canMove) {
+                            if (!moveIndex.get(selected.tparent)) {
+                                selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                            }
+                            selected = null
+                            selectedDivs.forEach((div) => {
+                                div.remove()
+                            })
+                            selectedDivs = []
+                        } else {
+                            let x = isOpposite ? 9 - coords[0] : coords[0]
+                            let y = isOpposite ? 9 - coords[1] : coords[1]
+                            console.log(isOpposite, x, y, selected.tx, selected.ty)
+                            isTurn = false
+                            if (!moveIndex.get(selected.tparent)) {
+                                selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                            }
+                            selected.element.style["opacity"] = "0.5"
+                            selected = null
+                            selectedDivs.forEach((div) => {
+                                div.remove()
+                            })
+                            selectedDivs = []
+                            hasDied = false
+                        }
+                    } else {
+                        if (!moveIndex.get(selected.tparent)) {
+                            selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                        }
+                        selected = null
+                        selectedDivs.forEach((div) => {
+                            div.remove()
+                        })
+                        selectedDivs = []
+                    }
+                }
+            }
+            if (selected === oldS && selected && event.target === selected.element) {
+                if (!moveIndex.get(selected.tparent)) {
+                    selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                }
+                selected = null
+                selectedDivs.forEach((div) => {
+                    div.remove()
+                })
+                selectedDivs = []
+            }
+        })
+
+        /*
+
+        document.addEventListener("dragstart", function (event) {
+            if (pieces.get(event.target) && pieces.get(event.target).ownerOf) {
+                if (selected) {
+                    selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                }
+                selectedDivs.forEach((div) => {
+                    div.remove()
+                })
+                selected = pieces.get(event.target)
+                selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0.5)"
+                selected.element.style.cursor = "grabbing"
+                let moveset = getMoveset(selected)
+                for (const [key, value] of Object.entries(moveset.local)) {
+                    let newDiv = document.createElement("div")
+                    let piece = value
+
+                    newDiv.className = "moveSelect"
+                    if (piece.ownerOf) {
+                        newDiv.className = "pieceSelect"
+                    }
+                    selectedDivs.push(newDiv)
+
+                    document.getElementById("POS:" + key).appendChild(newDiv)
+                }
+            } else {
+                if (selected) {
+                    let div = event.target
+                    if (div.id && div.id.startsWith("P:")) {
+                        let coords = div.id.split(":").shift()
+                        let canMove = getMoveset(selected).local[coords[0] + ":" + coords[1]]
+                        if (!canMove) {
+                            selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                            selected = null
+                            selectedDivs.forEach((div) => {
+                                div.remove()
+                            })
+                        }
+                    } else {
+                        selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                        selected = null
+                        selectedDivs.forEach((div) => {
+                            div.remove()
+                        })
+                    }
+                }
+            }
+        })
+
+        document.addEventListener("dragend", function (event) {
+            if (pieces.get(event.target) && pieces.get(event.target).ownerOf && selected === pieces.get(event.target)) {
+                selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                selected.element.style.cursor = "pointer"
+                selected.element.style.position = ""
+                selected.element.style.left = ""
+                selected.element.style.top = ""
+                selectedDivs.forEach((div) => {
+                    div.remove()
+                })
+            }
+        })*/
+
+        function playSound(audioName) {
+            let audio = new Audio("https://cdn.mau0.workers.dev/cdn/" + audioName + ".ogg")
+            audio.play()
+        }
+
+        function onMessage(msg) {
+            msg = JSON.parse(msg.data)
+
+            if (!msg) return
+
+            if (msg.type === "finish") {
+                location.hash = ""
+                spect.style.display = "none"
+                let play = isOpposite ? "enemy" : "host"
+                cGame.style.display = ""
+                gameI.style.display = ""
+                jGame.style.display = ""
+                options.style.display = ""
+                sOptions.style.display = ""
+                boardC.style.opacity = 0.3
+                enemy.textContent = "(enemy)"
+                enemyData = null
+                moveHistory.forEach((obj) => {
+                    obj.object.style["background-color"] = "rgba(255, 255, 0, 0)"
+                })
+                MP.style.display = "none"
+                arrows.forEach((value) => {
+                    value.arrowElement.remove()
+                })
+                arrows = new Map()
+                clearRules()
+                moveHistory = []
+                moveIndex = new Map()
+                selected = null
+                selectedDivs.forEach((div) => {
+                    div.remove()
+                })
+                selectedDivs = []
+                if (middleSquare) {
+                    middleSquare.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                    middleSquare.element.remove()
+                    middleSquare = null
+                }
+                for (const [key, value] of Object.entries(pieceC)) {
+                    if (value.element) {
+                        value.element.remove()
+                    }
+                    if (value.banana) {
+                        value.banana.remove()
+                    }
+                    if (value.tparent) {
+                        value.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                    }
+                    pieces.delete(value)
+                    delete pieceC[key]
+                }
+            }
+
+            if (msg.type === "bulk") {
+                msg.data.forEach((obj) => {
+                    onMessage({
+                        data: JSON.stringify(obj)
+                    })
+                })
+            }
+
+            if (msg.type === "turn" && !spectating) { // SUGGESTION: bold out names instead? /shrug
+                if (msg.data === "host" && !isOpposite) {
+                    isTurn = true
+                    if (selected) {
+                        let o = selected
+                        selected.element.click()
+                    }
+                } else if (msg.data === "enemy" && isOpposite) {
+                    isTurn = true
+                    if (selected) {
+                        let o = selected
+                        selected.element.click()
+                    }
+                } else {
+                    isTurn = false
+                }
+            }
+
+            if (msg.type === "sidePiece") {
+                let oside = msg.data.side
+                if (isOpposite) {
+                    msg.data.side = msg.data.side === "L" ? "R" : "L"
+                }
+                let pos = document.getElementById(msg.data.side + ":" + msg.data.x + ":" + (isOpposite ? 3 - msg.data.y : msg.data.y))
+                let x = msg.data.side === "L" ? 0 : 9
+                let y = msg.data.y
+                let ownerOf = msg.data.owner === "host" ? !isOpposite : isOpposite
+                y = isOpposite ? 3 - y : y
+                y = 3 + y
+                let newImg = document.createElement("img")
+                newImg.src = getImageForPiece(msg.data)
+                newImg.draggable = false
+                newImg.className = "piece"
+                let banana = document.createElement("img")
+                let value = msg.data
+                pieces.set(newImg, {
+                    ownerOf: isOpposite ? value.owner === "enemy" : value.owner === "host",
+                    owner: value.owner,
+                    type: value.type,
+                    element: newImg,
+                    parent: document.getElementById(msg.data.side + "POS:" + msg.data.x + ":" + (y - 3)),
+                    tparent: document.getElementById(msg.data.side + ":" + msg.data.x + ":" + (y - 3)),
+                    banana: banana,
+                    x: x,
+                    y: y,
+                    tx: oside === "L" ? 0 : 9,
+                    ty: msg.data.y + 3,
+                    mx: msg.data.x,
+                    my: isOpposite ? 3 - msg.data.y : msg.data.y,
+                    isInJail: true,
+                    lbanana: value.banana,
+                    side: msg.data.side
+                })
+                pieceC[x + ":" + y] = pieces.get(newImg)
+                banana.draggable = false
+                banana.className = value.type === "king" ? "banana" : "monkeyBanana"
+                banana.style.display = value.banana ? "block" : "none"
+                banana.src = "https://cdn.mau0.workers.dev/cdn/banana.png"
+                if (!(isOpposite ? value.owner === "enemy" : value.owner === "host")) {
+                    newImg.style.cursor = "default"
+                    banana.style.cursor = "default"
+                }
+                bananas.set(banana, pieces.get(newImg))
+                document.getElementById(msg.data.side + "POS:" + msg.data.x + ":" + (y - 3)).appendChild(newImg)
+                document.getElementById(msg.data.side + "POS:" + msg.data.x + ":" + (y - 3)).appendChild(banana)
+            }
+
+            if (msg.type === "saveKing") {
+                let value = msg.data
+                let x = isOpposite ? 9 - value.ox : value.ox
+                let y = isOpposite ? 9 - value.oy : value.oy
+                let newX = isOpposite ? 9 - value.x : value.x
+                let newY = isOpposite ? 9 - value.y : value.y
+                let piece = pieceC[x + ":" + y]
+
+                console.log(x, y, "wow", value, JSON.stringify(piece))
+
+                /*
+                    ownerOf: isOpposite ? value.owner === "enemy" : value.owner === "host",
+                    owner: value.owner,
+                    type: value.type,
+                    element: newImg,
+                    parent: document.getElementById("POS:" + x + ":" + y),
+                    tparent: document.getElementById("P:" + x + ":" + y),
+                    banana: banana,
+                    x: x,
+                    y: y,
+                    tx: parseInt(coords[0]),
+                    ty: parseInt(coords[1])
+                */
+                let side = piece.side
+                let tp = document.getElementById("P:" + newX + ":" + newY)
+                let tp2 = document.getElementById("POS:" + newX + ":" + newY)
+
+                tp.id = side + ":" + 1 + ":" + (y - 3)
+                tp2.id = side + "POS:" + 1 + ":" + (y - 3)
+                tp.style.left = piece.tparent.style.left
+                tp.style.top = piece.tparent.style.top
+                tp.style.width = piece.tparent.style.width
+                tp.style.height = piece.tparent.style.height
+                tp.style["background-color"] = "rgba(255, 255, 0, 0.5)"
+                moveHistory.push({
+                    object: tp,
+                    x: x,
+                    y: y
+                })
+                moveIndex.set(tp, true)
+
+                delete piece.isInJail
+                delete piece.lbanana
+                delete piece.mx
+                delete piece.my
+                delete piece.side
+                piece.x = newX
+                piece.y = newY
+                piece.tx = msg.data.x
+                piece.ty = msg.data.y
+                piece.banana.style.display = "none"
+
+
+                /*
+                    ownerOf: isOpposite ? value.owner === "enemy" : value.owner === "host",
+                    owner: value.owner,
+                    type: value.type,
+                    element: newImg,
+                    parent: document.getElementById(msg.data.side + "POS:" + msg.data.x + ":" + (y - 3)),
+                    tparent: document.getElementById(msg.data.side + ":" + msg.data.x + ":" + (y - 3)),
+                    banana: banana,
+                    x: x,
+                    y: y,
+                    tx: x,
+                    ty: msg.data.y + 3,
+                    mx: msg.data.x,
+                    my: msg.data.y,
+                    isInJail: true,
+                    lbanana: value.banana,
+                    side: msg.data.side
+                */
+
+                playSound("move")
+
+                delete pieceC[x + ":" + y]
+
+                piece.tparent.style.height = "74px"
+                piece.tparent.style.width = "71px"
+
+                moveHistory.push({
+                    object: piece.tparent,
+                    x: newX,
+                    y: newY
+                })
+                moveIndex.set(piece.tparent, true)
+
+                piece.tparent.id = "P:" + newX + ":" + newY
+                piece.parent.id = "POS:" + newX + ":" + newY
+                piece.x = newX
+                piece.y = newY
+                piece.tx = msg.data.x
+                piece.ty = msg.data.y
+                pieceC[newX + ":" + newY] = piece
+                /*
+d.style.left = 145 + (71 * x) + "px"
+d.style.top = 80 + (75 * y) + "px"*/
+                // √[(x₂ - x₁)² + (y₂ - y₁)²]
+                let oldLeft = piece.tparent.style.left
+                let oldTop = piece.tparent.style.top
+                oldLeft = parseInt(oldLeft.substring(0, oldLeft.length - 2))
+                oldTop = parseInt(oldTop.substring(0, oldTop.length - 2))
+                let newLeft = 145 + (71 * (newX - 1))
+                let newTop = 80 + (75 * (newY - 1))
+                let mag = Math.sqrt(Math.pow(Math.abs(newLeft - oldLeft), 2) + Math.pow(Math.abs(newTop - oldTop), 2))
+                piece.tparent.animate([
+                    {
+                        left: piece.tparent.style.left,
+                        top: piece.tparent.style.top
+                    },
+                    {
+                        left: 145 + (71 * (newX - 1)) + "px",
+                        top: 80 + (75 * (newY - 1)) + "px"
+                    }
+                ], {
+                    duration: Math.floor(mag / 2),
+                    fill: "none"
+                })
+                setTimeout(function () {
+                    piece.tparent.style["background-color"] = "rgba(255, 255, 0, 0.5)"
+                }, Math.floor(mag / 2) + 5)
+                piece.tparent.style.left = 145 + (71 * (newX - 1)) + "px"
+                piece.tparent.style.top = 80 + (75 * (newY - 1)) + "px"
+            }
+
+            if (msg.type === "moveBear") {
+                moveIndex = new Map()
+                moveHistory.forEach((obj) => {
+                    if (selected && selected.x === obj.x && selected.y === obj.y) {
+                        return
+                    }
+                    obj.object.style["background-color"] = "rgba(255, 255, 0, 0)"
+                })
+                moveHistory = []
+                let dt = msg.data.movePiece
+                let x = isOpposite ? 9 - dt.x : dt.x
+                let y = isOpposite ? 9 - dt.y : dt.y
+                console.log(x, y)
+                let square = middleSquare
+                let oldParent = MP
+                let newTParent = document.getElementById("P:" + x + ":" + y)
+                let newParent = document.getElementById("POS:" + x + ":" + y)
+                let newLeft = newTParent.style.left
+                let newTop = newTParent.style.top
+                let otp = square.tparent
+                pieces.set(square.element, square)
+                square.element.className = "piece bearPiece"
+                middleSquare = null
+                pieceC[x + ":" + y] = square
+                square.element.remove()
+                square.tparent.style["display"] = "none"
+                square.x = x
+                square.y = y
+                square.tx = dt.x
+                square.ty = dt.y
+                square.tparent = newTParent
+                square.parent = newParent
+                square.element.style.opacity = 1
+
+                newTParent.style.left = "393px"
+                newTParent.style.top = "342px"
+                newTParent.appendChild(square.element)
+
+                newLeft = parseInt(newLeft.substring(0, newLeft.length - 2))
+                newTop = parseInt(newTop.substring(0, newTop.length - 2))
+
+                moveHistory.push({
+                    object: square.tparent,
+                    x: x,
+                    y: y
+                })
+                otp.style["background-color"] = "rgba(255, 255, 0, 0)"
+                let oldLeft = 393
+                let oldTop = 342
+                let mag = Math.sqrt(Math.pow(Math.abs(newLeft - oldLeft), 2) + Math.pow(Math.abs(newTop - oldTop), 2))
+                playSound("move")
+                console.log(mag, newLeft)
+                square.tparent.animate([
+                    {
+                        left: square.tparent.style.left,
+                        top: square.tparent.style.top
+                    },
+                    {
+                        left: newLeft + "px",
+                        top: newTop + "px"
+                    }
+                ], {
+                    duration: Math.floor(mag / 2),
+                    fill: "none"
+                })
+                setTimeout(function () {
+                    square.tparent.style["background-color"] = "rgba(255, 255, 0, 0.5)"
+                }, Math.floor(mag / 2) + 5)
+                square.tparent.style.left = newLeft + "px"
+                square.tparent.style.top = newTop + "px"
+            }
+
+            if (msg.type === "move") {
+                hasDied = msg.data.hasDied
+                let dt = msg.data
+                let movePiece = dt.movePiece
+                let x = isOpposite ? 9 - movePiece.x : movePiece.x
+                let y = isOpposite ? 9 - movePiece.y : movePiece.y
+                let ox = isOpposite ? 9 - movePiece.ox : movePiece.ox
+                let oy = isOpposite ? 9 - movePiece.oy : movePiece.oy
+                let onPiece = pieceC[ox + ":" + oy]
+                if (!onPiece || onPiece.empty){
+                    console.log("wow")
+                    message({
+                        type: "moveBear",
+                        data: {
+                            movePiece: {
+                                ox: 4.5,
+                                oy: 4.5,
+                                x: movePiece.ox,
+                                y: movePiece.oy
+                            }
+                        }
+                    })
+                    message(msg)
+                    return
+                }
+                moveIndex = new Map()
+                moveHistory.forEach((obj) => {
+                    if (selected && selected.x === obj.x && selected.y === obj.y) {
+                        return
+                    }
+                    obj.object.style["background-color"] = "rgba(255, 255, 0, 0)"
+                })
+                moveHistory = []
+                if (dt.bananaCatch) {
+                    onPiece.banana.style.display = "block"
+                    onPiece.lbanana = true
+                    onPiece.element.style.opacity = 1
+                    return
+                }
+                if (dt.promote) {
+                    onPiece.queen = true
+                    onPiece.element.src = onPiece.owner === "host" ? "https://cdn.mau0.workers.dev/cdn/whiteFishQueen.png" : "https://cdn.mau0.workers.dev/cdn/blackFishQueen.png"
+                }
+                if (dt.removePiece) {
+                    let piece = pieceC[x + ":" + y]
+                    delete pieceC[x + ":" + y]
+                    pieces.delete(piece.element)
+                    piece.element.remove()
+                    if (piece.banana) piece.banana.remove()
+                    piece.tparent.id = "P:" + ox + ":" + oy
+                    piece.parent.id = "POS:" + ox + ":" + oy
+                    piece.tparent.style.left = 145 + (71 * (ox - 1)) + "px"
+                    piece.tparent.style.top = 80 + (75 * (oy - 1)) + "px"
+                    if (selected === piece) {
+                        selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                        selected = null
+                        selectedDivs.forEach((div) => {
+                            div.remove()
+                        })
+                        selectedDivs = []
+                    }
+                    piece.tparent.style["background-color"] = "rgba(255, 255, 0, 0.5)"
+                    moveHistory.push({
+                        object: piece.tparent,
+                        x: ox,
+                        y: oy
+                    })
+                    moveIndex.set(piece.tparent, true)
+                    playSound("capture")
+                } else {
+                    playSound("move")
+                    let tp = document.getElementById("P:" + x + ":" + y)
+                    let tp2 = document.getElementById("POS:" + x + ":" + y)
+
+                    tp.id = "P:" + ox + ":" + oy
+                    tp2.id = "POS:" + ox + ":" + oy
+                    tp.style.left = 145 + (71 * (ox - 1)) + "px"
+                    tp.style.top = 80 + (75 * (oy - 1)) + "px"
+
+                    tp.style["background-color"] = "rgba(255, 255, 0, 0.5)"
+                    moveHistory.push({
+                        object: tp,
+                        x: ox,
+                        y: oy
+                    })
+                    moveIndex.set(tp, true)
+                }
+                if (selected === movePiece) {
+                    selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                    selected = null
+                    selectedDivs.forEach((div) => {
+                        div.remove()
+                    })
+                    selectedDivs = []
+                }
+
+                if (pieceC[ox + ":" + oy] === onPiece) {
+                    delete pieceC[ox + ":" + oy]
+                }
+                moveHistory.push({
+                    object: onPiece.tparent,
+                    x: x,
+                    y: y
+                })
+                moveIndex.set(onPiece.tparent, true)
+                onPiece.tparent.id = "P:" + x + ":" + y
+                onPiece.parent.id = "POS:" + x + ":" + y
+                onPiece.x = x
+                onPiece.y = y
+                onPiece.tx = movePiece.x
+                onPiece.ty = movePiece.y
+                pieceC[x + ":" + y] = onPiece
+                /*
+d.style.left = 145 + (71 * x) + "px"
+d.style.top = 80 + (75 * y) + "px"*/
+                // √[(x₂ - x₁)² + (y₂ - y₁)²]
+                onPiece.element.style.opacity = 1
+                let oldLeft = onPiece.tparent.style.left
+                let oldTop = onPiece.tparent.style.top
+                oldLeft = parseInt(oldLeft.substring(0, oldLeft.length - 2))
+                oldTop = parseInt(oldTop.substring(0, oldTop.length - 2))
+                let newLeft = 145 + (71 * (x - 1))
+                let newTop = 80 + (75 * (y - 1))
+                let mag = Math.sqrt(Math.pow(Math.abs(newLeft - oldLeft), 2) + Math.pow(Math.abs(newTop - oldTop), 2))
+                console.log(mag)
+                onPiece.tparent.animate([
+                    {
+                        left: onPiece.tparent.style.left,
+                        top: onPiece.tparent.style.top
+                    },
+                    {
+                        left: 145 + (71 * (x - 1)) + "px",
+                        top: 80 + (75 * (y - 1)) + "px"
+                    }
+                ], {
+                    duration: Math.floor(mag / 2),
+                    fill: "none"
+                })
+                setTimeout(function () {
+                    onPiece.tparent.style["background-color"] = "rgba(255, 255, 0, 0.5)"
+                }, Math.floor(mag / 2) + 5)
+                onPiece.tparent.style.left = 145 + (71 * (x - 1)) + "px"
+                onPiece.tparent.style.top = 80 + (75 * (y - 1)) + "px"
+            }
+
+            if (msg.type === "showOptions") {
+                gameIDC.style.display = ""
+                analyze.style.display = ""
+            }
+
+            if (msg.type === "message") {
+                showMessage(msg.data.title, msg.data.text)
+            }
+
+            if (msg.type === "disconnect") {
+                location.hash = ""
+                spect.style.display = "none"
+                cGame.style.display = ""
+                gameI.style.display = ""
+                jGame.style.display = ""
+                options.style.display = ""
+                sOptions.style.display = ""
+                boardC.style.opacity = 0.3
+                moveHistory.forEach((obj) => {
+                    obj.object.style["background-color"] = "rgba(255, 255, 0, 0)"
+                })
+                MP.style.display = "none"
+                moveHistory = []
+                moveIndex = new Map()
+                selected = null
+                selectedDivs.forEach((div) => {
+                    div.remove()
+                })
+                arrows.forEach((value) => {
+                    value.arrowElement.remove()
+                })
+                arrows = new Map()
+                clearRules()
+                selectedDivs = []
+                enemy.textContent = "(enemy)"
+                enemyData = null
+                if (middleSquare) {
+                    middleSquare.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                    middleSquare.element.remove()
+                    middleSquare = null
+                }
+                for (const [key, value] of Object.entries(pieceC)) {
+                    if (value.element) {
+                        value.element.remove()
+                    }
+                    if (value.banana) {
+                        value.banana.remove()
+                    }
+                    if (value.tparent) {
+                        value.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                    }
+                    pieces.delete(value)
+                    delete pieceC[key]
+                }
+            }
+
+            if (msg.type === "ready") {
+                gameIDC.style.display = "none"
+                analyze.style.display = "none"
+                options.style.display = "none"
+                boardC.style.opacity = 1
+                enemy.textContent = msg.data.players.black
+                host.textContent = msg.data.players.white
+                loadRules(msg.data.board.rules)
+                loadBoard(msg.data.board)
+                setInterval(function() {
+                    let history = msg.data.moves 
+                    let o = history.shift()
+                    
+                    message({
+                        type: "move",
+                        data: {
+                            movePiece: o.m,
+                            removePiece: o.r,
+                            promote: o.p,
+                            bananaCatch: o.b
+                        }
+                    })
+
+                    if (o.e) {
+                        message(o.e)
+                    }
+                }, 1000)
+            }
+        }
+
+        function message(d) {
+            onMessage({
+                data: JSON.stringify(d)
+            })
+        }
+
+        analyze.onclick = async function () {
+            analyze.style.display = "none"
+            gameIDC.style.display = "none"
+
+            ufile.click()
+            await new Promise((resolve) => ufile.onchange = resolve)
+            ufile.onchange = null
+            let file = ufile.files[0]
+            if (!file) {
+                analyze.style.display = ""
+                gameIDC.style.display = ""
+                return
+            }
+            canEdit = false
+            let reader = new FileReader()
+
+            reader.onload = function (event) {
+                let text = event.target.result
+                if (text.substring(0, 4) !== "C2R\n") {
+                    analyze.style.display = ""
+                    gameIDC.style.display = ""
+                    ufile.value = null
+                    return showMessage("Error", "Selected file is not a .c2r file!")
+                }
+                let str = JSON.parse(text.substring(4))
+                message({
+                    type: "ready",
+                    data: {
+                        board: str.board,
+                        moves: str.history,
+                        players: str.players
+                    }
+                })
+            }
+
+            reader.onerror = function () {
+                canEdit = true
+                alert("error while reading file")
+            }
+
+            reader.readAsText(file)
+        }
+    })()
+</script>
+
+</html>
