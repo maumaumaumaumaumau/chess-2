@@ -2229,7 +2229,7 @@ d.style.top = 80 + (75 * y) + "px"*/
                 let ox = isOpposite ? 9 - movePiece.ox : movePiece.ox
                 let oy = isOpposite ? 9 - movePiece.oy : movePiece.oy
                 let onPiece = pieceC[ox + ":" + oy]
-                if (!onPiece || onPiece.empty){
+                if (!onPiece || onPiece.empty) {
                     console.log("wow")
                     message({
                         type: "moveBear",
@@ -2430,19 +2430,28 @@ d.style.top = 80 + (75 * y) + "px"*/
                 host.textContent = msg.data.players.white
                 loadRules(msg.data.board.rules)
                 loadBoard(msg.data.board)
-                setInterval(function() {
-                    let history = msg.data.moves 
+                setInterval(function () {
+                    let history = msg.data.moves
                     let o = history.shift()
-                    
-                    message({
-                        type: "move",
-                        data: {
-                            movePiece: o.m,
-                            removePiece: o.r,
-                            promote: o.p,
-                            bananaCatch: o.b
-                        }
-                    })
+
+                    if (o.bear) {
+                        message({
+                            type: "moveBear",
+                            data: {
+                                movePiece: o.m
+                            }
+                        })
+                    } else {
+                        message({
+                            type: "move",
+                            data: {
+                                movePiece: o.m,
+                                removePiece: o.r,
+                                promote: o.p,
+                                bananaCatch: o.b
+                            }
+                        })
+                    }
 
                     if (o.e) {
                         message(o.e)
