@@ -2010,7 +2010,7 @@
                 spect.style.display = "none"
                 let play = isOpposite ? "enemy" : "host"
                 if (spectating) {
-                    showMessage("Match ended", msg.data.d === "host" ? "White has won!" : "Black has won!")
+                    showMessage("Match ended", msg.data.d !== "host" ? "White has won!" : "Black has won!")
                 } else {
                     showMessage("Match ended", msg.data.d !== play ? "You win! Your opponent has lost the match." : "You lose. You have lost the match.")
                 }
