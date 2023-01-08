@@ -312,6 +312,16 @@
                 filter: none;
             }
         }
+
+        @keyframes flashDisconnect {
+            from {
+                opacity: 0.9;
+            }
+
+            to {
+                opacity: 0.5;
+            }
+        }
     </style>
 </head>
 
@@ -689,6 +699,28 @@
                 </div>
             </div>
         </div>
+        <img id="disconnectHost" src="https://cdn.mau0.workers.dev/cdn/disconnected.png" style="
+    position: absolute;
+    left: 80px;
+    bottom: 30px;
+    height: 30px;
+    width: 30px;
+    filter: brightness(0) saturate(100%) invert(29%) sepia(100%) saturate(7094%) hue-rotate(354deg) brightness(93%) contrast(122%);
+    animation: .5s infinite alternate flashDisconnect;
+    display: none;
+    user-select: none;
+" draggable="false" title="User is not connected. Waiting 30 seconds before ending game.">
+        <img id="disconnectEnemy" draggable="false" src="https://cdn.mau0.workers.dev/cdn/disconnected.png" style="
+    position: absolute;
+    left: 80px;
+    top: 35px;
+    height: 30px;
+    width: 30px;
+    filter: brightness(0) saturate(100%) invert(29%) sepia(100%) saturate(7094%) hue-rotate(354deg) brightness(93%) contrast(122%);
+    animation: .5s infinite alternate flashDisconnect;
+    display: none;
+    user-select: none;
+" title="User is not connected. Waiting 30 seconds before ending game.">
     </div>
 
 </body>
@@ -696,7 +728,11 @@
 
 <script defer>
     (() => {
-        let ws = new WebSocket("wss://dokso.in:2096")
+        let localStorage = window.localStorage
+        let ws
+        let queueAction
+        let gameSID
+        let playingGame
         let plrData
         let enemyData
         let boardContent = {
@@ -850,7 +886,7 @@
         }
 
         class TextPrompt {
-            constructor(title, text) {
+            constructor(title, text, pClose) {
                 let bg = document.createElement("div")
                 let div = document.createElement("div")
                 let Ptitle = document.createElement("p")
@@ -876,6 +912,9 @@
                 this.element = bg
                 this.div = div
                 let original = this
+                if (pClose) {
+                    close.remove()
+                }
                 close.onclick = function () {
                     original.onclose()
                     original.close()
@@ -1134,9 +1173,9 @@
                 currentConfirmationPrompt = null
             }
             let newPrompt = new ConfirmationPrompt(title, desc)
-            newPrompt.onclose = function(s) {
+            newPrompt.onclose = function (s) {
                 if (currentConfirmationPrompt == newPrompt) {
-                    currentConfirmationPrompt = null 
+                    currentConfirmationPrompt = null
                 }
                 return callback(s)
             }
@@ -1144,12 +1183,12 @@
             newPrompt.open()
         }
 
-        function showMessage(title, text) {
+        function showMessage(title, text, pClose) {
             if (currentTextPrompt) {
                 currentTextPrompt.close()
                 currentTextPrompt = null
             }
-            let newPrompt = new TextPrompt(title, text)
+            let newPrompt = new TextPrompt(title, text, pClose)
             newPrompt.onclose = function () {
                 if (currentTextPrompt === newPrompt) {
                     currentTextPrompt = null
@@ -1197,7 +1236,7 @@
         }
 
         function loadBoard(data) {
-            if (!rules.noBear && !(spectating && !data.middle)) {
+            if (!rules.noBear && data.middle) {
                 MP.style.display = ""
                 let img = document.createElement("img")
                 // <img src="https://cdn.mau0.workers.dev/cdn/bearPiece.png" class="piece bearMiddle">
@@ -1230,7 +1269,7 @@
                 let y = isOpposite ? 9 - parseInt(coords[1]) : parseInt(coords[1])
                 let banana = document.createElement("img")
                 pieces.set(newImg, {
-                    ownerOf: isOpposite ? value.owner === "enemy" : value.owner === "host",
+                    ownerOf: value.type === "bear" || (isOpposite ? value.owner === "enemy" : value.owner === "host"),
                     owner: value.owner,
                     type: value.type,
                     element: newImg,
@@ -1247,7 +1286,7 @@
                 banana.className = value.type === "king" ? "banana" : "monkeyBanana"
                 banana.style.display = value.banana ? "block" : "none"
                 banana.src = "https://cdn.mau0.workers.dev/cdn/banana.png"
-                if (spectating ? false : !(isOpposite ? value.owner === "enemy" : value.owner === "host")) {
+                if (spectating ? false : !(value.type === "bear" || (isOpposite ? value.owner === "enemy" : value.owner === "host"))) {
                     newImg.style.cursor = "default"
                     banana.style.cursor = "default"
                 }
@@ -1980,12 +2019,61 @@
             audio.play()
         }
 
+        function cleanBoard() {
+            moveHistory.forEach((obj) => {
+                obj.object.style["background-color"] = "rgba(255, 255, 0, 0)"
+            })
+            moveHistory = []
+            moveIndex = new Map()
+            selected = null
+            selectedDivs.forEach((div) => {
+                div.remove()
+            })
+            arrows.forEach((value) => {
+                value.arrowElement.remove()
+            })
+            arrows = new Map()
+            clearRules()
+            selectedDivs = []
+
+            if (middleSquare) {
+                middleSquare.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                middleSquare.element.remove()
+                middleSquare = null
+            }
+            for (const [key, value] of Object.entries(pieceC)) {
+                if (value.element) {
+                    value.element.remove()
+                }
+                if (value.banana) {
+                    value.banana.remove()
+                }
+                if (value.tparent) {
+                    value.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
+                }
+                pieces.delete(value)
+                delete pieceC[key]
+            }
+        }
+
         function onMessage(msg) {
             msg = JSON.parse(msg.data)
 
             if (!msg) return
 
+            if (msg.type === "temp-disconnect") {
+                let toElement = isOpposite ? (msg.data === "host" ? disconnectEnemy : disconnectHost) : (msg.data === "host" ? disconnectHost : disconnectEnemy)
+                toElement.style.display = ""
+            }
+
+            if (msg.type === "temp-reconnect") {
+                let toElement = isOpposite ? (msg.data === "host" ? disconnectEnemy : disconnectHost) : (msg.data === "host" ? disconnectHost : disconnectEnemy)
+                toElement.style.display = "none"
+            }
+
             if (msg.type === "finish") {
+                disconnectHost.style.display = "none"
+                disconnectEnemy.style.display = "none"
                 if (msg.data.download) {
                     confirmationPrompt("Download", "The match was recorded, do you wish to download the match?", function (confirmed) {
                         if (confirmed) {
@@ -1993,12 +2081,12 @@
                             a.href = "data:binary," + encodeURIComponent(msg.data.download)
                             a.download = "SavedC2Match-" + rdstring(8) + ".c2r"
                             a.click()
-                            delete msg.data.download 
+                            delete msg.data.download
                             return onMessage({
                                 data: JSON.stringify(msg)
                             })
                         } else {
-                            delete msg.data.download 
+                            delete msg.data.download
                             return onMessage({
                                 data: JSON.stringify(msg)
                             })
@@ -2006,6 +2094,7 @@
                     })
                     return
                 }
+                playingGame = null
                 location.hash = ""
                 spect.style.display = "none"
                 let play = isOpposite ? "enemy" : "host"
@@ -2482,10 +2571,36 @@ d.style.top = 80 + (75 * y) + "px"*/
             }
 
             if (msg.type === "message") {
+                if (msg.data.clearRecent && playingGame) {
+                    location.hash = ""
+                    spect.style.display = "none"
+                    cleanBoard()
+                    spectating = false
+                    cGame.style.display = ""
+                    gameI.style.display = ""
+                    jGame.style.display = ""
+                    options.style.display = ""
+                    sOptions.style.display = ""
+                    boardC.style.opacity = 0.3
+                    enemy.textContent = "(waiting for enemy)"
+                    playingGame = null
+                    if (document.getElementById("usernameEdit")) {
+                        document.getElementById("usernameEdit").style.display = ""
+                    } else {
+                        onMessage({
+                            data: JSON.stringify({
+                                type: "playerData",
+                                data: plrData
+                            })
+                        })
+                    }
+                }
                 showMessage(msg.data.title, msg.data.text)
             }
 
             if (msg.type === "disconnect") {
+                disconnectHost.style.display = "none"
+                disconnectEnemy.style.display = "none"
                 if (msg.data.download) {
                     confirmationPrompt("Download", "The match was recorded, do you wish to download the match?", function (confirmed) {
                         if (confirmed) {
@@ -2493,12 +2608,12 @@ d.style.top = 80 + (75 * y) + "px"*/
                             a.href = "data:binary," + encodeURIComponent(msg.data.download)
                             a.download = "SavedC2Match-" + rdstring(8) + ".c2r"
                             a.click()
-                            delete msg.data.download 
+                            delete msg.data.download
                             return onMessage({
                                 data: JSON.stringify(msg)
                             })
                         } else {
-                            delete msg.data.download 
+                            delete msg.data.download
                             return onMessage({
                                 data: JSON.stringify(msg)
                             })
@@ -2506,6 +2621,7 @@ d.style.top = 80 + (75 * y) + "px"*/
                     })
                     return
                 }
+                playingGame = null
                 location.hash = ""
                 spect.style.display = "none"
                 if (spectating) {
@@ -2611,6 +2727,10 @@ d.style.top = 80 + (75 * y) + "px"*/
                 }
                 host.appendChild(span)
                 host.appendChild(img)
+                if (queueAction) {
+                    queueAction()
+                    queueAction = null
+                }
             }
 
             if (msg.type === "invalidMove" && !spectating) {
@@ -2618,7 +2738,18 @@ d.style.top = 80 + (75 * y) + "px"*/
                 showMessage("Warning", "An invalid move has been made. Please do not cheat. If you are not cheating then contact a developer to fix this issue.")
             }
 
+            if (msg.type === "revision") {
+                localStorage.setItem("games", JSON.stringify(msg.data))
+            }
+
             if (msg.type === "ready") {
+                if (!localStorage.getItem("games")) {
+                    localStorage.setItem("games", JSON.stringify({}))
+                }
+                try {
+                    JSON.parse(localStorage.getItem("games"))
+                } catch (e) { localStorage.setItem("games", JSON.stringify({})) }
+                let gamesA = JSON.parse(localStorage.getItem("games"))
                 if (msg.data.enemy.id === plrData.id) {
                     isOpposite = true
                 }
@@ -2627,7 +2758,14 @@ d.style.top = 80 + (75 * y) + "px"*/
                     spectating = true
                     isTurn = false
                     isOpposite = false
+                } else {
+                    gamesA[msg.data.roomID] = msg.data.SID
+                    localStorage.setItem("games", JSON.stringify(gamesA))
+                    perform("cleanGames", gamesA)
                 }
+                isTurn = false
+                gameSID = msg.data.SID
+                playingGame = msg.data.roomID
                 location.hash = msg.data.roomID
                 cGame.style.display = "none"
                 gameI.style.display = "none"
@@ -2641,9 +2779,14 @@ d.style.top = 80 + (75 * y) + "px"*/
                 if (msg.data.spectating) {
                     host.textContent = msg.data.host.name
                 }
+                if (msg.data.turn === "enemy" && isOpposite && !msg.data.spectating) {
+                    isTurn = true
+                }
+                if (msg.data.turn === "host" && !isOpposite && !msg.data.spectating) {
+                    isTurn = true
+                }
                 loadRules(msg.data.board.rules)
                 loadBoard(msg.data.board)
-                if (!msg.data.spectating) isTurn = !isOpposite
             }
         }
 
@@ -2669,7 +2812,21 @@ d.style.top = 80 + (75 * y) + "px"*/
         }
 
         jGame.onclick = function () {
-            perform("joinRoom", gameI.value)
+            if (!localStorage.getItem("games")) {
+                localStorage.setItem("games", JSON.stringify({}))
+            }
+            try {
+                JSON.parse(localStorage.getItem("games"))
+            } catch (e) { localStorage.setItem("games", JSON.stringify({})) }
+            let gamesA = JSON.parse(localStorage.getItem("games"))
+            if (gamesA[gameI.value]) {
+                perform("joinRoom", {
+                    id: gameI.value,
+                    sid: gamesA[gameI.value]
+                })
+            } else {
+                perform("joinRoom", gameI.value)
+            }
             cGame.style.display = "none"
             gameI.style.display = "none"
             jGame.style.display = "none"
@@ -2685,28 +2842,70 @@ d.style.top = 80 + (75 * y) + "px"*/
             })
         }
 
-        ws.addEventListener("message", onMessage)
+        function connect(reconnected) {
+            ws = new WebSocket("wss://dokso.in:2096")
 
-        ws.addEventListener("open", function () {
-            if (localStorage.getItem("username")) {
-                if (typeof (localStorage.getItem("username")) !== "string") {
-                    localStorage.removeItem("username")
-                } else {
-                    let str = localStorage.getItem("username").substring(0, 20)
-                    localStorage.setItem("username", str)
-                    usernameAvailable = true
-                    perform("setUsername", str)
+            ws.addEventListener("message", onMessage)
+
+            ws.addEventListener("open", function () {
+                if (!localStorage.getItem("games")) {
+                    localStorage.setItem("games", JSON.stringify({}))
                 }
-            }
-            if (window.location.hash) {
-                gameI.value = window.location.hash.substring(1, 17)
-                jGame.click()
-            }
-        })
+                try {
+                    JSON.parse(localStorage.getItem("games"))
+                } catch (e) { localStorage.setItem("games", JSON.stringify({})) }
+                let gamesA = JSON.parse(localStorage.getItem("games"))
+                if (currentTextPrompt && currentTextPrompt.title) {
+                    currentTextPrompt.close()
+                    currentTextPrompt.onclose()
+                }
+                if (localStorage.getItem("username")) {
+                    if (typeof (localStorage.getItem("username")) !== "string") {
+                        localStorage.removeItem("username")
+                    } else {
+                        let str = localStorage.getItem("username").substring(0, 20)
+                        localStorage.setItem("username", str)
+                        usernameAvailable = true
+                        perform("setUsername", str)
+                    }
+                }
+                if (reconnected && playingGame) {
+                    cleanBoard()
+                    queueAction = () => perform("joinRoom", {
+                        id: playingGame,
+                        sid: gameSID
+                    })
+                }
+                if (window.location.hash && !reconnected) {
+                    if (gamesA[window.location.hash.substring(1, 17)]) {
+                        perform("joinRoom", {
+                            id: window.location.hash.substring(1, 17),
+                            sid: gamesA[window.location.hash.substring(1, 17)]
+                        })
+                        cGame.style.display = "none"
+                        gameI.style.display = "none"
+                        jGame.style.display = "none"
+                        sOptions.style.display = "none"
+                        document.getElementById("usernameEdit").style.display = "none"
+                        return
+                    }
+                    gameI.value = window.location.hash.substring(1, 17)
+                    jGame.click()
+                    return
+                }
+            })
 
-        ws.addEventListener("close", function () {
-            showMessage("Disconnected", "WebSocket disconnected unexpectedly. Please reload this page.")
-        })
+            ws.addEventListener("close", function () {
+                showMessage("Disconnected", "WebSocket disconnected. Reconnecting...", true)
+                setTimeout(function () {
+                    connect(true)
+                }, 250)
+            })
+
+            window.wsDEBUG = ws
+        }
+        connect()
+        delete window.localStorage
     })()
 </script>
 
