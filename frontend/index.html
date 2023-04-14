@@ -25,9 +25,6 @@
     <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/edit.png" as="image">
     <title>Chess 2 Online</title>
     <style>
-        :root {
-            color-scheme: dark;
-        }
         br {
             user-select: none;
         }
@@ -768,10 +765,14 @@
                     value: false,
                     description: "Buffed monkey"
                 },
+                "buffedElephant": {
+                    value: false,
+                    description: "Buffed elephant"
+                },
                 "noBear": {
                     value: false,
                     description: "No bear"
-                }
+                },
             },
             "Miscellaneous": {
                 "recordMatch": {
@@ -1395,6 +1396,79 @@
             let _x
             let _y
 
+            let buffedElephant = function () {
+                // WARNING: CODE HAZARD BELOW, DO NOT READ, EYES WILL BE BURNED UPON FURTHER INSPECTION.
+                let oldX = obj.x 
+                _x = obj.x 
+                _y = obj.y 
+                
+                for (_y = obj.y - 1; _y > 0; _y--) {
+                    _x += 1
+                    if (_x > 8) break
+                    if (can(getPiece(_x, _y), true)) {
+                        let X = isOpposite ? 9 - _x : _x
+                        let Y = isOpposite ? 9 - _y : _y
+                        let piece = getPiece(_x, _y)
+                        set[X + ":" + Y] = piece
+                        if (piece && !piece.empty && !piece.ownerOf) break
+                        if (piece && !piece.empty && piece.type === "bear") break
+                    } else {
+                        break
+                    }
+                }
+                _x = oldX
+                for (_y = obj.y - 1; _y > 0; _y--) {
+                    _x -= 1
+                    if (_x < 1) break
+                    if (can(getPiece(_x, _y), true)) {
+                        let X = isOpposite ? 9 - _x : _x
+                        let Y = isOpposite ? 9 - _y : _y
+                        let piece = getPiece(_x, _y)
+                        set[X + ":" + Y] = piece
+                        if (piece && !piece.empty && !piece.ownerOf) break
+                        if (piece && !piece.empty && piece.type === "bear") break
+                    } else {
+                        break
+                    }
+                }
+                _x = oldX
+                for (_y = obj.y + 1; _y < 9; _y++) {
+                    _x += 1
+                    if (_x > 8) break
+                    if (can(getPiece(_x, _y), true)) {
+                        let X = isOpposite ? 9 - _x : _x
+                        let Y = isOpposite ? 9 - _y : _y
+                        let piece = getPiece(_x, _y)
+                        set[X + ":" + Y] = piece
+                        if (piece && !piece.empty && !piece.ownerOf) break
+                        if (piece && !piece.empty && piece.type === "bear") break
+                    } else {
+                        break
+                    }
+                }
+                _x = oldX
+                for (_y = obj.y + 1; _y < 9; _y++) {
+                    _x -= 1
+                    if (_x < 1) break
+                    if (can(getPiece(_x, _y), true)) {
+                        let X = isOpposite ? 9 - _x : _x
+                        let Y = isOpposite ? 9 - _y : _y
+                        let piece = getPiece(_x, _y)
+                        set[X + ":" + Y] = piece
+                        if (piece && !piece.empty && !piece.ownerOf) break
+                        if (piece && !piece.empty && piece.type === "bear") break
+                    } else {
+                        break
+                    }
+                }
+
+                clean(set)
+                return {
+                    true: set,
+                    local: getLocal(set)
+                }
+            }
+
             let queenMove = function () {
                 let oldX = obj.x
                 _x = obj.x
@@ -1537,6 +1611,10 @@
                     }
                     break
                 case "bishop":
+                    if (rules.buffedElephant) {
+
+                        return buffedElephant()
+                    }
                     set[add(tx, 2) + ":" + add(ty, -2)] = can(getPiece(x + 2, y - 2), true)
                     set[add(tx, -2) + ":" + add(ty, -2)] = can(getPiece(x - 2, y - 2), true)
                     set[add(tx, 2) + ":" + add(ty, 2)] = can(getPiece(x + 2, y + 2), true)
@@ -2905,7 +2983,7 @@ d.style.top = 80 + (75 * y) + "px"*/
                 }, 250)
             })
 
-            //window.wsDEBUG = ws
+            window.wsDEBUG = ws
         }
         connect()
         delete window.localStorage
