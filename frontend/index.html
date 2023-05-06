@@ -854,6 +854,7 @@
         let spectating = false
         let currentClock
         let currentTurn
+        let moved = {}
 
         if (localStorage.getItem("settings")) {
             try {
@@ -2169,7 +2170,8 @@
         }
 
         function updateClock(currentClock) {
-
+            if (currentClock.enemy <= 0) currentClock.enemy = 0
+            if (currentClock.host <= 0) currentClock.host = 0
             let enemy = currentClock.enemy
             let host = currentClock.host
 
@@ -2177,8 +2179,8 @@
             let minH = Math.floor(host / 60)
             let secE = Math.ceil(enemy) - minE * 60
             let secH = Math.ceil(host) - minH * 60
-            let msE = Math.floor((Math.floor(enemy) - enemy) * 10) * 0.1
-            let msH = Math.floor((Math.floor(host) - host) * 10) * 0.1
+            let msE = Math.floor((enemy - Math.floor(enemy)) * 10) * 0.1
+            let msH = Math.floor((host - Math.floor(host) ) * 10) * 0.1
             let displayMSE = false
             let displayMSH = false
 
@@ -2190,12 +2192,14 @@
             }
 
             if (displayMSH) {
+                msH = msH.toString().substring(2)[0] || "0"
                 clock1ms.textContent = "." + msH
             } else {
                 clock1ms.textContent = ""
             }
 
             if (displayMSE) {
+                msE = msE.toString().substring(2)[0] || "0"
                 clock2ms.textContent = "." + msE
             } else {
                 clock2ms.textContent = ""
@@ -2830,6 +2834,9 @@ d.style.top = 80 + (75 * y) + "px"*/
                     })
                     return
                 }
+                currentClock = null
+                moved = null
+                let play = isOpposite ? "enemy" : "host"
                 playingGame = null
                 location.hash = ""
                 spect.style.display = "none"
@@ -2973,6 +2980,7 @@ d.style.top = 80 + (75 * y) + "px"*/
             }
 
             if (msg.type === "clock" && msg.data) {
+                moved = msg.moved
                 currentClock = msg.data
                 updateClock(msg.data)
             }
@@ -3016,6 +3024,7 @@ d.style.top = 80 + (75 * y) + "px"*/
 
                     updateClock(msg.data.clock)
                 }
+                moved = msg.data.moved
                 isTurn = false
                 currentClock = msg.data.clock
                 gameSID = msg.data.SID
@@ -3156,9 +3165,10 @@ d.style.top = 80 + (75 * y) + "px"*/
 
             ws.addEventListener("close", function () {
                 showMessage("Disconnected", "WebSocket disconnected. Reconnecting...", true)
+                connect(true)
                 setTimeout(function () {
                     connect(true)
-                }, 250)
+                }, 750)
             })
 
             window.wsDEBUG = ws
@@ -3176,10 +3186,10 @@ d.style.top = 80 + (75 * y) + "px"*/
                     if (!spectating && isOpposite && !isTurn && currentTurn === "enemy") return
                     if (!spectating && !isOpposite && !isTurn && currentTurn === "host") return
                     if (currentTurn === "host") {
-                        currentClock.host -= dec
+                        if (moved.host) currentClock.host -= dec
                     }
                     if (currentTurn === "enemy") {
-                        currentClock.enemy -= dec
+                        if (moved.enemy) currentClock.enemy -= dec
                     }
                     updateClock(currentClock)
                 }
