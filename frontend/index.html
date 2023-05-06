@@ -25,9 +25,6 @@
     <link rel="preload" href="https://cdn.mau0.workers.dev/cdn/edit.png" as="image">
     <title>Chess 2 Online</title>
     <style>
-        :root {
-            color-scheme: dark;
-        }
         br {
             user-select: none;
         }
@@ -224,6 +221,11 @@
             width: 100%;
             height: 100%;
             position: absolute;
+            display: flex;
+            flex-direction: row;
+            align-content: space-around;
+            justify-content: center;
+            align-items: center;
             left: 0;
             top: 0;
             background-color: rgb(0, 0, 0, 0.5);
@@ -234,10 +236,6 @@
 
         .promptDiv {
             z-index: 5;
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
             width: 400px;
             background-color: rgb(40, 40, 40);
             box-shadow: 0 0 16px 1px black;
@@ -276,13 +274,13 @@
         @keyframes fadeDivSettings {
             from {
                 opacity: 0;
-                transform: translate(-50%, -50%) scale(1.2);
+                transform: scale(1.2);
                 filter: blur(4px);
             }
 
             to {
                 opacity: 1;
-                transform: translate(-50%, calc(-50% + .3px)) scale(1);
+                transform: scale(1);
                 filter: none;
             }
         }
@@ -290,13 +288,13 @@
         @keyframes fadeOut {
             from {
                 opacity: 1;
-                transform: translate(-50%, -50%) scale(1);
+                transform: scale(1);
                 filter: none;
             }
 
             to {
                 opacity: 0;
-                transform: translate(-50%, -50%) scale(1.3);
+                transform: scale(1.3);
                 box-shadow: 0 0 0 0;
                 filter: blur(1px);
             }
@@ -305,13 +303,13 @@
         @keyframes fadeDiv {
             from {
                 opacity: 0;
-                transform: translate(-50%, -50%) scale(1.2);
+                transform: scale(1.2);
                 filter: blur(4px);
             }
 
             to {
                 opacity: 1;
-                transform: translate(-50%, -50%) scale(1);
+                transform: scale(1);
                 filter: none;
             }
         }
@@ -324,6 +322,30 @@
             to {
                 opacity: 0.5;
             }
+        }
+
+        .oppositeClock2 {
+            background-color: rgb(220, 220, 220);
+            color: rgb(0, 0, 0);
+            top: 4px;
+        }
+
+        .clock2 {
+            background-color: rgb(20, 20, 20);
+            color: rgb(255, 255, 255);
+            bottom: 28px;
+        }
+
+        .oppositeClock {
+            background-color: rgb(20, 20, 20);
+            color: rgb(255, 255, 255);
+            top: 4px;
+        }
+
+        .clock {
+            background-color: rgb(220, 220, 220);
+            color: rgb(0, 0, 0);
+            bottom: 28px;
         }
     </style>
 </head>
@@ -349,6 +371,37 @@
     transform: translateX(-50%);
     position: absolute;
 ">
+<div id="clock2" class="oppositeClock" style="display: none; position: absolute;margin-top: 24px;font-family: monospace;font-size: 200%;right: -30px;text-align: center;padding: 8px;width: 114px;">
+    <span id="clock2m">00</span><span style="
+    margin-left: 2px;
+    margin-right: 2px;
+    opacity: .8;
+">:</span><span id="clock2s">00</span><span id="clock2ms" style="
+    font-size: 80%;
+    opacity: .9;
+"></span></span>
+                </div>
+            <div id="clock1" class="clock" style="display: none; position: absolute;margin-top: 24px;font-family: monospace;font-size: 200%;right: -30px;text-align: center;padding: 8px;width: 114px;">
+    <span id="clock1m">00</span><span style="
+    margin-left: 2px;
+    margin-right: 2px;
+    opacity: .8;
+">:</span><span id="clock1s">00</span><span id="clock1ms" style="
+    font-size: 80%;
+    opacity: .9;
+"></span></span>
+                </div><p id="spect2" style="display: none;position: absolute;margin-top: 30px;color: rgb(200, 50, 50);font-family: system-ui;font-size: 140%;left: -120px;text-align: right;width: 100%;top: 4px;">
+                <span style="
+    width: 10px;
+    height: 10px;
+    background-color: rgb(255, 50, 50);
+    display: inline-block;
+    border-radius: 100%;
+    left: -10px;
+    position: relative;
+    transform: translateY(-25%);
+"></span>SPECTATING
+            </p>
             <p id="spect"
                 style="display: none;position: absolute;margin-top: 30px;color: rgb(200, 50, 50);font-family: system-ui;font-size: 140%;left: 30px;text-align: right;width: 100%;top: 4px;">
                 <span style="
@@ -781,6 +834,10 @@
                 "recordMatch": {
                     value: false,
                     description: "Record match"
+                },
+                "clock": {
+                    value: false,
+                    description: "Timed match (10|1)"
                 }
             }
         }
@@ -791,6 +848,8 @@
         let rightdiv2
         let middleSquare
         let spectating = false
+        let currentClock
+        let currentTurn
 
         if (localStorage.getItem("settings")) {
             try {
@@ -2103,6 +2162,54 @@
             audio.play()
         }
 
+        function updateClock(currentClock) {
+            let enemy = currentClock.enemy 
+            let host = currentClock.host 
+
+            let minE = Math.floor(enemy / 60)
+            let minH = Math.floor(host / 60)
+            let secE = Math.ceil(enemy) - minE * 60
+            let secH = Math.ceil(host) - minH * 60
+            let msE = Math.floor((Math.floor(enemy) - enemy) * 10) * 0.1
+            let msH = Math.floor((Math.floor(host) - host) * 10) * 0.1
+            let displayMSE = false 
+            let displayMSH = false 
+
+            if (minE === 0 && secE <= 10) {
+                displayMSE = true
+            }
+            if (minH === 0 && secH <= 10) {
+                displayMSH = true
+            }
+
+            if (displayMSH) {
+                clock1ms.textContent = "." + msH
+            } else {
+                clock1ms.textContent = ""
+            }
+
+            if (displayMSE) {
+                clock2ms.textContent = "." + msE 
+            } else {
+                clock2ms.textContent = ""
+            }
+
+            clock1.style.opacity = 1
+            clock2.style.opacity = 1
+            clock1m.textContent = minH.toString().padStart(2, 0)
+            clock2m.textContent = minE.toString().padStart(2, 0)
+            clock1s.textContent = secH.toString().padStart(2, 0)
+            clock2s.textContent = secE.toString().padStart(2, 0)
+
+            if (currentTurn === "host" || (currentTurn === "enemy" && !spectating && isOpposite && !isTurn)) {
+                clock2.style.opacity = .6
+            }
+            
+            if (currentTurn === "enemy" || (currentTurn === "host" && !spectating && !isOpposite && !isTurn)) {
+                clock1.style.opacity = .6
+            }
+        }
+
         function cleanBoard() {
             moveHistory.forEach((obj) => {
                 obj.object.style["background-color"] = "rgba(255, 255, 0, 0)"
@@ -2155,9 +2262,14 @@
                 toElement.style.display = "none"
             }
 
+            /* why did i do this lol
             if (msg.type === "finish") {
                 disconnectHost.style.display = "none"
                 disconnectEnemy.style.display = "none"
+                clock1.style.display = "none"
+                clock2.style.display = "none"
+                clock1.className = "clock"
+                clock2.className = "oppositeClock" 
                 if (msg.data.download) {
                     confirmationPrompt("Download", "The match was recorded, do you wish to download the match?", function (confirmed) {
                         if (confirmed) {
@@ -2181,6 +2293,7 @@
                 playingGame = null
                 location.hash = ""
                 spect.style.display = "none"
+                spect2.style.display = "none"
                 let play = isOpposite ? "enemy" : "host"
                 if (spectating) {
                     showMessage("Match ended", msg.data.d !== "host" ? "White has won!" : "Black has won!")
@@ -2240,7 +2353,7 @@
                     pieces.delete(value)
                     delete pieceC[key]
                 }
-            }
+            }*/
 
             if (msg.type === "bulk") {
                 msg.data.forEach((obj) => {
@@ -2251,6 +2364,7 @@
             }
 
             if (msg.type === "turn" && !spectating) { // SUGGESTION: bold out names instead? /shrug
+                currentTurn = msg.data
                 if (msg.data === "host" && !isOpposite) {
                     isTurn = true
                     if (selected) {
@@ -2658,6 +2772,9 @@ d.style.top = 80 + (75 * y) + "px"*/
                 if (msg.data.clearRecent && playingGame) {
                     location.hash = ""
                     spect.style.display = "none"
+                    spect2.style.display = "none"
+                    clock1.style.display = "none"
+                    clock2.style.display = "none"
                     cleanBoard()
                     spectating = false
                     cGame.style.display = ""
@@ -2682,7 +2799,8 @@ d.style.top = 80 + (75 * y) + "px"*/
                 showMessage(msg.data.title, msg.data.text)
             }
 
-            if (msg.type === "disconnect") {
+            if (msg.type === "finish") {
+                let reason = msg.data.reason
                 disconnectHost.style.display = "none"
                 disconnectEnemy.style.display = "none"
                 if (msg.data.download) {
@@ -2708,10 +2826,27 @@ d.style.top = 80 + (75 * y) + "px"*/
                 playingGame = null
                 location.hash = ""
                 spect.style.display = "none"
-                if (spectating) {
-                    showMessage("Match ended", "One of the two parties has disconnected from the game.")
-                } else {
-                    showMessage("Match ended", "The opponent has disconnected from the game.")
+                spect2.style.display = "none"
+                if (reason === "time") {
+                    if (spectating) {
+                        showMessage("Match ended", msg.data.d !== "host" ? "White has won on time." : "Black has won on time.")
+                    } else {
+                        showMessage("Match ended", msg.data.d !== play ? "You win on time! Your opponent has lost the match." : "You lose on time. You have lost the match.")
+                    }
+                }
+                if (reason === "disconnect") {
+                    if (spectating) {
+                        showMessage("Match ended", "One of the two parties has disconnected from the game.")
+                    } else {
+                        showMessage("Match ended", "The opponent has disconnected from the game.")
+                    }
+                }
+                if (reason === "win") {
+                    if (spectating) {
+                        showMessage("Match ended", msg.data.d !== "host" ? "White has won!" : "Black has won!")
+                    } else {
+                        showMessage("Match ended", msg.data.d !== play ? "You win! Your opponent has lost the match." : "You lose. You have lost the match.")
+                    }
                 }
                 spectating = false
                 cGame.style.display = ""
@@ -2736,6 +2871,10 @@ d.style.top = 80 + (75 * y) + "px"*/
                 arrows = new Map()
                 clearRules()
                 selectedDivs = []
+                clock1.style.display = "none"
+                clock2.style.display = "none"
+                clock1.className = "clock"
+                clock2.className = "oppositeClock" 
                 enemy.textContent = "(waiting for enemy)"
                 enemyData = null
                 if (document.getElementById("usernameEdit")) {
@@ -2826,6 +2965,11 @@ d.style.top = 80 + (75 * y) + "px"*/
                 localStorage.setItem("games", JSON.stringify(msg.data))
             }
 
+            if (msg.type === "clock" && msg.data) {
+                currentClock = msg.data
+                updateClock(msg.data)
+            }
+
             if (msg.type === "ready") {
                 if (!localStorage.getItem("games")) {
                     localStorage.setItem("games", JSON.stringify({}))
@@ -2847,7 +2991,26 @@ d.style.top = 80 + (75 * y) + "px"*/
                     localStorage.setItem("games", JSON.stringify(gamesA))
                     perform("cleanGames", gamesA)
                 }
+                if (msg.data.clock) {
+                    if (spectating) {
+                        spect.style.display = "none"
+                        spect2.style.display = ""
+                    }
+                    clock1.style.display = "inline-block"
+                    clock2.style.display = "inline-block"
+
+                    if (isOpposite) {
+                        clock1.className = "oppositeClock2"
+                        clock2.className = "clock2" 
+                    } else {
+                        clock1.className = "clock"
+                        clock2.className = "oppositeClock" 
+                    }
+
+                    updateClock(msg.data.clock)
+                }
                 isTurn = false
+                currentClock = msg.data.clock
                 gameSID = msg.data.SID
                 playingGame = msg.data.roomID
                 location.hash = msg.data.roomID
@@ -2869,6 +3032,7 @@ d.style.top = 80 + (75 * y) + "px"*/
                 if (msg.data.turn === "host" && !isOpposite && !msg.data.spectating) {
                     isTurn = true
                 }
+                currentTurn = msg.data.turn
                 loadRules(msg.data.board.rules)
                 loadBoard(msg.data.board)
             }
@@ -2885,7 +3049,8 @@ d.style.top = 80 + (75 * y) + "px"*/
             perform("createRoom", {
                 variants: arr,
                 settings: {
-                    record: misc.recordMatch.value
+                    record: misc.recordMatch.value,
+                    clock: misc.clock.value
                 }
             })
             cGame.style.display = "none"
@@ -2927,6 +3092,8 @@ d.style.top = 80 + (75 * y) + "px"*/
         }
 
         function connect(reconnected) {
+            clock1.style.display = "none"
+            clock2.style.display = "none"
             ws = new WebSocket("wss://dokso.in:2096")
 
             ws.addEventListener("message", onMessage)
@@ -2955,6 +3122,7 @@ d.style.top = 80 + (75 * y) + "px"*/
                 }
                 if (reconnected && playingGame) {
                     cleanBoard()
+                    
                     queueAction = () => perform("joinRoom", {
                         id: playingGame,
                         sid: gameSID
@@ -2985,6 +3153,26 @@ d.style.top = 80 + (75 * y) + "px"*/
                     connect(true)
                 }, 250)
             })
+
+            let lastUpdate = new Date().getTime() / 1000
+
+            setInterval(() => {
+                let dec = (new Date().getTime() / 1000) - lastUpdate
+                lastUpdate = new Date().getTime() / 1000
+                if (playingGame) {
+                    if (currentClock) {
+                        if (!spectating && isOpposite && !isTurn && currentTurn === "enemy") return
+                        if (!spectating && !isOpposite && !isTurn && currentTurn === "host") return
+                        if (currentTurn === "host") {
+                            currentClock.host -= dec
+                        }
+                        if (currentTurn === "enemy") {
+                            currentClock.enemy -= dec
+                        }
+                        updateClock(currentClock)
+                    }
+                }
+            }, 10)
 
             window.wsDEBUG = ws
         }
