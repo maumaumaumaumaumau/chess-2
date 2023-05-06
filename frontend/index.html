@@ -1962,6 +1962,7 @@
                     let coords = [spiece.x, spiece.y]
                     let canMove = getMoveset(selected).local[coords[0] + ":" + coords[1]]
                     if (canMove) {
+                        if (currentClock[isOpposite ? "enemy" : "host"] <= 0) return
                         let x = isOpposite ? 9 - coords[0] : coords[0]
                         let y = isOpposite ? 9 - coords[1] : coords[1]
                         perform("movePiece", {
@@ -2053,6 +2054,7 @@
                             })
                             selectedDivs = []
                         } else {
+                            if (currentClock[isOpposite ? "enemy" : "host"] <= 0) return
                             let x = isOpposite ? 9 - coords[0] : coords[0]
                             let y = isOpposite ? 9 - coords[1] : coords[1]
                             console.log(isOpposite, x, y, selected.tx, selected.ty)
