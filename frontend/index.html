@@ -371,8 +371,9 @@
     transform: translateX(-50%);
     position: absolute;
 ">
-<div id="clock2" class="oppositeClock" style="display: none; position: absolute;margin-top: 24px;font-family: monospace;font-size: 200%;right: -30px;text-align: center;padding: 8px;width: 114px;">
-    <span id="clock2m">00</span><span style="
+            <div id="clock2" class="oppositeClock"
+                style="display: none; position: absolute;margin-top: 24px;font-family: monospace;font-size: 200%;right: -30px;text-align: center;padding: 8px;width: 114px;">
+                <span id="clock2m">00</span><span style="
     margin-left: 2px;
     margin-right: 2px;
     opacity: .8;
@@ -380,9 +381,10 @@
     font-size: 80%;
     opacity: .9;
 "></span></span>
-                </div>
-            <div id="clock1" class="clock" style="display: none; position: absolute;margin-top: 24px;font-family: monospace;font-size: 200%;right: -30px;text-align: center;padding: 8px;width: 114px;">
-    <span id="clock1m">00</span><span style="
+            </div>
+            <div id="clock1" class="clock"
+                style="display: none; position: absolute;margin-top: 24px;font-family: monospace;font-size: 200%;right: -30px;text-align: center;padding: 8px;width: 114px;">
+                <span id="clock1m">00</span><span style="
     margin-left: 2px;
     margin-right: 2px;
     opacity: .8;
@@ -390,7 +392,9 @@
     font-size: 80%;
     opacity: .9;
 "></span></span>
-                </div><p id="spect2" style="display: none;position: absolute;margin-top: 30px;color: rgb(200, 50, 50);font-family: system-ui;font-size: 140%;left: -120px;text-align: right;width: 100%;top: 4px;">
+            </div>
+            <p id="spect2"
+                style="display: none;position: absolute;margin-top: 30px;color: rgb(200, 50, 50);font-family: system-ui;font-size: 140%;left: -120px;text-align: right;width: 100%;top: 4px;">
                 <span style="
     width: 10px;
     height: 10px;
@@ -1460,10 +1464,10 @@
 
             let buffedElephant = function () {
                 // WARNING: CODE HAZARD BELOW, DO NOT READ, EYES WILL BE BURNED UPON FURTHER INSPECTION.
-                let oldX = obj.x 
-                _x = obj.x 
-                _y = obj.y 
-                
+                let oldX = obj.x
+                _x = obj.x
+                _y = obj.y
+
                 for (_y = obj.y - 1; _y > 0; _y--) {
                     _x += 1
                     if (_x > 8) break
@@ -2163,8 +2167,9 @@
         }
 
         function updateClock(currentClock) {
-            let enemy = currentClock.enemy 
-            let host = currentClock.host 
+
+            let enemy = currentClock.enemy
+            let host = currentClock.host
 
             let minE = Math.floor(enemy / 60)
             let minH = Math.floor(host / 60)
@@ -2172,8 +2177,8 @@
             let secH = Math.ceil(host) - minH * 60
             let msE = Math.floor((Math.floor(enemy) - enemy) * 10) * 0.1
             let msH = Math.floor((Math.floor(host) - host) * 10) * 0.1
-            let displayMSE = false 
-            let displayMSH = false 
+            let displayMSE = false
+            let displayMSH = false
 
             if (minE === 0 && secE <= 10) {
                 displayMSE = true
@@ -2189,7 +2194,7 @@
             }
 
             if (displayMSE) {
-                clock2ms.textContent = "." + msE 
+                clock2ms.textContent = "." + msE
             } else {
                 clock2ms.textContent = ""
             }
@@ -2204,7 +2209,7 @@
             if (currentTurn === "host" || (currentTurn === "enemy" && !spectating && isOpposite && !isTurn)) {
                 clock2.style.opacity = .6
             }
-            
+
             if (currentTurn === "enemy" || (currentTurn === "host" && !spectating && !isOpposite && !isTurn)) {
                 clock1.style.opacity = .6
             }
@@ -2874,7 +2879,7 @@ d.style.top = 80 + (75 * y) + "px"*/
                 clock1.style.display = "none"
                 clock2.style.display = "none"
                 clock1.className = "clock"
-                clock2.className = "oppositeClock" 
+                clock2.className = "oppositeClock"
                 enemy.textContent = "(waiting for enemy)"
                 enemyData = null
                 if (document.getElementById("usernameEdit")) {
@@ -3001,10 +3006,10 @@ d.style.top = 80 + (75 * y) + "px"*/
 
                     if (isOpposite) {
                         clock1.className = "oppositeClock2"
-                        clock2.className = "clock2" 
+                        clock2.className = "clock2"
                     } else {
                         clock1.className = "clock"
-                        clock2.className = "oppositeClock" 
+                        clock2.className = "oppositeClock"
                     }
 
                     updateClock(msg.data.clock)
@@ -3122,7 +3127,7 @@ d.style.top = 80 + (75 * y) + "px"*/
                 }
                 if (reconnected && playingGame) {
                     cleanBoard()
-                    
+
                     queueAction = () => perform("joinRoom", {
                         id: playingGame,
                         sid: gameSID
@@ -3154,30 +3159,30 @@ d.style.top = 80 + (75 * y) + "px"*/
                 }, 250)
             })
 
-            let lastUpdate = new Date().getTime() / 1000
-
-            setInterval(() => {
-                let dec = (new Date().getTime() / 1000) - lastUpdate
-                lastUpdate = new Date().getTime() / 1000
-                if (playingGame) {
-                    if (currentClock) {
-                        if (!spectating && isOpposite && !isTurn && currentTurn === "enemy") return
-                        if (!spectating && !isOpposite && !isTurn && currentTurn === "host") return
-                        if (currentTurn === "host") {
-                            currentClock.host -= dec
-                        }
-                        if (currentTurn === "enemy") {
-                            currentClock.enemy -= dec
-                        }
-                        updateClock(currentClock)
-                    }
-                }
-            }, 10)
-
             window.wsDEBUG = ws
         }
         connect()
         delete window.localStorage
+
+        let lastUpdate = new Date().getTime() / 1000
+
+        setInterval(() => {
+            let dec = (new Date().getTime() / 1000) - lastUpdate
+            lastUpdate = new Date().getTime() / 1000
+            if (playingGame) {
+                if (currentClock) {
+                    if (!spectating && isOpposite && !isTurn && currentTurn === "enemy") return
+                    if (!spectating && !isOpposite && !isTurn && currentTurn === "host") return
+                    if (currentTurn === "host") {
+                        currentClock.host -= dec
+                    }
+                    if (currentTurn === "enemy") {
+                        currentClock.enemy -= dec
+                    }
+                    updateClock(currentClock)
+                }
+            }
+        }, 10)
     })()
 </script>
 
