@@ -1329,8 +1329,215 @@
             } else {
                 MP.style.display = "none"
             }
+            /*
+                let oside = msg.data.side
+                if (isOpposite) {
+                    msg.data.side = msg.data.side === "L" ? "R" : "L"
+                }
+                let pos = document.getElementById(msg.data.side + ":" + msg.data.x + ":" + (isOpposite ? 3 - msg.data.y : msg.data.y))
+                let x = msg.data.side === "L" ? 0 : 9
+                let y = msg.data.y
+                let ownerOf = msg.data.owner === "host" ? !isOpposite : isOpposite
+                y = isOpposite ? 3 - y : y
+                y = 3 + y
+                let newImg = document.createElement("img")
+                newImg.src = getImageForPiece(msg.data)
+                newImg.draggable = false
+                newImg.className = "piece"
+                let banana = document.createElement("img")
+                let value = msg.data
+                pieces.set(newImg, {
+                    ownerOf: isOpposite ? value.owner === "enemy" : value.owner === "host",
+                    owner: value.owner,
+                    type: value.type,
+                    element: newImg,
+                    parent: document.getElementById(msg.data.side + "POS:" + msg.data.x + ":" + (y - 3)),
+                    tparent: document.getElementById(msg.data.side + ":" + msg.data.x + ":" + (y - 3)),
+                    banana: banana,
+                    x: x,
+                    y: y,
+                    tx: oside === "L" ? 0 : 9,
+                    ty: msg.data.y + 3,
+                    mx: msg.data.x,
+                    my: isOpposite ? 3 - msg.data.y : msg.data.y,
+                    isInJail: true,
+                    lbanana: value.banana,
+                    side: msg.data.side
+                })
+                pieceC[x + ":" + y] = pieces.get(newImg)
+                banana.draggable = false
+                banana.className = value.type === "king" ? "banana" : "monkeyBanana"
+                banana.style.display = value.banana ? "block" : "none"
+                banana.src = "https://cdn.mau0.workers.dev/cdn/banana.png"
+                if (!(isOpposite ? value.owner === "enemy" : value.owner === "host")) {
+                    newImg.style.cursor = "default"
+                    banana.style.cursor = "default"
+                }
+                bananas.set(banana, pieces.get(newImg))
+                document.getElementById(msg.data.side + "POS:" + msg.data.x + ":" + (y - 3)).appendChild(newImg)
+                document.getElementById(msg.data.side + "POS:" + msg.data.x + ":" + (y - 3)).appendChild(banana)*/
+
+            
+            for (const [key, value] of Object.entries(data.rightSide)) {
+                if (!value) continue
+                let side = "R"
+
+                if (isOpposite) {
+                    side = "L"
+                }
+
+                let coords = key.split(":")
+                let mX = parseInt(coords[0])
+                let mY = parseInt(coords[1])
+
+                let pos = document.getElementById(side + ":" + mX + ":" + (isOpposite ? 3 - mY : mY))
+
+                let newImg = document.createElement("img")
+                newImg.src = getImageForPiece(value)
+                newImg.draggable = false
+                newImg.className = "piece"
+
+                let x = side === "L" ? 0 : 9
+                let y = mY
+                
+                y = isOpposite ? 3 - y : y
+                y = 3 + y
+
+                let banana = document.createElement("img")
+
+                pieces.set(newImg, {
+                    ownerOf: isOpposite ? value.owner === "enemy" : value.owner === "host",
+                    owner: value.owner,
+                    type: value.type,
+                    element: newImg,
+                    parent: document.getElementById(side + "POS:" + mX + ":" + (y - 3)),
+                    tparent: document.getElementById(side + ":" + mX + ":" + (y - 3)),
+                    banana: banana,
+                    x: x,
+                    y: y,
+                    tx: "R" === "L" ? 0 : 9,
+                    ty: mY + 3,
+                    mx: mX,
+                    my: isOpposite ? 3 - mY : mY,
+                    isInJail: true,
+                    lbanana: value.banana,
+                    side: side
+                })
+
+                pieceC[x + ":" + y] = pieces.get(newImg)
+                banana.draggable = false
+                banana.className = value.type === "king" ? "banana" : "monkeyBanana"
+                banana.style.display = value.banana ? "block" : "none"
+                banana.src = "https://cdn.mau0.workers.dev/cdn/banana.png"
+                if (spectating ? false : !(value.type === "bear" || (isOpposite ? value.owner === "enemy" : value.owner === "host"))) {
+                    newImg.style.cursor = "default"
+                    banana.style.cursor = "default"
+                }
+                bananas.set(banana, pieces.get(newImg))
+                document.getElementById(side + "POS:" + mX + ":" + (y - 3)).appendChild(newImg)
+                document.getElementById(side + "POS:" + mX + ":" + (y - 3)).appendChild(banana)
+            }
+
+            for (const [key, value] of Object.entries(data.leftSide)) {
+                if (!value) continue
+                let side = "L"
+
+                if (isOpposite) {
+                    side = "R"
+                }
+
+                let coords = key.split(":")
+                let mX = parseInt(coords[0])
+                let mY = parseInt(coords[1])
+
+                let pos = document.getElementById(side + ":" + mX + ":" + (isOpposite ? 3 - mY : mY))
+
+                let newImg = document.createElement("img")
+                newImg.src = getImageForPiece(value)
+                newImg.draggable = false
+                newImg.className = "piece"
+
+                let x = side === "L" ? 0 : 9
+                let y = mY
+                
+                y = isOpposite ? 3 - y : y
+                y = 3 + y
+
+                let banana = document.createElement("img")
+
+                pieces.set(newImg, {
+                    ownerOf: isOpposite ? value.owner === "enemy" : value.owner === "host",
+                    owner: value.owner,
+                    type: value.type,
+                    element: newImg,
+                    parent: document.getElementById(side + "POS:" + mX + ":" + (y - 3)),
+                    tparent: document.getElementById(side + ":" + mX + ":" + (y - 3)),
+                    banana: banana,
+                    x: x,
+                    y: y,
+                    tx: "L" === "L" ? 0 : 9,
+                    ty: mY + 3,
+                    mx: mX,
+                    my: isOpposite ? 3 - mY : mY,
+                    isInJail: true,
+                    lbanana: value.banana,
+                    side: side
+                })
+
+                pieceC[x + ":" + y] = pieces.get(newImg)
+                banana.draggable = false
+                banana.className = value.type === "king" ? "banana" : "monkeyBanana"
+                banana.style.display = value.banana ? "block" : "none"
+                banana.src = "https://cdn.mau0.workers.dev/cdn/banana.png"
+                if (spectating ? false : !(value.type === "bear" || (isOpposite ? value.owner === "enemy" : value.owner === "host"))) {
+                    newImg.style.cursor = "default"
+                    banana.style.cursor = "default"
+                }
+                bananas.set(banana, pieces.get(newImg))
+                document.getElementById(side + "POS:" + mX + ":" + (y - 3)).appendChild(newImg)
+                document.getElementById(side + "POS:" + mX + ":" + (y - 3)).appendChild(banana)
+            }
+            
+                /*
             for (const [key, value] of Object.entries(data.general)) {
                 if (key === "4.5:4.5") continue
+                let newImg = document.createElement("img")
+                newImg.src = value.type === "bear" ? "https://cdn.mau0.workers.dev/cdn/bearPiece.png" : getImageForPiece(value)
+                newImg.draggable = false
+                newImg.className = "piece" + (value.type === "bear" ? " bearPiece" : "")
+                let coords = key.split(":")
+                let x = isOpposite ? 9 - parseInt(coords[0]) : parseInt(coords[0])
+                let y = isOpposite ? 9 - parseInt(coords[1]) : parseInt(coords[1])
+                let banana = document.createElement("img")
+                pieces.set(newImg, {
+                    ownerOf: value.type === "bear" || (isOpposite ? value.owner === "enemy" : value.owner === "host"),
+                    owner: value.owner,
+                    type: value.type,
+                    element: newImg,
+                    parent: document.getElementById("POS:" + x + ":" + y),
+                    tparent: document.getElementById("P:" + x + ":" + y),
+                    banana: banana,
+                    x: x,
+                    y: y,
+                    tx: parseInt(coords[0]),
+                    ty: parseInt(coords[1])
+                })
+                pieceC[x + ":" + y] = pieces.get(newImg)
+                banana.draggable = false
+                banana.className = value.type === "king" ? "banana" : "monkeyBanana"
+                banana.style.display = value.banana ? "block" : "none"
+                banana.src = "https://cdn.mau0.workers.dev/cdn/banana.png"
+                if (spectating ? false : !(value.type === "bear" || (isOpposite ? value.owner === "enemy" : value.owner === "host"))) {
+                    newImg.style.cursor = "default"
+                    banana.style.cursor = "default"
+                }
+                bananas.set(banana, pieces.get(newImg))
+                document.getElementById("POS:" + x + ":" + y).appendChild(newImg)
+                document.getElementById("POS:" + x + ":" + y).appendChild(banana)
+            }*/
+            for (const [key, value] of Object.entries(data.general)) {
+                if (key === "4.5:4.5") continue
+                if (!value) continue
                 let newImg = document.createElement("img")
                 newImg.src = value.type === "bear" ? "https://cdn.mau0.workers.dev/cdn/bearPiece.png" : getImageForPiece(value)
                 newImg.draggable = false
@@ -2373,7 +2580,7 @@
                     })
                 })
             }
-            if (msg.type === "turn") currentTurn = msg.data
+
             if (msg.type === "turn" && !spectating) { // SUGGESTION: bold out names instead? /shrug
                 currentTurn = msg.data
                 if (msg.data === "host" && !isOpposite) {
