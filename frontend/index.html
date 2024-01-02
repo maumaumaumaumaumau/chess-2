@@ -2581,17 +2581,17 @@
                 })
             }
 
-            if (msg.type === "turn" && !spectating) { // SUGGESTION: bold out names instead? /shrug
+            if (msg.type === "turn") { // SUGGESTION: bold out names instead? /shrug
                 currentTurn = msg.data
                 if (msg.data === "host" && !isOpposite) {
                     isTurn = true
-                    if (selected) {
+                    if (selected && !spectating) {
                         let o = selected
                         selected.element.click()
                     }
                 } else if (msg.data === "enemy" && isOpposite) {
                     isTurn = true
-                    if (selected) {
+                    if (selected && !spectating) {
                         let o = selected
                         selected.element.click()
                     }
@@ -3249,10 +3249,10 @@ d.style.top = 80 + (75 * y) + "px"*/
                 if (msg.data.spectating) {
                     host.textContent = msg.data.host.name
                 }
-                if (msg.data.turn === "enemy" && isOpposite && !msg.data.spectating) {
+                if (msg.data.turn === "enemy" && isOpposite) {
                     isTurn = true
                 }
-                if (msg.data.turn === "host" && !isOpposite && !msg.data.spectating) {
+                if (msg.data.turn === "host" && !isOpposite) {
                     isTurn = true
                 }
                 currentTurn = msg.data.turn
@@ -3390,8 +3390,8 @@ d.style.top = 80 + (75 * y) + "px"*/
             lastUpdate = new Date().getTime() / 1000
             if (playingGame) {
                 if (currentClock) {
-                    if (!spectating && isOpposite && !isTurn && currentTurn === "enemy") return
-                    if (!spectating && !isOpposite && !isTurn && currentTurn === "host") return
+                    if (isOpposite && !isTurn && currentTurn === "enemy") return
+                    if (!isOpposite && !isTurn && currentTurn === "host") return
                     if (currentTurn === "host") {
                         if (moved.host) currentClock.host -= dec
                     }
