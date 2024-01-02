@@ -3390,8 +3390,8 @@ d.style.top = 80 + (75 * y) + "px"*/
             lastUpdate = new Date().getTime() / 1000
             if (playingGame) {
                 if (currentClock) {
-                    if (isOpposite && !isTurn && currentTurn === "enemy") return
-                    if (!isOpposite && !isTurn && currentTurn === "host") return
+                    if (!spectating && isOpposite && !isTurn && currentTurn === "enemy") return
+                    if (!spectating && !isOpposite && !isTurn && currentTurn === "host") return
                     if (currentTurn === "host") {
                         if (moved.host) currentClock.host -= dec
                     }
