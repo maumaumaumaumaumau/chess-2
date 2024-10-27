@@ -11,6 +11,10 @@ app.get("/", function(req, res) {
   res.sendFile(path.join(__dirname, "index.html"))
 })
 
+app.get("/discord/activity", function(req, res) {
+  res.sendFile(path.join(__dirname, "activity.html"))
+})
+
 app.get("/favicon.ico", function(req, res) {
   res.sendFile(path.join(__dirname, "favicon.ico"))
 })
