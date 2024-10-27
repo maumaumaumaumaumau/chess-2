@@ -11,6 +11,10 @@ app.get("/", function(req, res) {
   res.sendFile(path.join(__dirname, "index.html"))
 })
 
+app.get("/WIP", function(req, res) {
+  res.sendFile(path.join(__dirname, "wip.html"))
+})
+
 app.get("/discord/activity", function(req, res) {
   res.sendFile(path.join(__dirname, "activity.html"))
 })
