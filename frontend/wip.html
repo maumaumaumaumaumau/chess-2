@@ -2814,8 +2814,8 @@ d.style.top = 80 + (75 * y) + "px"*/
                     if (piece.banana) piece.banana.remove()
                     piece.tparent.id = "P:" + ox + ":" + oy
                     piece.parent.id = "POS:" + ox + ":" + oy
-                    piece.tparent.style.left = (145 + (71 * (ox - 1)))/860 + "%"
-                    piece.tparent.style.top = (80 + (75 * (oy - 1)))/760 + "%"
+                    piece.tparent.style.left = (145 + (71 * (ox - 1)))/860*100 + "%"
+                    piece.tparent.style.top = (80 + (75 * (oy - 1)))/760*100 + "%"
                     if (selected === piece) {
                         selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
                         selected = null
@@ -2839,8 +2839,8 @@ d.style.top = 80 + (75 * y) + "px"*/
 
                     tp.id = "P:" + ox + ":" + oy
                     tp2.id = "POS:" + ox + ":" + oy
-                    tp.style.left = (145 + (71 * (ox - 1)))/860 + "%"
-                    tp.style.top = (80 + (75 * (oy - 1)))/760 + "%"
+                    tp.style.left = (145 + (71 * (ox - 1)))/860*100 + "%"
+                    tp.style.top = (80 + (75 * (oy - 1)))/760*100 + "%"
 
                     tp.style["background-color"] = "rgba(255, 255, 0, 0.5)"
                     moveHistory.push({
