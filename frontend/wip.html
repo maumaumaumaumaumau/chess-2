@@ -115,26 +115,26 @@
         }
 
         .moveSelect {
-            height: calc(37px - 12px);
+            height: calc(25 * min(100vw, min(1100px, 115.789473684vh))/1100);;
             background-color: rgba(72, 71, 100, .4);
             left: 50%;
-            top: calc(74px / 2);
-            position: relative;
+            top: 50%;
+            position: absolute;
             transform: translate(-50%, -50%);
-            width: calc(37px - 12px);
+            width: calc(25 * min(100vw, min(1100px, 115.789473684vh))/1100);  /* super scale hack */
             border-radius: 100%;
         }
 
         .pieceSelect {
-            height: calc(74px - 12px);
+            height: calc(62 * min(100vw, min(1100px, 115.789473684vh))/1100);
             background-color: rgba(0, 0, 0, 0);
             left: 50%;
-            top: calc(74px / 2);
-            position: relative;
+            top: 50%;
+            position: absolute;
             transform: translate(-50%, -50%);
-            width: calc(71px - 12px);
+            width: calc(59 * min(100vw, min(1100px, 115.789473684vh))/1100);
             border-radius: 100%;
-            border-width: 4px;
+            border-width: calc(4 * min(100vw, min(1100px, 115.789473684vh))/1100);
             border-color: rgba(72, 71, 100, .4);
             border-style: solid;
         }
