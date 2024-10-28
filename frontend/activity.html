@@ -70,13 +70,13 @@
         .edit {
             filter: invert(40%);
             position: relative;
-            width: 16px;
-            margin-bottom: 4px;
+            width: 2%;
+            margin-bottom: 0.5%;
             cursor: pointer
         }
 
         .variantImage {
-            height: 30px;
+            height: 100%;
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
@@ -87,10 +87,10 @@
         .variantContainer {
             border-radius: 100%;
             background-color: rgb(40, 40, 40);
-            width: 30px;
-            height: 30px;
-            padding: 4px;
-            margin-bottom: 10px;
+            width: 78.9473684211%;
+            aspect-ratio: 1/1;
+            padding: 10.5263157895%;
+            margin-bottom: 26.3157894737%;
             box-shadow: 0 0 7px 0.5px black;
         }
 
@@ -109,32 +109,32 @@
             user-select: none;
             cursor: pointer;
             left: 50%;
-            top: 8px;
+            top: 10.6666666667%;
             position: absolute;
             transform: translateX(-50%);
         }
 
         .moveSelect {
-            height: calc(37px - 12px);
+            aspect-ratio: 1 / 1;
             background-color: rgba(72, 71, 100, .4);
             left: 50%;
-            top: calc(74px / 2);
-            position: relative;
+            top: 50%;
+            position: absolute;
             transform: translate(-50%, -50%);
-            width: calc(37px - 12px);
+            width: calc(25 * min(100vw, min(1100px, 115.789473684vh))/1100);  /* super scale hack */
             border-radius: 100%;
         }
 
         .pieceSelect {
-            height: calc(74px - 12px);
+            height: calc(62 * min(100vw, min(1100px, 115.789473684vh))/1100);
             background-color: rgba(0, 0, 0, 0);
             left: 50%;
-            top: calc(74px / 2);
-            position: relative;
+            top: 50%;
+            position: absolute;
             transform: translate(-50%, -50%);
-            width: calc(71px - 12px);
+            width: calc(59 * min(100vw, min(1100px, 115.789473684vh))/1100);
             border-radius: 100%;
-            border-width: 4px;
+            border-width: calc(4 * min(100vw, min(1100px, 115.789473684vh))/1100);
             border-color: rgba(72, 71, 100, .4);
             border-style: solid;
         }
@@ -212,7 +212,7 @@
             user-select: none;
             cursor: pointer;
             left: 50%;
-            bottom: 26px;
+            bottom: 34.6666666667%;
             position: absolute;
             transform: translateX(-50%);
         }
@@ -324,28 +324,16 @@
             }
         }
 
-        .oppositeClock2 {
-            background-color: rgb(220, 220, 220);
-            color: rgb(0, 0, 0);
-            top: 4px;
-        }
-
-        .clock2 {
-            background-color: rgb(20, 20, 20);
-            color: rgb(255, 255, 255);
-            bottom: 28px;
-        }
-
         .oppositeClock {
             background-color: rgb(20, 20, 20);
             color: rgb(255, 255, 255);
-            top: 4px;
+            top: 0.421052631579%;
         }
 
         .clock {
             background-color: rgb(220, 220, 220);
             color: rgb(0, 0, 0);
-            bottom: 28px;
+            bottom: 2.94736842105%;
         }
     </style>
 </head>
@@ -357,25 +345,28 @@
     left: 50%;
     position: absolute;
     transform: translate(-50%, -50%);
-    width: 1100px;
-    height: 950px;
     top: 50%;
     background-color: rgb(30, 30, 30);
+    width: 100vw;
+    height: 86.3636363636vw;
+    max-height: calc(min(950px, 100vh));
+    max-width: calc(min(1100px, 115.789473684vh));
 ">
-        <div id="variants" style="width: 38px;left: 60px;position: absolute;top: 105px;">
+        <div id="variants" style="width: 3.45454545455%;left: 5.45454545455%;position: absolute;top: 11.0526315789%;">
         </div>
         <div style="
-    width: 800px;
+    width: 72.7272727273%;
     height: 100%;
     left: 50%;
     transform: translateX(-50%);
     position: absolute;
+    font-size: calc(16 * min(100vw, min(1100px, 115.789473684vh))/1100);
 ">
             <div id="clock2" class="oppositeClock"
-                style="display: none; position: absolute;margin-top: 24px;font-family: monospace;font-size: 200%;right: -30px;text-align: center;padding: 8px;width: 114px;">
+                style="display: none;position: absolute;margin-top: 3%;font-family: monospace;font-size: 162.5%;right: -3.75%;text-align: center;padding: 1%;width: 14.25%;">
                 <span id="clock2m">00</span><span style="
-    margin-left: 2px;
-    margin-right: 2px;
+    margin-left: 1.53846153846%;
+    margin-right: 1.53846153846%;
     opacity: .8;
 ">:</span><span id="clock2s">00</span><span id="clock2ms" style="
     font-size: 80%;
@@ -383,10 +374,10 @@
 "></span></span>
             </div>
             <div id="clock1" class="clock"
-                style="display: none; position: absolute;margin-top: 24px;font-family: monospace;font-size: 200%;right: -30px;text-align: center;padding: 8px;width: 114px;">
+                style="display: none;position: absolute;margin-top: 3%;font-family: monospace;font-size: 162.5%;right: -3.75%;text-align: center;padding: 1%;width: 14.25%;">
                 <span id="clock1m">00</span><span style="
-    margin-left: 2px;
-    margin-right: 2px;
+    margin-left: 1.53846153846%;
+    margin-right: 1.53846153846%;
     opacity: .8;
 ">:</span><span id="clock1s">00</span><span id="clock1ms" style="
     font-size: 80%;
@@ -394,42 +385,42 @@
 "></span></span>
             </div>
             <p id="spect2"
-                style="display: none;position: absolute;margin-top: 30px;color: rgb(200, 50, 50);font-family: system-ui;font-size: 140%;left: -120px;text-align: right;width: 100%;top: 4px;">
+                style="display: none;position: absolute;margin-top: 3.75%;color: rgb(200, 50, 50);font-family: system-ui;font-size: 140%;left: -15%;text-align: right;width: 100%;top: 0.421052631579%;">
                 <span style="
-    width: 10px;
-    height: 10px;
+    width: 1.25%;
     background-color: rgb(255, 50, 50);
     display: inline-block;
     border-radius: 100%;
-    left: -10px;
+    left: -1.25%;
     position: relative;
     transform: translateY(-25%);
+    aspect-ratio: 1 / 1;
 "></span>SPECTATING
             </p>
             <p id="spect"
-                style="display: none;position: absolute;margin-top: 30px;color: rgb(200, 50, 50);font-family: system-ui;font-size: 140%;left: 30px;text-align: right;width: 100%;top: 4px;">
+                style="display: none;position: absolute;margin-top: 3.75%;color: rgb(200, 50, 50);font-family: system-ui;font-size: 140%;left: 3.75%;text-align: right;width: 100%;top: 0.421052631579%;">
                 <span style="
-    width: 10px;
-    height: 10px;
+    width: 1.25%;
     background-color: rgb(255, 50, 50);
     display: inline-block;
     border-radius: 100%;
-    left: -10px;
+    left: -1.25%;
     position: relative;
     transform: translateY(-25%);
+    aspect-ratio: 1 / 1;
 "></span>SPECTATING
             </p>
-            <p id="enemy"
-                style="position: absolute;margin-top: 30px;color: rgb(255, 255, 255);font-family: system-ui;font-size: 140%;left: -30px;text-align: left;width: 100%;top: 4px;">
-                (waiting for enemy)</p>
-            <p id="host"
-                style="position: absolute;margin-top: 30px;color: rgb(255, 255, 255);font-family: system-ui;font-size: 140%;left: -30px;text-align: left;width: 100%;bottom: 10px;">
+            <p id="enemy" 
+              style="position: absolute;margin-top: 3.75%;color: rgb(255, 255, 255);font-family: system-ui;font-size: 140%;left: -3.75%;text-align: left;width: 100%;top: 0.421052631579%;">
+                (waiting for opponent)</p>
+            <p id="host" 
+              style="position: absolute;margin-top: 3.75%;color: rgb(255, 255, 255);font-family: system-ui;font-size: 140%;left: -3.75%;text-align: left;width: 100%;bottom: 1.05263157895%;">
                 (waiting for connection) </p>
-            <div
-                style="width: 100%;position: absolute;top: 50%;transform: translate(-50%, -50%);left: 50%;background-color: rgb(40 40 40);padding: 30px;box-shadow: 0 0 21px 1px black;height: 700px;">
+            <div 
+              style="width: 100%;position: absolute;top: 50%;transform: translate(-50%, -50%);left: 50%;background-color: rgb(40 40 40);padding: 3.75%;box-shadow: 0 0 21px 1px black;height: 73.6842105263%;">
                 <div id="options"
                     style="height: calc(100% - 60px);width: calc(100% - 60px);left: 50%;top: 50%;position: absolute;transform: translate(-50%, -50%);z-index: 2;">
-                    <div id="gameIDC" style="display: none;">
+                    <div id="gameIDC" style="display: none; font-size: 1rem;">
                         <p id="gameID" style="
     color: rgb(255, 255, 255);
     font-size: 200%;
@@ -465,295 +456,225 @@
 
                 <div id="boardC" style="
     opacity: 0.3;
-"><img id="board" src="https://1299898022641008710.discordsays.com/.proxy/cdn/board.png"
-                        style="pointer-events: none;width: 100%;image-rendering: pixelated;height: 100%;user-select: none; margin-top: 0px;"
-                        draggable="false">
-                    <svg id="arrowContainer"
-                        style="opacity: 0.7;z-index: 2; width: 800px;height: 700px;position:absolute;left: 50%;top: 50%;pointer-events: none;user-select: none;transform: translate(-50%, -50%);">
+">
+                  <img id="board" src="https://1299898022641008710.discordsays.com/.proxy/cdn/board.png" 
+                    style="pointer-events: none;width: 100%;image-rendering: pixelated;height: 100%;user-select: none; margin-top: 0px;" 
+                    draggable="false">
+                    <svg id="arrowContainer" style="opacity: 0.7;z-index: 2;width: 93.023255814%;height: 92.1052631579%;position:absolute;left: 50%;top: 50%;pointer-events: none;user-select: none;transform: translate(-50%, -50%);">
                         <defs>
                             <marker id="arrow" orient="auto" markerWidth="4" markerHeight="8" refX="1.5" refY="2.01">
                                 <path d="M0,0.5 V3.5 L2.5,2 Z" fill="rgb(255, 170, 0)"></path>
                             </marker>
                         </defs>
-
                     </svg>
-
-                    <div id="L:1:1"
-                        style="background-color: rgba(0, 0, 0, 0);height: 75px;position: absolute;width: 60px;left: 38px;top: 306px;">
+                    
+                    <div id="L:1:1" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 6.97674%; left: 4.4186%; top: 40.2632%;">
                         <div id="LPOS:1:1"></div>
                     </div>
-                    <div id="L:1:2"
-                        style="background-color: rgba(0, 0, 0, 0);height: 75px;position: absolute;width: 60px;left: 37px;top: 379px;">
+                    <div id="L:1:2" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 6.97674%; left: 4.30233%; top: 49.8684%;">
                         <div id="LPOS:1:2"></div>
                     </div>
-                    <div id="R:1:2"
-                        style="background-color: rgba(0, 0, 0, 0);height: 75px;position: absolute;width: 60px;left: 762px;top: 379px;">
+                    <div id="R:1:2" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 6.97674%; left: 88.6047%; top: 49.8684%;">
                         <div id="RPOS:1:2"></div>
                     </div>
-                    <div id="R:1:1"
-                        style="background-color: rgba(0, 0, 0, 0);height: 75px;position: absolute;width: 60px;left: 762px;top: 305px;">
+                    <div id="R:1:1" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 6.97674%; left: 88.6047%; top: 40.1316%;">
                         <div id="RPOS:1:1"></div>
                     </div>
 
-                    <div id="P:1:1"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 145px; top: 80px;">
+                    <div id="P:1:1" style="background-color: rgba(0, 0, 0, 0);height: 9.86842%;position: absolute;width: 8.25581%;left: 16.8605%;top: 10.5263%;">
                         <div id="POS:1:1"></div>
                     </div>
-                    <div id="P:1:2"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 145px; top: 155px;">
+                    <div id="P:1:2" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 16.8605%; top: 20.3947%;">
                         <div id="POS:1:2"></div>
                     </div>
-                    <div id="P:1:3"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 145px; top: 230px;">
+                    <div id="P:1:3" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 16.8605%; top: 30.2632%;">
                         <div id="POS:1:3"></div>
                     </div>
-                    <div id="P:1:4"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 145px; top: 305px;">
+                    <div id="P:1:4" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 16.8605%; top: 40.1316%;">
                         <div id="POS:1:4"></div>
                     </div>
-                    <div id="P:1:5"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 145px; top: 380px;">
+                    <div id="P:1:5" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 16.8605%; top: 50%;">
                         <div id="POS:1:5"></div>
                     </div>
-                    <div id="P:1:6"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 145px; top: 455px;">
+                    <div id="P:1:6" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 16.8605%; top: 59.8684%;">
                         <div id="POS:1:6"></div>
                     </div>
-                    <div id="P:1:7"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 145px; top: 530px;">
+                    <div id="P:1:7" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 16.8605%; top: 69.7368%;">
                         <div id="POS:1:7"></div>
                     </div>
-                    <div id="P:1:8"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 145px; top: 605px;">
+                    <div id="P:1:8" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 16.8605%; top: 79.6053%;">
                         <div id="POS:1:8"></div>
                     </div>
-                    <div id="P:2:1"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 216px; top: 80px;">
+                    <div id="P:2:1" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 25.1163%; top: 10.5263%;">
                         <div id="POS:2:1"></div>
                     </div>
-                    <div id="P:2:2"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 216px; top: 155px;">
+                    <div id="P:2:2" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 25.1163%; top: 20.3947%;">
                         <div id="POS:2:2"></div>
                     </div>
-                    <div id="P:2:3"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 216px; top: 230px;">
+                    <div id="P:2:3" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 25.1163%; top: 30.2632%;">
                         <div id="POS:2:3"></div>
                     </div>
-                    <div id="P:2:4"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 216px; top: 305px;">
+                    <div id="P:2:4" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 25.1163%; top: 40.1316%;">
                         <div id="POS:2:4"></div>
                     </div>
-                    <div id="P:2:5"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 216px; top: 380px;">
+                    <div id="P:2:5" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 25.1163%; top: 50%;">
                         <div id="POS:2:5"></div>
                     </div>
-                    <div id="P:2:6"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 216px; top: 455px;">
+                    <div id="P:2:6" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 25.1163%; top: 59.8684%;">
                         <div id="POS:2:6"></div>
                     </div>
-                    <div id="P:2:7"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 216px; top: 530px;">
+                    <div id="P:2:7" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 25.1163%; top: 69.7368%;">
                         <div id="POS:2:7"></div>
                     </div>
-                    <div id="P:2:8"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 216px; top: 605px;">
+                    <div id="P:2:8" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 25.1163%; top: 79.6053%;">
                         <div id="POS:2:8"></div>
                     </div>
-                    <div id="P:3:1"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 287px; top: 80px;">
+                    <div id="P:3:1" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 33.3721%; top: 10.5263%;">
                         <div id="POS:3:1"></div>
                     </div>
-                    <div id="P:3:2"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 287px; top: 155px;">
+                    <div id="P:3:2" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 33.3721%; top: 20.3947%;">
                         <div id="POS:3:2"></div>
                     </div>
-                    <div id="P:3:3"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 287px; top: 230px;">
+                    <div id="P:3:3" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 33.3721%; top: 30.2632%;">
                         <div id="POS:3:3"></div>
                     </div>
-                    <div id="P:3:4"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 287px; top: 305px;">
+                    <div id="P:3:4" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 33.3721%; top: 40.1316%;">
                         <div id="POS:3:4"></div>
                     </div>
-                    <div id="P:3:5"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 287px; top: 380px;">
+                    <div id="P:3:5" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 33.3721%; top: 50%;">
                         <div id="POS:3:5"></div>
                     </div>
-                    <div id="P:3:6"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 287px; top: 455px;">
+                    <div id="P:3:6" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 33.3721%; top: 59.8684%;">
                         <div id="POS:3:6"></div>
                     </div>
-                    <div id="P:3:7"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 287px; top: 530px;">
+                    <div id="P:3:7" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 33.3721%; top: 69.7368%;">
                         <div id="POS:3:7"></div>
                     </div>
-                    <div id="P:3:8"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 287px; top: 605px;">
+                    <div id="P:3:8" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 33.3721%; top: 79.6053%;">
                         <div id="POS:3:8"></div>
                     </div>
-                    <div id="P:4:1"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 358px; top: 80px;">
+                    <div id="P:4:1" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 41.6279%; top: 10.5263%;">
                         <div id="POS:4:1"></div>
                     </div>
-                    <div id="P:4:2"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 358px; top: 155px;">
+                    <div id="P:4:2" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 41.6279%; top: 20.3947%;">
                         <div id="POS:4:2"></div>
                     </div>
-                    <div id="P:4:3"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 358px; top: 230px;">
+                    <div id="P:4:3" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 41.6279%; top: 30.2632%;">
                         <div id="POS:4:3"></div>
                     </div>
-                    <div id="P:4:4"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 358px; top: 305px;">
+                    <div id="P:4:4" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 41.6279%; top: 40.1316%;">
                         <div id="POS:4:4"></div>
                     </div>
-                    <div id="MP"
-                        style="display: none; border-radius: 100%; background-color: rgba(0, 0, 0, 0);height: 65px;position: absolute;width: 65px;left: 396;top: 347px;z-index: 2;">
+                    <div id="MP" style="display: none;border-radius: 100%;background-color: rgba(0, 0, 0, 0);height: 8.55263%;position: absolute;width: 7.55814%;left: 46.0465%;top: 45.6579%;z-index: 2;">
                         <div id="MPOS">
                         </div>
                     </div>
-                    <div id="P:4:5"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 358px; top: 380px;">
+                    <div id="P:4:5" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 41.6279%; top: 50%;">
                         <div id="POS:4:5"></div>
                     </div>
-                    <div id="P:4:6"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 358px; top: 455px;">
+                    <div id="P:4:6" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 41.6279%; top: 59.8684%;">
                         <div id="POS:4:6"></div>
                     </div>
-                    <div id="P:4:7"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 358px; top: 530px;">
+                    <div id="P:4:7" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 41.6279%; top: 69.7368%;">
                         <div id="POS:4:7"></div>
                     </div>
-                    <div id="P:4:8"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 358px; top: 605px;">
+                    <div id="P:4:8" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 41.6279%; top: 79.6053%;">
                         <div id="POS:4:8"></div>
                     </div>
-                    <div id="P:5:1"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 429px; top: 80px;">
+                    <div id="P:5:1" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 49.8837%; top: 10.5263%;">
                         <div id="POS:5:1"></div>
                     </div>
-                    <div id="P:5:2"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 429px; top: 155px;">
+                    <div id="P:5:2" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 49.8837%; top: 20.3947%;">
                         <div id="POS:5:2"></div>
                     </div>
-                    <div id="P:5:3"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 429px; top: 230px;">
+                    <div id="P:5:3" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 49.8837%; top: 30.2632%;">
                         <div id="POS:5:3"></div>
                     </div>
-                    <div id="P:5:4"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 429px; top: 305px;">
+                    <div id="P:5:4" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 49.8837%; top: 40.1316%;">
                         <div id="POS:5:4"></div>
                     </div>
-                    <div id="P:5:5"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 429px; top: 380px;">
+                    <div id="P:5:5" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 49.8837%; top: 50%;">
                         <div id="POS:5:5"></div>
                     </div>
-                    <div id="P:5:6"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 429px; top: 455px;">
+                    <div id="P:5:6" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 49.8837%; top: 59.8684%;">
                         <div id="POS:5:6"></div>
                     </div>
-                    <div id="P:5:7"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 429px; top: 530px;">
+                    <div id="P:5:7" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 49.8837%; top: 69.7368%;">
                         <div id="POS:5:7"></div>
                     </div>
-                    <div id="P:5:8"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 429px; top: 605px;">
+                    <div id="P:5:8" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 49.8837%; top: 79.6053%;">
                         <div id="POS:5:8"></div>
                     </div>
-                    <div id="P:6:1"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 500px; top: 80px;">
+                    <div id="P:6:1" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 58.1395%; top: 10.5263%;">
                         <div id="POS:6:1"></div>
                     </div>
-                    <div id="P:6:2"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 500px; top: 155px;">
+                    <div id="P:6:2" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 58.1395%; top: 20.3947%;">
                         <div id="POS:6:2"></div>
                     </div>
-                    <div id="P:6:3"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 500px; top: 230px;">
+                    <div id="P:6:3" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 58.1395%; top: 30.2632%;">
                         <div id="POS:6:3"></div>
                     </div>
-                    <div id="P:6:4"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 500px; top: 305px;">
+                    <div id="P:6:4" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 58.1395%; top: 40.1316%;">
                         <div id="POS:6:4"></div>
                     </div>
-                    <div id="P:6:5"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 500px; top: 380px;">
+                    <div id="P:6:5" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 58.1395%; top: 50%;">
                         <div id="POS:6:5"></div>
                     </div>
-                    <div id="P:6:6"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 500px; top: 455px;">
+                    <div id="P:6:6" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 58.1395%; top: 59.8684%;">
                         <div id="POS:6:6"></div>
                     </div>
-                    <div id="P:6:7"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 500px; top: 530px;">
+                    <div id="P:6:7" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 58.1395%; top: 69.7368%;">
                         <div id="POS:6:7"></div>
                     </div>
-                    <div id="P:6:8"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 500px; top: 605px;">
+                    <div id="P:6:8" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 58.1395%; top: 79.6053%;">
                         <div id="POS:6:8"></div>
                     </div>
-                    <div id="P:7:1"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 571px; top: 80px;">
+                    <div id="P:7:1" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 66.3953%; top: 10.5263%;">
                         <div id="POS:7:1"></div>
                     </div>
-                    <div id="P:7:2"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 571px; top: 155px;">
+                    <div id="P:7:2" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 66.3953%; top: 20.3947%;">
                         <div id="POS:7:2"></div>
                     </div>
-                    <div id="P:7:3"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 571px; top: 230px;">
+                    <div id="P:7:3" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 66.3953%; top: 30.2632%;">
                         <div id="POS:7:3"></div>
                     </div>
-                    <div id="P:7:4"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 571px; top: 305px;">
+                    <div id="P:7:4" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 66.3953%; top: 40.1316%;">
                         <div id="POS:7:4"></div>
                     </div>
-                    <div id="P:7:5"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 571px; top: 380px;">
+                    <div id="P:7:5" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 66.3953%; top: 50%;">
                         <div id="POS:7:5"></div>
                     </div>
-                    <div id="P:7:6"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 571px; top: 455px;">
+                    <div id="P:7:6" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 66.3953%; top: 59.8684%;">
                         <div id="POS:7:6"></div>
                     </div>
-                    <div id="P:7:7"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 571px; top: 530px;">
+                    <div id="P:7:7" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 66.3953%; top: 69.7368%;">
                         <div id="POS:7:7"></div>
                     </div>
-                    <div id="P:7:8"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 571px; top: 605px;">
+                    <div id="P:7:8" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 66.3953%; top: 79.6053%;">
                         <div id="POS:7:8"></div>
                     </div>
-                    <div id="P:8:1"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 642px; top: 80px;">
+                    <div id="P:8:1" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 74.6512%; top: 10.5263%;">
                         <div id="POS:8:1"></div>
                     </div>
-                    <div id="P:8:2"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 642px; top: 155px;">
+                    <div id="P:8:2" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 74.6512%; top: 20.3947%;">
                         <div id="POS:8:2"></div>
                     </div>
-                    <div id="P:8:3"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 642px; top: 230px;">
+                    <div id="P:8:3" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 74.6512%; top: 30.2632%;">
                         <div id="POS:8:3"></div>
                     </div>
-                    <div id="P:8:4"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 642px; top: 305px;">
+                    <div id="P:8:4" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 74.6512%; top: 40.1316%;">
                         <div id="POS:8:4"></div>
                     </div>
-                    <div id="P:8:5"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 642px; top: 380px;">
+                    <div id="P:8:5" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 74.6512%; top: 50%;">
                         <div id="POS:8:5"></div>
                     </div>
-                    <div id="P:8:6"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 642px; top: 455px;">
+                    <div id="P:8:6" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 74.6512%; top: 59.8684%;">
                         <div id="POS:8:6"></div>
                     </div>
-                    <div id="P:8:7"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 642px; top: 530px;">
+                    <div id="P:8:7" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 74.6512%; top: 69.7368%;">
                         <div id="POS:8:7"></div>
                     </div>
-                    <div id="P:8:8"
-                        style="background-color: rgba(0, 0, 0, 0); height: 75px; position: absolute; width: 71px; left: 642px; top: 605px;">
+                    <div id="P:8:8" style="background-color: rgba(0, 0, 0, 0); height: 9.86842%; position: absolute; width: 8.25581%; left: 74.6512%; top: 79.6053%;">
                         <div id="POS:8:8"></div>
                     </div>
                 </div>
@@ -2725,8 +2646,8 @@
 
                 delete pieceC[x + ":" + y]
 
-                piece.tparent.style.height = "74px"
-                piece.tparent.style.width = "71px"
+                piece.tparent.style.height = "9.86842%" // 74
+                piece.tparent.style.width = "8.25581%" // 71
 
                 moveHistory.push({
                     object: piece.tparent,
@@ -2748,8 +2669,8 @@ d.style.top = 80 + (75 * y) + "px"*/
                 // √[(x₂ - x₁)² + (y₂ - y₁)²]
                 let oldLeft = piece.tparent.style.left
                 let oldTop = piece.tparent.style.top
-                oldLeft = parseInt(oldLeft.substring(0, oldLeft.length - 2))
-                oldTop = parseInt(oldTop.substring(0, oldTop.length - 2))
+                oldLeft = parseInt(oldLeft.substring(0, oldLeft.length - 1))/100*860
+                oldTop = parseInt(oldTop.substring(0, oldTop.length - 1))/100*760
                 let newLeft = 145 + (71 * (newX - 1))
                 let newTop = 80 + (75 * (newY - 1))
                 let mag = Math.sqrt(Math.pow(Math.abs(newLeft - oldLeft), 2) + Math.pow(Math.abs(newTop - oldTop), 2))
@@ -2759,8 +2680,8 @@ d.style.top = 80 + (75 * y) + "px"*/
                         top: piece.tparent.style.top
                     },
                     {
-                        left: 145 + (71 * (newX - 1)) + "px",
-                        top: 80 + (75 * (newY - 1)) + "px"
+                        left: (145 + (71 * (newX - 1)))/860*100 + "%",
+                        top: (80 + (75 * (newY - 1)))/760*100 + "%"
                     }
                 ], {
                     duration: Math.floor(mag / 2),
@@ -2769,8 +2690,8 @@ d.style.top = 80 + (75 * y) + "px"*/
                 setTimeout(function () {
                     piece.tparent.style["background-color"] = "rgba(255, 255, 0, 0.5)"
                 }, Math.floor(mag / 2) + 5)
-                piece.tparent.style.left = 145 + (71 * (newX - 1)) + "px"
-                piece.tparent.style.top = 80 + (75 * (newY - 1)) + "px"
+                piece.tparent.style.left = (145 + (71 * (newX - 1)))/860*100 + "%"
+                piece.tparent.style.top = (80 + (75 * (newY - 1)))/760*100 + "%"
             }
 
             if (msg.type === "moveBear") {
@@ -2807,12 +2728,12 @@ d.style.top = 80 + (75 * y) + "px"*/
                 square.parent = newParent
                 square.element.style.opacity = 1
 
-                newTParent.style.left = "393px"
-                newTParent.style.top = "342px"
+                newTParent.style.left = (393/860*100) + "%"
+                newTParent.style.top = (342/760*100) + "%"
                 newTParent.appendChild(square.element)
 
-                newLeft = parseInt(newLeft.substring(0, newLeft.length - 2))
-                newTop = parseInt(newTop.substring(0, newTop.length - 2))
+                newLeft = parseInt(newLeft.substring(0, newLeft.length - 1))/100*860
+                newTop = parseInt(newTop.substring(0, newTop.length - 1))/100*860
 
                 moveHistory.push({
                     object: square.tparent,
@@ -2823,6 +2744,8 @@ d.style.top = 80 + (75 * y) + "px"*/
                 let oldLeft = 393
                 let oldTop = 342
                 let mag = Math.sqrt(Math.pow(Math.abs(newLeft - oldLeft), 2) + Math.pow(Math.abs(newTop - oldTop), 2))
+                newLeft=newLeft/860*100
+                newTop=newTop/760*100
                 playSound("move")
                 console.log(mag, newLeft)
                 square.tparent.animate([
@@ -2831,8 +2754,8 @@ d.style.top = 80 + (75 * y) + "px"*/
                         top: square.tparent.style.top
                     },
                     {
-                        left: newLeft + "px",
-                        top: newTop + "px"
+                        left: newLeft + "%",
+                        top: newTop + "%"
                     }
                 ], {
                     duration: Math.floor(mag / 2),
@@ -2841,8 +2764,8 @@ d.style.top = 80 + (75 * y) + "px"*/
                 setTimeout(function () {
                     square.tparent.style["background-color"] = "rgba(255, 255, 0, 0.5)"
                 }, Math.floor(mag / 2) + 5)
-                square.tparent.style.left = newLeft + "px"
-                square.tparent.style.top = newTop + "px"
+                square.tparent.style.left = newLeft + "%"
+                square.tparent.style.top = newTop + "%"
             }
 
             if (msg.type === "move") {
@@ -2880,8 +2803,8 @@ d.style.top = 80 + (75 * y) + "px"*/
                     if (piece.banana) piece.banana.remove()
                     piece.tparent.id = "P:" + ox + ":" + oy
                     piece.parent.id = "POS:" + ox + ":" + oy
-                    piece.tparent.style.left = 145 + (71 * (ox - 1)) + "px"
-                    piece.tparent.style.top = 80 + (75 * (oy - 1)) + "px"
+                    piece.tparent.style.left = (145 + (71 * (ox - 1)))/860*100 + "%"
+                    piece.tparent.style.top = (80 + (75 * (oy - 1)))/760*100 + "%"
                     if (selected === piece) {
                         selected.tparent.style["background-color"] = "rgba(255, 255, 0, 0)"
                         selected = null
@@ -2905,8 +2828,8 @@ d.style.top = 80 + (75 * y) + "px"*/
 
                     tp.id = "P:" + ox + ":" + oy
                     tp2.id = "POS:" + ox + ":" + oy
-                    tp.style.left = 145 + (71 * (ox - 1)) + "px"
-                    tp.style.top = 80 + (75 * (oy - 1)) + "px"
+                    tp.style.left = (145 + (71 * (ox - 1)))/860*100 + "%"
+                    tp.style.top = (80 + (75 * (oy - 1)))/760*100 + "%"
 
                     tp.style["background-color"] = "rgba(255, 255, 0, 0.5)"
                     moveHistory.push({
@@ -2948,8 +2871,8 @@ d.style.top = 80 + (75 * y) + "px"*/
                 onPiece.element.style.opacity = 1
                 let oldLeft = onPiece.tparent.style.left
                 let oldTop = onPiece.tparent.style.top
-                oldLeft = parseInt(oldLeft.substring(0, oldLeft.length - 2))
-                oldTop = parseInt(oldTop.substring(0, oldTop.length - 2))
+                oldLeft = parseInt(oldLeft.substring(0, oldLeft.length - 1))/100*860
+                oldTop = parseInt(oldTop.substring(0, oldTop.length - 1))/100*760
                 let newLeft = 145 + (71 * (x - 1))
                 let newTop = 80 + (75 * (y - 1))
                 let mag = Math.sqrt(Math.pow(Math.abs(newLeft - oldLeft), 2) + Math.pow(Math.abs(newTop - oldTop), 2))
@@ -2960,8 +2883,8 @@ d.style.top = 80 + (75 * y) + "px"*/
                         top: onPiece.tparent.style.top
                     },
                     {
-                        left: 145 + (71 * (x - 1)) + "px",
-                        top: 80 + (75 * (y - 1)) + "px"
+                        left: (145 + (71 * (x - 1)))/860*100 + "%",
+                        top: (80 + (75 * (y - 1)))/760*100 + "%"
                     }
                 ], {
                     duration: Math.floor(mag / 2),
@@ -2970,8 +2893,8 @@ d.style.top = 80 + (75 * y) + "px"*/
                 setTimeout(function () {
                     onPiece.tparent.style["background-color"] = "rgba(255, 255, 0, 0.5)"
                 }, Math.floor(mag / 2) + 5)
-                onPiece.tparent.style.left = 145 + (71 * (x - 1)) + "px"
-                onPiece.tparent.style.top = 80 + (75 * (y - 1)) + "px"
+                onPiece.tparent.style.left = (145 + (71 * (x - 1)))/860*100 + "%"
+                onPiece.tparent.style.top = (80 + (75 * (y - 1)))/760*100 + "%"
             }
 
             if (msg.type === "heartbeat") {
