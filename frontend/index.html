@@ -3317,7 +3317,7 @@ d.style.top = 80 + (75 * y) + "px"*/
         function connect(reconnected) {
             clock1.style.display = "none"
             clock2.style.display = "none"
-            ws = new WebSocket("wss://dokso.in:2096")
+            ws = new WebSocket("wss://chess2.dokso.in")
 
             ws.addEventListener("message", onMessage)
 
