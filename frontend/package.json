@@ -11,7 +11,7 @@
     "body-parser": "^1.19.0"
   },
   "engines": {
-    "node": "18.x"
+    "node": "24.x"
   },
   "license": "Apache License 2.0",
   "keywords": [
